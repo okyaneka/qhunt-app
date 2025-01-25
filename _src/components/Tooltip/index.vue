@@ -14,6 +14,23 @@ const targetRef = ref();
 const timeout = ref();
 
 const isVisible = ref(false);
+const boundary = computed(() => {
+  if (process.client) {
+    return {
+      x: 16,
+      y: 16,
+      width: document.documentElement.clientWidth - 32,
+      height: document.documentElement.clientHeight - 32,
+    };
+  }
+
+  return {
+    x: 16,
+    y: 16,
+    width: 0,
+    height: 0,
+  };
+});
 
 const { floatingStyles } = useFloating(elRef, contentRef, {
   strategy: "fixed",
@@ -24,21 +41,11 @@ const { floatingStyles } = useFloating(elRef, contentRef, {
     }),
     flip({
       padding: 8,
-      boundary: {
-        x: 16,
-        y: 16,
-        width: document.documentElement.clientWidth - 32,
-        height: document.documentElement.clientHeight - 32,
-      },
+      boundary: boundary.value,
     }),
     shift({
       padding: 8,
-      boundary: {
-        x: 16,
-        y: 16,
-        width: document.documentElement.clientWidth - 32,
-        height: document.documentElement.clientHeight - 32,
-      },
+      boundary: boundary.value,
     }),
   ],
 });
