@@ -28,7 +28,7 @@ export default defineNuxtConfig({
   },
   devServer: { port: env.PORT, host: "0.0.0.0" },
   alias: {
-    "~src": "./_src",
+    "~src": "/_src",
   },
   runtimeConfig: {
     public: env,

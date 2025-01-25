@@ -1,0 +1,71 @@
+<script setup lang="ts">
+import type { UserChallengeParams } from "qhunt-lib/models/UserChallengeModel";
+import { common, routes } from "~/_src/helpers";
+import { stage, challenge } from "~/_src/services";
+
+const route = useRoute();
+const router = useRouter();
+
+const id = computed(() => route.params.id as string);
+
+const challengeParams = ref<Partial<UserChallengeParams>>({
+  userStageId: id.value,
+});
+
+const { data, refetch: getDetail } = stage.detail(id);
+const { data: challengesData, refetch: getChallengeList } =
+  challenge.list(challengeParams);
+
+const detail = computed(() => data.value?.data);
+const challenges = computed(() => challengesData.value?.data.list || []);
+
+onMounted(() => {
+  getDetail();
+  getChallengeList();
+});
+</script>
+
+<template>
+  <div class="flex flex-col gap-4">
+    <div class="relative p-2">
+      <div class="absolute left-0 top-1/2 -translate-y-1/2">
+        <CButton icon variant="light" as="link" :to="routes.stage.index">
+          <Icon name="ri:arrow-left-s-line" />
+        </CButton>
+      </div>
+      <h1 class="text-2xl text-center px-8">
+        {{ detail?.stage.name }}
+      </h1>
+    </div>
+
+    <!-- <div>
+      <c-button @click="router.replace(routes.stage.prolog(id))"
+        >Baleni</c-button
+      >
+    </div> -->
+
+    <div class="flex flex-col gap-2">
+      <RouterLink
+        v-for="item in challenges"
+        :to="routes.challenge.prolog(item.id)"
+      >
+        <CCard hoverable content-class="flex items-center justify-between">
+          <div>
+            <div class="text-sm text-gray-200">
+              #{{ item.challenge.order }}
+              <span class="italic"> ({{ item.status }}) </span>
+            </div>
+            <div class="text-lg">{{ item.challenge.name }}</div>
+          </div>
+          <div v-if="item.results" class="flex items-center gap-1">
+            <Icon class="text-yellow-600" name="ri:copper-coin-fill" />
+
+            <div class="text-xl">
+              {{ item.results.totalScore }}
+            </div>
+          </div>
+        </CCard>
+      </RouterLink>
+    </div>
+  </div>
+</template>

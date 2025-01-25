@@ -1,7 +1,11 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import ToastProvider from "~/_src/providers/ToastProvider";
+</script>
 
 <template>
-  <NuxtLayout>
-    <NuxtPage />
-  </NuxtLayout>
+  <ToastProvider>
+    <NuxtLayout>
+      <NuxtPage />
+    </NuxtLayout>
+  </ToastProvider>
 </template>
