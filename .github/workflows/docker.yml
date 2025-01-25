@@ -6,6 +6,7 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    environment: DEV
 
     steps:
       - name: Checkout repository
@@ -19,6 +20,7 @@ jobs:
         with:
           username: ${{ github.actor }}
           password: ${{ secrets.GH_TOKEN }}
+          registry: ghcr.io
 
       - name: Build and push Docker images for multiple architectures
         run: |
