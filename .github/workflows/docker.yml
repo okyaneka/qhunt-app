@@ -1,4 +1,4 @@
-name: Build and Push Docker Image to GHCR
+name: Build and Push Docker
 
 on:
   workflow_dispatch:
@@ -6,7 +6,6 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    environment: DEV
 
     steps:
       - name: Checkout repository
@@ -26,11 +25,6 @@ jobs:
         run: |
           docker buildx create --use
           docker buildx build \
-            --build-arg NODE_ENV \
-            --build-arg PORT \
-            --build-arg APP_NAME \
-            --build-arg APP_API_URL \
-            --build-arg APP_SOCKET_URL \
-            --build-arg PLATFORM=linux/amd64 \
+            --platform linux/amd64,linux/arm64 \
             -t ghcr.io/${{ github.repository_owner }}/qhunt-app:${{ github.sha }} \
             --push .
