@@ -14,11 +14,11 @@ RUN pnpm build
 # Stage 2
 FROM node:20-alpine
 
+LABEL org.opencontainers.image.source=https://github.com/okyaneka/qhunt-api
+LABEL org.opencontainers.image.description="QHunt Api Image"
+
 ARG NODE_ENV=production
 ARG PORT=3000
-ARG APP_NAME=QHunt App
-ARG APP_API_URL=localhost
-ARG APP_SOCKET_URL=localhost
 
 WORKDIR /usr/src/app
 
@@ -29,10 +29,6 @@ RUN npm install -g pnpm
 RUN pnpm install
 
 ENV NODE_ENV=${NODE_ENV}
-ENV PORT=${PORT}
-ENV APP_NAME=${APP_NAME}
-ENV APP_API_URL=${APP_API_URL}
-ENV APP_SOCKET_URL=${APP_SOCKET_URL}
 
 EXPOSE ${PORT}
 
