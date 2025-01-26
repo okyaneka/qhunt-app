@@ -1,9 +1,3 @@
-ARG NODE_ENV=production
-ARG PORT=3000
-ARG APP_NAME=QHunt App
-ARG APP_API_URL=localhost
-ARG APP_SOCKET_URL=localhost
-
 # Stage 1
 FROM node:20-alpine AS build
 
@@ -19,6 +13,12 @@ RUN pnpm build
 
 # Stage 2
 FROM node:20-alpine
+
+ARG NODE_ENV=production
+ARG PORT=3000
+ARG APP_NAME=QHunt App
+ARG APP_API_URL=localhost
+ARG APP_SOCKET_URL=localhost
 
 WORKDIR /usr/src/app
 
