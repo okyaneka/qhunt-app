@@ -15,7 +15,7 @@ import type { DefaultResponse } from "../types";
 const env = useEnv();
 const { push } = useToastProvider();
 
-axios.defaults.baseURL = env?.APP_API_URL;
+axios.defaults.baseURL = env.APP_API_URL;
 axios.defaults.withCredentials = true;
 
 axios.interceptors.request.use(

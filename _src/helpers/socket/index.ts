@@ -70,7 +70,7 @@ export const useSocket = (
   const onError = (callback: SocketCallbackError) =>
     (errorCallback.value = callback);
 
-  socket.value = io(`${env?.APP_SOCKET_URL}${namespace}`, {
+  socket.value = io(`${env.APP_SOCKET_URL}${namespace}`, {
     withCredentials: true,
     path: "/socket",
     ...opts,

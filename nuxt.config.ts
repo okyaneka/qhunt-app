@@ -1,4 +1,5 @@
-import { env, tailwindcss, icon } from "./_src/configs";
+import { tailwindcss, icon } from "./_src/configs";
+import { env } from "./_src/configs/env";
 import fs from "fs";
 import path from "path";
 import font from "./_src/configs/font";
@@ -19,24 +20,19 @@ export default defineNuxtConfig({
     head: {
       charset: "utf-8",
       viewport: "width=device-width, initial-scale=1",
-      title: process.env.APP_NAME,
+      title: env.APP_NAME,
       meta: [{ name: "description", content: packagejson.description }],
     },
 
     layoutTransition: { name: "fade", mode: "out-in" },
     pageTransition: { name: "fade", mode: "out-in" },
   },
-  devServer: { port: Number(process.env.PORT) || 3000, host: "0.0.0.0" },
+  devServer: { port: env.PORT, host: "0.0.0.0" },
   alias: {
     "~src": "/_src",
   },
   runtimeConfig: {
-    public: {
-      PORT: Number(process.env.PORT) || 3000,
-      APP_NAME: process.env.APP_NAME || "",
-      APP_API_URL: process.env.APP_API_URL || "",
-      APP_SOCKET_URL: process.env.APP_SOCKET_URL || "",
-    },
+    public: env,
   },
   compatibilityDate: "2024-11-01",
   devtools: { enabled: true },
