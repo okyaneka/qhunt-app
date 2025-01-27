@@ -1,6 +1,5 @@
 import confetti from "canvas-confetti";
 import type { CommonWpmOptions } from "../types";
-import { BrowserQRCodeReader } from "@zxing/browser";
 
 export const duar = () => {
   const count = 200;
@@ -70,17 +69,6 @@ export const wpm = (
   return (wordCount / speed) * 60 * 1e3 + buffer;
 };
 
-export const scanByStream = (stream: MediaStream, el?: HTMLVideoElement) => {
-  const reader = new BrowserQRCodeReader();
-  return reader.decodeOnceFromStream(stream, el);
-};
-
-export const scanByFile = (file: File) => {
-  const reader = new BrowserQRCodeReader();
-  const url = URL.createObjectURL(file);
-  return reader.decodeFromImageUrl(url);
-};
-
-const common = { wpm, split, duar, scanByStream, scanByFile } as const;
+const common = { wpm, split, duar } as const;
 
 export default common;

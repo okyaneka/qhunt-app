@@ -2,6 +2,7 @@
 import { QrContentType } from "qhunt-lib/models/QrModel/types";
 import { common, routes, toast } from "~/_src/helpers";
 import { qr } from "~/_src/services";
+import { qrcode } from "qhunt-lib/helpers";
 
 definePageMeta({
   layout: "blank",
@@ -77,7 +78,7 @@ const setDevice = async () => {
 const startScanning = () => {
   if (!stream.value || !mediaRef.value) return;
   result.value = "";
-  common.scanByStream(stream.value).then((res) => {
+  qrcode.scanByStream(stream.value).then((res) => {
     onVerify(res.getText());
     setTimeout(() => {
       startScanning();
@@ -146,15 +147,14 @@ const onInputChange = async () => {
   if (!inputRef.value) return;
   const { files } = inputRef.value;
   if (!files) return;
-  console.log(files);
 
-  common
+  qrcode
     .scanByFile(files[0])
     .then((res) => {
       onVerify(res.getText());
     })
     .catch((e) => {
-      toast.push(`${e}`, { type: "error" });
+      toast.push(`qr code cannot be found`, { type: "error" });
     });
   inputRef.value.type = "text";
   await nextTick();
