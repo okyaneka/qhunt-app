@@ -25,11 +25,7 @@ ARG APP_SOCKET_URL=/
 
 WORKDIR /usr/src/app
 
-COPY --from=build /usr/src/app/package.json .
-COPY --from=build /usr/src/app/pnpm-lock.yaml .
-COPY --from=build /usr/src/app/.output ./.output
-RUN npm install -g pnpm
-RUN pnpm install
+COPY --from=build /usr/src/app/.output ./
 
 ENV NODE_ENV=${NODE_ENV}
 ENV APP_NAME=${APP_NAME}
@@ -38,4 +34,4 @@ ENV APP_SOCKET_URL=${APP_SOCKET_URL}
 
 EXPOSE ${PORT}
 
-CMD ["node", ".output/server/index.mjs" ]
+CMD ["pnpm", "start" ]

@@ -1,13 +1,18 @@
 <script setup lang="ts">
 import HOME from "~/_src/assets/images/home.svg";
 import WINNERS from "~/_src/assets/images/winners.svg";
+import { useEnv } from "~/_src/configs/env";
 import { routes } from "~/_src/helpers";
+
+const env = useEnv();
 </script>
 
 <template>
   <div class="flex flex-col gap-4">
     <CCard content-class="flex flex-col">
-      <h1 class="text-3xl font-bold text-center">Welcome to QHunt App</h1>
+      <h1 class="text-3xl font-bold text-center">
+        Welcome to {{ env?.APP_NAME }}
+      </h1>
     </CCard>
 
     <CCard>
