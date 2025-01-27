@@ -19,6 +19,7 @@ LABEL org.opencontainers.image.description="QHunt Api Image"
 
 ARG NODE_ENV=production
 ARG PORT=3000
+ARG APP_NAME=QHunt App
 
 WORKDIR /usr/src/app
 
@@ -29,6 +30,7 @@ RUN npm install -g pnpm
 RUN pnpm install
 
 ENV NODE_ENV=${NODE_ENV}
+ENV APP_NAME=${APP_NAME}
 
 EXPOSE ${PORT}
 
