@@ -65,7 +65,7 @@ onClickOutside(targetRef, (event) => (isVisible.value = false));
 
 <template>
   <div ref="targetRef" @mouseenter="show(true)" @mouseleave="show(false)">
-    <div ref="elRef" @touchend.prevent="show(!isVisible)" @touchstart.prevent>
+    <div ref="elRef">
       <slot />
     </div>
     <Transition>
