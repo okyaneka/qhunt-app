@@ -1,0 +1,14 @@
+.DS_Store
+.env*
+.git
+.github
+.gitignore
+.nuxt
+.output
+.vscode
+dist
+Dockerfile
+localhost*
+node_modules
+npm-debug.log
+README.md
