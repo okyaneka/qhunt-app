@@ -16,6 +16,8 @@ type LocalOptions = {
   ping: boolean;
 };
 
+const env = useEnv();
+
 export const namespace = {
   challenge: "/challenge",
 };
@@ -25,8 +27,6 @@ export const useSocket = (
   opts?: Partial<ManagerOptions & SocketOptions & LocalOptions>,
   ops?: (socket: Socket) => void
 ) => {
-  const env = useEnv();
-
   const socket = ref<Socket>();
   const status = ref<SocketStatus>("connecting");
   const ping = ref(0);
@@ -70,8 +70,9 @@ export const useSocket = (
   const onError = (callback: SocketCallbackError) =>
     (errorCallback.value = callback);
 
-  socket.value = io(`${env.APP_SOCKET_URL}${namespace}`, {
+  socket.value = io(`${env?.APP_SOCKET_URL}${namespace}`, {
     withCredentials: true,
+    path: "/socket",
     ...opts,
   });
 
