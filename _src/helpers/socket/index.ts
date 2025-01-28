@@ -86,7 +86,8 @@ export const useSocket = (
   });
 
   socket.value.on("connect_error", (error: Error) => {
-    console.error(error.message);
+    status.value = "disconnected";
+    console.error(error);
     connectErrorCallback.value && connectErrorCallback.value(error);
   });
 
@@ -106,7 +107,8 @@ export const useSocket = (
   });
 
   socket.value.io.on("reconnect_error", (error: Error) => {
-    console.error(error.message);
+    status.value = "disconnected";
+    console.error(error);
     reconnectErrorCallback.value && reconnectErrorCallback.value(error);
   });
 

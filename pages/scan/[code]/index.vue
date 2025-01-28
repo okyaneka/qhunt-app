@@ -8,7 +8,7 @@ const router = useRouter();
 
 const code = computed(() => route.params.code as string);
 
-const { data, refetch: verify, isLoading } = qr.verify(code);
+const { data, refetch: verify, isLoading, isError } = qr.verify(code);
 
 watch(data, () => {
   if (!data.value) return;
@@ -29,8 +29,9 @@ onMounted(() => {
 
 <template>
   <div class="min-h-screen -m-3 flex">
-    <div class="m-auto">
-      <CLoader> Memverifikasi Data... </CLoader>
+    <div class="m-auto flex">
+      <CLoader v-if="isLoading"> Memverifikasi Data... </CLoader>
+      <CCard v-if="isError"> Kode QR tidak valid </CCard>
     </div>
   </div>
 </template>

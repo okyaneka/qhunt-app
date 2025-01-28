@@ -11,9 +11,8 @@ const { guides = false, content } = defineProps<{
 const emit = defineEmits<{ (e: "click:finish"): void; (e: "finish"): void }>();
 
 const contentRef = ref<HTMLDivElement>();
-const chunk = computed(() => common.split(content, 4));
+const chunks = computed(() => common.split(content, 4));
 const index = ref(0);
-const text = ref("");
 const isWriting = ref(false);
 const timeout = ref();
 
@@ -27,14 +26,12 @@ const scrollDown = () => {
 
 const resetWriting = () => {
   isWriting.value = false;
-  index.value = 0;
   clearTimeout(timeout.value);
 };
 
 const writing = () => {
   isWriting.value = true;
-  text.value += chunk.value[index.value];
-  if (index.value + 1 < chunk.value.length) {
+  if (index.value + 1 < chunks.value.length) {
     index.value++;
     timeout.value = setTimeout(() => {
       isWriting.value = false;
@@ -52,15 +49,15 @@ const writing = () => {
 
 const handleClick = () => {
   if (isWriting.value) {
-    text.value += chunk.value.slice(index.value).join("");
+    index.value = chunks.value.length - 1;
     resetWriting();
   } else {
     emit("click:finish");
   }
 };
 
-watch(chunk, () => {
-  text.value = "";
+watch(chunks, () => {
+  index.value = 0;
   writing();
 });
 
@@ -71,11 +68,13 @@ onMounted(() => {
 
 <template>
   <div @click="handleClick" class="h-full select-none">
-    <div
-      ref="contentRef"
-      class="story-typing h-full overflow-auto"
-      v-html="text"
-    ></div>
+    <div ref="contentRef" class="story-typing h-full overflow-auto">
+      <span
+        v-for="(chunk, i) in chunks"
+        v-text="chunk"
+        :class="index < i ? 'opacity-0' : 'opacity-100'"
+      />
+    </div>
 
     <div v-if="guides" class="text-center text-gray-300 mt-2 text-base">
       Sentuh untuk melanjutkan...
