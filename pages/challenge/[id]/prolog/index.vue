@@ -47,7 +47,7 @@ onMounted(() => {
           <div class="mb-2">Sayangnya belum ditemukan, coba cari lagi!</div>
           <div>
             <CButton as="link" :to="routes.scan.index" color="light"
-              >Car Kode QRnya Sekarang!</CButton
+              >Cari Kode QRnya Sekarang!</CButton
             >
           </div>
         </CCard>

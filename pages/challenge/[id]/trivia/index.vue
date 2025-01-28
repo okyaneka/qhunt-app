@@ -43,8 +43,9 @@ const {
       feedback.value = value;
     });
 
-    io.on("setResult", (value: UserChallengeResult, withDuar?: boolean) => {
-      if (withDuar) common.duar();
+    io.on("setResult", (value: UserChallengeResult, hasFinish?: boolean) => {
+      if (hasFinish) common.duar();
+      withDuar.value = !hasFinish;
       isFinnish.value = true;
       result.value = value;
     });
@@ -78,6 +79,7 @@ const isFinnish = ref(false);
 const isAh = ref(false);
 const isShowOption = ref(false);
 const isShowFeedback = ref(false);
+const withDuar = ref(false);
 const feedback = ref("");
 const position = ref({ top: 0, left: 0 });
 
@@ -129,7 +131,7 @@ onUnmounted(() => {
             <div class="text-6xl font-bold text-center">
               <CAnimeCount
                 :value="result.totalScore"
-                :duration="8e2"
+                :duration="withDuar ? 0 : 8e2"
                 @finish="isAh = true"
               />
               <!-- {{ score }} -->
