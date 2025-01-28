@@ -12,9 +12,12 @@ const challengeParams = ref<Partial<UserChallengeParams>>({
   userStageId: id.value,
 });
 
-const { data, refetch: getDetail } = stage.detail(id);
-const { data: challengesData, refetch: getChallengeList } =
-  challenge.list(challengeParams);
+const { data, isLoading: detailLoading, refetch: getDetail } = stage.detail(id);
+const {
+  data: challengesData,
+  isLoading: challengeLoading,
+  refetch: getChallengeList,
+} = challenge.list(challengeParams);
 
 const detail = computed(() => data.value?.data);
 const challenges = computed(() => challengesData.value?.data.list || []);
@@ -26,7 +29,13 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="flex flex-col gap-4">
+  <div
+    v-if="detailLoading || challengeLoading"
+    class="p-4 flex h-[calc(100vh-24px)] justify-center items-center"
+  >
+    <CLoader />
+  </div>
+  <div v-else class="flex flex-col gap-4">
     <div class="relative p-2">
       <div class="absolute left-0 top-1/2 -translate-y-1/2">
         <CButton icon variant="light" as="link" :to="routes.stage.index">
@@ -45,6 +54,22 @@ onMounted(() => {
     </div> -->
 
     <div class="flex flex-col gap-2">
+      <CCard content-class="flex gap-4 justify-between items-center">
+        <div class="">
+          <div class="flex gap-1 items-end">
+            <span class="text-4xl font-bold">#1</span>
+            <span>/100</span>
+          </div>
+          <RouterLink to="#">Lihat semua</RouterLink>
+        </div>
+
+        <div class="flex flex-col items-end">
+          <div class="flex gap-1 text-3xl items-center">
+            <Icon class="text-yellow-600" name="ri:copper-coin-fill" />
+            {{ detail?.results?.totalScore }}
+          </div>
+        </div>
+      </CCard>
       <RouterLink
         v-for="item in challenges"
         :to="routes.challenge.prolog(item.id)"
