@@ -1,7 +1,4 @@
-import type {
-  UserStage,
-  UserStageListParams,
-} from "qhunt-lib/models/UserStageModel";
+import type { UserStage, UserStageListParams } from "qhunt-lib";
 import {
   request,
   type DefaultResponse,
