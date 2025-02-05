@@ -1,8 +1,7 @@
 <script setup lang="ts">
 import dayjs from "dayjs";
-import type { UserChallengeResult } from "qhunt-lib/models/UserChallengeModel";
+import type { UserChallengeResult, UserTrivia } from "qhunt-lib";
 import { common, routes, socket } from "~/_src/helpers";
-import type { UserTrivia } from "qhunt-lib/models/UserTriviaModel";
 import { challenge } from "~/_src/services";
 
 definePageMeta({ layout: "blank" });
@@ -145,12 +144,12 @@ onUnmounted(() => {
                   <tbody>
                     <tr>
                       <td class="pr-4">Jawaban benar</td>
-                      <td>{{ result.correctCount }}</td>
+                      <td>{{ result.totalCorrect }}</td>
                       <td>x</td>
                       <td class="text-right">
                         {{
-                          result.correctCount != 0
-                            ? result.baseScore / result.correctCount
+                          result.totalCorrect != 0
+                            ? result.baseScore / result.totalCorrect
                             : 0
                         }}
                       </td>
@@ -159,7 +158,7 @@ onUnmounted(() => {
                       <td class="pr-4">Bonus Jawaban Benar</td>
                       <td>1</td>
                       <td>x</td>
-                      <td class="text-right">{{ result.correctBonus }}</td>
+                      <td class="text-right">{{ result.contentBonus }}</td>
                     </tr>
                     <tr>
                       <td class="pr-4">Bonus Waktu</td>
@@ -235,7 +234,10 @@ onUnmounted(() => {
       <CLoader>Menghubungkan...</CLoader>
     </div>
 
-    <div v-else-if="status == 'disconnected'" class="m-auto">
+    <div
+      v-else-if="status == 'disconnected' && detail?.status !== 'completed'"
+      class="m-auto"
+    >
       <CCard content-class="text-center">
         <div class="text-center mb-2">Tidak dapat menghubungkan ke server</div>
         <div class="flex justify-center gap-2">

@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import type { UserChallengeParams } from "qhunt-lib/models/UserChallengeModel";
+import { USER_CHALLENGE_STATUS } from "qhunt-lib/types";
+import type { UserChallengeParams } from "qhunt-lib";
 import { common, routes } from "~/_src/helpers";
 import { stage, challenge } from "~/_src/services";
 
@@ -35,6 +36,7 @@ onMounted(() => {
   >
     <CLoader />
   </div>
+
   <div v-else class="flex flex-col gap-4">
     <div class="relative p-2">
       <div class="absolute left-0 top-1/2 -translate-y-1/2">
@@ -54,7 +56,10 @@ onMounted(() => {
     </div> -->
 
     <div class="flex flex-col gap-2">
-      <CCard content-class="flex gap-4 justify-between items-center">
+      <CCard
+        v-show="false"
+        content-class="flex gap-4 justify-between items-center"
+      >
         <div class="">
           <div class="flex gap-1 items-end">
             <span class="text-4xl font-bold">#1</span>
@@ -74,11 +79,18 @@ onMounted(() => {
         v-for="item in challenges"
         :to="routes.challenge.prolog(item.id)"
       >
-        <CCard hoverable content-class="flex items-center justify-between">
+        <CCard
+          :class="{
+            'bg-opacity-80 text-opacity-80':
+              item.status === USER_CHALLENGE_STATUS.Undiscovered,
+          }"
+          hoverable
+          content-class="flex items-center justify-between"
+        >
           <div>
             <div class="text-sm text-gray-200">
               #{{ item.challenge.order }}
-              <span class="italic"> ({{ item.status }}) </span>
+              <span class="capitalize"> ({{ item.settings.type }}) </span>
             </div>
             <div class="text-lg">{{ item.challenge.name }}</div>
           </div>

@@ -1,20 +1,38 @@
 <script setup lang="ts">
-import { twMerge } from "tailwind-merge";
 import { common } from "~/_src/helpers";
 
 useAttrs();
-const { guides = false, content } = defineProps<{
+const {
+  guides = false,
+  content,
+  wpm = 300,
+} = defineProps<{
   content: string;
+  wpm?: number;
   guides?: boolean;
 }>();
 
 const emit = defineEmits<{ (e: "click:finish"): void; (e: "finish"): void }>();
 
 const contentRef = ref<HTMLDivElement>();
-const chunks = computed(() => common.split(content, 4));
-const index = ref(0);
+const chunk = ref(2);
+const index = ref(-2);
 const isWriting = ref(false);
 const timeout = ref();
+
+const chunks = computed(() => common.split(content, chunk.value));
+
+const speed = computed(() => {
+  const div = document.createElement("div");
+  div.innerHTML = content;
+
+  const text = div.textContent || "";
+  const speed =
+    common.wpm(text, { speed: wpm, buffer: 0 }) / chunks.value.length;
+  if (speed < 75) chunk.value += 1;
+
+  return speed;
+});
 
 const scrollDown = () => {
   if (contentRef.value)
@@ -36,7 +54,7 @@ const writing = () => {
     timeout.value = setTimeout(() => {
       isWriting.value = false;
       writing();
-    }, 75);
+    }, speed.value);
   } else {
     emit("finish");
     resetWriting();
@@ -57,7 +75,7 @@ const handleClick = () => {
 };
 
 watch(chunks, () => {
-  index.value = 0;
+  index.value = -2;
   writing();
 });
 

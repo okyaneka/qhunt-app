@@ -1,7 +1,4 @@
-import type {
-  UserChallenge,
-  UserChallengeParams,
-} from "qhunt-lib/models/UserChallengeModel";
+import type { UserChallenge, UserChallengeParams } from "qhunt-lib";
 import {
   request,
   type DefaultResponse,

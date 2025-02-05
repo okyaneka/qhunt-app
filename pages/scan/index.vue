@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import { QrContentType } from "qhunt-lib/models/QrModel/types";
-import { common, routes, toast } from "~/_src/helpers";
-import { qr } from "~/_src/services";
 import { qrcode } from "qhunt-lib/helpers";
+import { qr } from "~/_src/services";
+import { routes, toast } from "~/_src/helpers";
+import { QR_CONTENT_TYPES } from "qhunt-lib/types";
 
 definePageMeta({
   layout: "blank",
@@ -19,6 +19,7 @@ const active = ref(0);
 const isTorch = ref(false);
 const isTorchOn = ref(false);
 const isLoaded = ref(false);
+const isDenied = ref<boolean>();
 
 const { data, refetch: verify, isLoading } = qr.verify(result);
 
@@ -88,7 +89,8 @@ const startScanning = () => {
 
 const getPermission = async () => {
   const permission = await navigator.permissions.query({ name: "camera" });
-  if (permission.state == "prompt")
+  if (permission.state === "denied") return (isDenied.value = true);
+  if (permission.state === "prompt")
     await navigator.mediaDevices
       .getUserMedia({
         video: true,
@@ -96,6 +98,10 @@ const getPermission = async () => {
       .then((stream) => {
         const track = stream.getTracks()[0];
         track.stop();
+      })
+      .catch((err) => {
+        isDenied.value = true;
+        throw new err();
       });
 
   await getDevices();
@@ -161,6 +167,10 @@ const onInputChange = async () => {
   inputRef.value.type = "file";
 };
 
+const handleRefresh = () => {
+  location.reload();
+};
+
 watch([stream, mediaRef], async () => {
   if (stream.value && mediaRef.value) {
     mediaRef.value.srcObject = stream.value;
@@ -171,9 +181,9 @@ watch([stream, mediaRef], async () => {
 watch(data, () => {
   if (!data.value) return;
   switch (data.value.data.type) {
-    case QrContentType.Challenge:
+    case QR_CONTENT_TYPES.Challenge:
       return router.push(routes.challenge.prolog(data.value.data.refId));
-    case QrContentType.Stage:
+    case QR_CONTENT_TYPES.Stage:
       return router.push(routes.stage.prolog(data.value.data.refId));
     default:
       break;
@@ -217,9 +227,7 @@ onUnmounted(() => {
               </CButton>
             </div>
 
-            <CChip @click="toast.push('PPPP', { type: 'error' })">
-              Scan QR Disini
-            </CChip>
+            <CChip> Scan QR Disini </CChip>
           </div>
 
           <div class="p-2 mt-auto flex flex-col gap-4">
@@ -249,6 +257,24 @@ onUnmounted(() => {
   </CCard>
 
   <div v-else class="p-4 flex h-[calc(100vh-24px)] justify-center items-center">
-    <CLoader />
+    <CCard v-if="isDenied" content-class="flex flex-col">
+      <div class="text-center">
+        <Icon name="ri:camera-off-fill" size="40" />
+      </div>
+      <div class="text-center max-w-72 mb-4">
+        Tolong aktifin kameranya ya. Kalau sudah bisa Refresh halamanya.
+        Terimakasih
+      </div>
+      <div class="text-center">
+        <CButton color="light" @click="handleRefresh">Refresh</CButton>
+      </div>
+    </CCard>
+    <CLoader v-else />
   </div>
 </template>
+
+<!-- <template>
+  <div class="p-4 flex h-[calc(100vh-24px)] justify-center items-center">
+    <CLoader />
+  </div>
+</template> -->

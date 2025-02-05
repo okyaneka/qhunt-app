@@ -2,6 +2,10 @@
 import { routes } from "~/_src/helpers";
 import { stage } from "~/_src/services";
 
+definePageMeta({
+  layout: "blank",
+});
+
 const route = useRoute();
 const router = useRouter();
 
