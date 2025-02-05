@@ -10,7 +10,7 @@ ARG APP_SOCKET_URL=http://socket.google.com
 WORKDIR /usr/src/app
 
 COPY package.json pnpm-lock.yaml ./
-RUN npm install -g pnpm
+RUN npm install -g pnpm@10.2.0
 RUN pnpm install
 
 COPY . .
@@ -28,7 +28,7 @@ FROM node:20-alpine
 ARG PORT=3000
 
 LABEL org.opencontainers.image.source=https://github.com/okyaneka/qhunt-api
-LABEL org.opencontainers.image.description="QHunt Api Image"
+LABEL org.opencontainers.image.description="QHunt App Image"
 
 WORKDIR /usr/src/app
 

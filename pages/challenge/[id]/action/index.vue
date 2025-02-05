@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ChallengeType } from "qhunt-lib/models/ChallengeModel/types";
+import { CHALLENGE_TYPES } from "qhunt-lib/types";
 import { routes } from "~/_src/helpers";
 import { challenge } from "~/_src/services";
 
@@ -15,7 +15,7 @@ const detail = computed(() => data.value?.data);
 onMounted(() => {
   getDetail().then(() => {
     switch (detail.value?.settings.type) {
-      case ChallengeType.Trivia:
+      case CHALLENGE_TYPES.Trivia:
         router.replace(routes.challenge.trivia(id.value));
         break;
       default:

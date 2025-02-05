@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { UserChallengeStatus } from "qhunt-lib/models/UserChallengeModel/types";
+import { USER_CHALLENGE_STATUS } from "qhunt-lib/types";
 import { routes } from "~/_src/helpers";
 import { challenge } from "~/_src/services";
 
@@ -27,9 +27,7 @@ onMounted(() => {
   getDetail().then(() => {
     if (
       detail.value?.status &&
-      [UserChallengeStatus.OnGoing, UserChallengeStatus.Completed].includes(
-        detail.value.status
-      )
+      ["ongoing", "completed"].includes(detail.value.status)
     )
       router.replace(routes.challenge.action(detail.value.id));
   });
@@ -37,14 +35,27 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="flex flex-col gap-4 min-h-[calc(100vh-24px)]">
+  <div class="flex flex-col gap-4 min-h-[calc(100vh-24px)] relative">
+    <div class="absolute left-0 top-0">
+      <CButton
+        icon
+        variant="light"
+        as="link"
+        :to="routes.stage.challenges(detail?.userStage?.id || '')"
+      >
+        <Icon name="ri:arrow-left-s-line" />
+      </CButton>
+    </div>
+
     <div v-if="isFetched" class="flex flex-col gap-2 my-auto">
-      <template v-if="detail?.status == UserChallengeStatus.Undiscovered">
+      <template v-if="detail?.status == USER_CHALLENGE_STATUS.Undiscovered">
         <CCard content-class="text-center">
           <div class="text-xl">
             {{ detail.challenge.name }}
           </div>
-          <div class="mb-2">Sayangnya belum ditemukan, coba cari lagi!</div>
+          <div class="mb-2">
+            Tantangan ini masih belum kamu temukan. Mari kita cari!
+          </div>
           <div>
             <CButton as="link" :to="routes.scan.index" color="light"
               >Cari Kode QRnya Sekarang!</CButton
@@ -57,6 +68,7 @@ onMounted(() => {
           <CStoryTyping
             class="text-center text-xl"
             :content="line"
+            :wpm="300"
             @click:finish="nextLine()"
             :guides="!showConfirm"
           />

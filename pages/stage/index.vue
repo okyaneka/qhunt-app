@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import type { UserChallengeParams } from "qhunt-lib/models/UserChallengeModel";
 import { common, routes } from "~/_src/helpers";
 import { stage } from "~/_src/services";
 

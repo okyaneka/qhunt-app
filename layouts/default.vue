@@ -33,7 +33,7 @@ onMounted(() => {
       <slot />
     </div>
 
-    <div class="fixed right-8 bottom-8 flex">
+    <div class="fixed right-4 bottom-4 flex">
       <CTooltip>
         <CButton size="lg" icon as="link" :to="routes.scan.index">
           <Icon name="ri:qr-code-fill" />

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { QrContentType } from "qhunt-lib/models/QrModel/types";
+import { QR_CONTENT_TYPES } from "qhunt-lib/types";
 import { routes } from "~/_src/helpers";
 import { qr } from "~/_src/services";
 
@@ -12,14 +12,16 @@ const { data, refetch: verify, isLoading, isError } = qr.verify(code);
 
 watch(data, () => {
   if (!data.value) return;
-  switch (data.value.data.type) {
-    case QrContentType.Challenge:
-      return router.push(routes.challenge.prolog(data.value.data.refId));
-    case QrContentType.Stage:
-      return router.push(routes.stage.prolog(data.value.data.refId));
-    default:
-      break;
-  }
+  setTimeout(() => {
+    switch (data.value.data.type) {
+      case QR_CONTENT_TYPES.Challenge:
+        return router.push(routes.challenge.prolog(data.value.data.refId));
+      case QR_CONTENT_TYPES.Stage:
+        return router.push(routes.stage.prolog(data.value.data.refId));
+      default:
+        break;
+    }
+  }, 1e3);
 });
 
 onMounted(() => {
