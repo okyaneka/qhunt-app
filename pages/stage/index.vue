@@ -28,6 +28,21 @@ const stages = computed(() => data.value?.data.list || []);
     </div> -->
 
     <div class="flex flex-col gap-2">
+      <div class="flex justify-center">
+        <CCard content-class="p-4">
+          <div class="text-center">
+            <Icon name="ri:box-2-line" size="40" />
+          </div>
+          <p class="text-center mb-2">
+            Tantanganmu masih kosong nih. Yuk, cari bersama!
+          </p>
+          <p class="text-center">
+            <CButton as="link" :to="routes.scan.index" color="light"
+              >Cari Kode QRnya Sekarang!</CButton
+            >
+          </p>
+        </CCard>
+      </div>
       <RouterLink v-for="item in stages" :to="routes.stage.challenges(item.id)">
         <CCard hoverable content-class="flex items-center justify-between">
           <div>
