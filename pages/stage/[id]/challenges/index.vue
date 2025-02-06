@@ -57,7 +57,7 @@ onMounted(() => {
 
     <div class="flex flex-col gap-2">
       <CCard
-        v-show="false"
+        v-if="detail?.results"
         content-class="flex gap-4 justify-between items-center"
       >
         <div class="">

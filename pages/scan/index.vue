@@ -140,9 +140,10 @@ const getDevices = async () => {
 const toggleTorch = async () => {
   if (!stream.value) return;
   const track = stream.value.getTracks()[0];
-  isTorch.value = !isTorch.value;
+
+  isTorchOn.value = !isTorchOn.value;
   // @ts-ignore
-  await track.applyConstraints({ torch: isTorch.value });
+  await track.applyConstraints({ torch: isTorchOn.value });
 };
 
 const stopTrack = async () => {
