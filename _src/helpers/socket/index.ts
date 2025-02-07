@@ -21,7 +21,8 @@ const env = useEnv();
 
 export const namespace = {
   challenge: "/challenge",
-};
+  trivia: "/trivia",
+} as const;
 
 export const useSocket = (
   namespace: string = "/",

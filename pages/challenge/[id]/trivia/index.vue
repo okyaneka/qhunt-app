@@ -20,7 +20,7 @@ const {
   ping,
   status,
 } = socket.useSocket(
-  socket.challenge,
+  socket.trivia,
   { query: { id: id.value }, reconnectionAttempts: 4, ping: true },
   (io) => {
     /**
