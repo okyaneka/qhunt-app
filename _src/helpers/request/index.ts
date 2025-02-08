@@ -24,10 +24,12 @@ axios.interceptors.request.use(
 );
 
 axios.interceptors.response.use(
-  (res) => res.data,
+  (res) => res,
   (err: AxiosError<DefaultResponse>) => {
-    const message = err.response?.data.message || err.message;
-    push(message, { type: "error" });
+    if (process.client) {
+      const message = err.response?.data.message || err.message;
+      push(message, { type: "error" });
+    }
     return Promise.reject(err);
   }
 );
@@ -45,6 +47,8 @@ export const get = <T = unknown>(
       axios.get(toRef(url).value, { params: params?.value }) as Promise<T>,
   });
 };
+
+export { axios };
 
 const request = { get } as const;
 

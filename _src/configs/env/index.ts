@@ -6,9 +6,11 @@ export const env = {
 } as const;
 
 export const useEnv = () => {
-  const isInNuxtContext = typeof window !== "undefined" && window.__NUXT__;
-
-  return isInNuxtContext ? useRuntimeConfig().public : env;
+  if (process.client) {
+    return useRuntimeConfig().public;
+  } else {
+    return env;
+  }
 };
 
 export default env;
