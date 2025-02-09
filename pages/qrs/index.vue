@@ -12,7 +12,7 @@ const list = computed(() => data.value?.data.list);
 
 const handleCopy = (text: string) => {
   navigator.clipboard
-    .writeText("http://localhost:1236/scan/" + text)
+    .writeText(location.protocol + "//" + location.host + "/scan/" + text)
     .then(() => {
       toast.push("Code copied");
     });
@@ -23,7 +23,6 @@ const handleCopy = (text: string) => {
   <div class="flex flex-col gap-4">
     <CCard>
       <h1 class="text-center text-xl">List Kode QR</h1>
-      <div>{{ CHALLENGE_TYPES }}</div>
     </CCard>
 
     <div class="grid grid-cols-2 gap-4">

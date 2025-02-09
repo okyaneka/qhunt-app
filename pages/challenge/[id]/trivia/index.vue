@@ -10,7 +10,7 @@ const route = useRoute();
 
 const id = computed(() => route.params.id as string);
 
-const { data, refetch } = challenge.detail(id);
+const { data } = challenge.detail(id);
 const detail = computed(() => data.value?.data);
 
 const trivia = ref<UserTrivia>();
@@ -21,7 +21,11 @@ const {
   status,
 } = socket.useSocket(
   socket.trivia,
-  { query: { id: id.value }, reconnectionAttempts: 4, ping: true },
+  {
+    query: { id: route.params.id },
+    reconnectionAttempts: 4,
+    ping: true,
+  },
   (io) => {
     /**
      * events
@@ -103,10 +107,6 @@ const resetState = () => {
   clearTimeout(timeout.value);
   timeout.value = undefined;
 };
-
-onMounted(() => {
-  refetch();
-});
 
 onUnmounted(() => {
   io.value?.disconnect();
@@ -193,7 +193,7 @@ onUnmounted(() => {
             <div class="flex items-center gap-1">
               <Icon class="text-yellow-600" name="ri:copper-coin-fill" />
               <Transition name="move-out" mode="out-in">
-                <span :key="score" @click="score += 100">
+                <span :key="score">
                   {{ score }}
                 </span>
               </Transition>

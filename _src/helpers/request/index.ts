@@ -44,7 +44,9 @@ export const get = <T = unknown>(
     ...options,
     queryKey: [url, params],
     queryFn: () =>
-      axios.get(toRef(url).value, { params: params?.value }) as Promise<T>,
+      axios
+        .get(toRef(url).value, { params: params?.value })
+        .then((res) => res.data),
   });
 };
 

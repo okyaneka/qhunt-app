@@ -5,7 +5,7 @@ import { stage } from "~/_src/services";
 const route = useRoute();
 const router = useRouter();
 
-const { data, refetch: getDetail } = stage.list();
+const { isFetched, data, refetch: getDetail } = stage.list();
 
 const stages = computed(() => data.value?.data.list || []);
 </script>
@@ -29,7 +29,7 @@ const stages = computed(() => data.value?.data.list || []);
 
     <div class="flex flex-col gap-2">
       <div class="flex justify-center">
-        <CCard content-class="p-4">
+        <CCard v-if="isFetched && !stages.length" content-class="p-4">
           <div class="text-center">
             <Icon name="ri:box-2-line" size="40" />
           </div>
@@ -43,6 +43,7 @@ const stages = computed(() => data.value?.data.list || []);
           </p>
         </CCard>
       </div>
+
       <RouterLink v-for="item in stages" :to="routes.stage.challenges(item.id)">
         <CCard hoverable content-class="flex items-center justify-between">
           <div>

@@ -69,6 +69,7 @@ const handleClick = () => {
   if (isWriting.value) {
     index.value = chunks.value.length - 1;
     resetWriting();
+    emit("finish");
   } else {
     emit("click:finish");
   }

@@ -1,8 +1,10 @@
 <script setup lang="ts">
 import { USER_CHALLENGE_STATUS } from "qhunt-lib/types";
-import type { UserChallengeParams } from "qhunt-lib";
+import type { LeaderboardData, UserChallengeParams } from "qhunt-lib";
 import { common, routes } from "~/_src/helpers";
 import { stage, challenge } from "~/_src/services";
+import { namespace, useSocket } from "~/_src/helpers/socket";
+import { LeaderboardParamsValidator } from "qhunt-lib/validators/leaderboard";
 
 const route = useRoute();
 const router = useRouter();
@@ -23,9 +25,33 @@ const {
 const detail = computed(() => data.value?.data);
 const challenges = computed(() => challengesData.value?.data.list || []);
 
+const socketParams = computed(() => ({
+  stageId: detail.value?.stage.id,
+  mode: "current",
+}));
+
+const leaderboard = ref<LeaderboardData>();
+
+const { socket, connect } = useSocket(
+  namespace.leaderboard,
+  {
+    query: socketParams,
+    reconnectionAttempts: 4,
+  },
+  (io) => {
+    io.on("setData", (data: LeaderboardData) => {
+      leaderboard.value = data;
+    });
+  }
+);
+
 onMounted(() => {
   getDetail();
   getChallengeList();
+});
+
+onUnmounted(() => {
+  socket.value?.disconnect();
 });
 </script>
 
@@ -62,10 +88,14 @@ onMounted(() => {
       >
         <div class="">
           <div class="flex gap-1 items-end">
-            <span class="text-4xl font-bold">#1</span>
-            <span>/100</span>
+            <span class="text-4xl font-bold"
+              >#{{ leaderboard?.ranks[0].rank || "-" }}</span
+            >
+            <span>/{{ leaderboard?.total || "-" }}</span>
           </div>
-          <RouterLink to="#">Lihat semua</RouterLink>
+          <RouterLink :to="routes.stage.leaderboard(id)"
+            >Lihat semua</RouterLink
+          >
         </div>
 
         <div class="flex flex-col items-end">
