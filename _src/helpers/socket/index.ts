@@ -20,15 +20,17 @@ type LocalOptions = {
 const env = useEnv();
 
 export const namespace = {
+  leaderboard: "/leaderboard",
   challenge: "/challenge",
   trivia: "/trivia",
 } as const;
 
 export const useSocket = (
   namespace: string = "/",
-  opts?: Partial<ManagerOptions & SocketOptions & LocalOptions>,
-  ops?: (socket: Socket) => void
+  opts?: MaybeRef<Partial<ManagerOptions & SocketOptions & LocalOptions>>,
+  ops?: (socket: Socket) => void | Promise<void>
 ) => {
+  const optsRef = toRef(opts);
   const socket = ref<Socket>();
   const status = ref<SocketStatus>("connecting");
   const ping = ref(0);
@@ -72,77 +74,93 @@ export const useSocket = (
   const onError = (callback: SocketCallbackError) =>
     (errorCallback.value = callback);
 
-  socket.value = io(`${env.APP_SOCKET_URL}${namespace}`, {
-    withCredentials: true,
-    path: "/socket",
-    ...opts,
-  });
+  const connect = () => {
+    socket.value?.disconnect();
 
-  socket.value.on("pong", () => {
-    ping.value = dayjs().valueOf() - pingTime.value;
-  });
+    socket.value = io(`${env.APP_SOCKET_URL}${namespace}`, {
+      withCredentials: true,
+      path: "/socket",
+      ...optsRef.value,
+    });
 
-  socket.value.on("connect", () => {
-    status.value = "connected";
-    connectCallback.value && connectCallback.value();
-  });
+    socket.value.on("pong", () => {
+      ping.value = dayjs().valueOf() - pingTime.value;
+    });
 
-  socket.value.on("connect_error", (error: Error) => {
-    status.value = "disconnected";
-    console.error(error);
-    connectErrorCallback.value && connectErrorCallback.value(error);
-  });
+    socket.value.on("connect", () => {
+      status.value = "connected";
+      connectCallback.value && connectCallback.value();
+    });
 
-  socket.value.on("error", (error: any) => {
-    console.error(error);
-    toast.push(error, { type: "error" });
-    errorCallback.value && errorCallback.value(error);
-  });
+    socket.value.on("connect_error", (error: Error) => {
+      status.value = "disconnected";
+      console.error(error);
+      connectErrorCallback.value && connectErrorCallback.value(error);
+    });
 
-  socket.value.on("disconnect", (reason) => {
-    status.value = "disconnected";
-    disconnectCallback.value && disconnectCallback.value(reason);
-  });
+    socket.value.on("error", (error: any) => {
+      console.error(error);
+      // toast.push(error, { type: "error" });
+      errorCallback.value && errorCallback.value(error);
+    });
 
-  socket.value.io.on("reconnect_attempt", (attempt) => {
-    status.value = "connecting";
-    reconnectAttemptCallback.value && reconnectAttemptCallback.value(attempt);
-  });
+    socket.value.on("disconnect", (reason) => {
+      status.value = "disconnected";
+      disconnectCallback.value && disconnectCallback.value(reason);
+    });
 
-  socket.value.io.on("reconnect_error", (error: Error) => {
-    status.value = "disconnected";
-    console.error(error);
-    reconnectErrorCallback.value && reconnectErrorCallback.value(error);
-  });
+    socket.value.io.on("reconnect_attempt", (attempt) => {
+      status.value = "connecting";
+      reconnectAttemptCallback.value && reconnectAttemptCallback.value(attempt);
+    });
 
-  socket.value.io.on("reconnect", () => {
-    status.value = "connected";
-    reconnectCallback.value && reconnectCallback.value();
-  });
+    socket.value.io.on("reconnect_error", (error: Error) => {
+      status.value = "disconnected";
+      console.error(error);
+      reconnectErrorCallback.value && reconnectErrorCallback.value(error);
+    });
 
-  socket.value.io.on("reconnect_failed", () => {
-    status.value = "disconnected";
-    reconnectFailedCallback.value && reconnectFailedCallback.value();
-  });
+    socket.value.io.on("reconnect", () => {
+      status.value = "connected";
+      reconnectCallback.value && reconnectCallback.value();
+    });
+
+    socket.value.io.on("reconnect_failed", () => {
+      status.value = "disconnected";
+      reconnectFailedCallback.value && reconnectFailedCallback.value();
+    });
+
+    if (optsRef.value?.ping) {
+      onNuxtReady(() => {
+        setInterval(() => {
+          onPing();
+        }, 3e3);
+      });
+    }
+
+    ops && ops(socket.value);
+  };
 
   // socket.value.io.on("error", (error: Error) => {
   //   console.error(error.message);
   //   errorCallback.value && errorCallback.value(error);
   // });
 
-  if (opts?.ping)
-    onNuxtReady(() => {
-      setInterval(() => {
-        onPing();
-      }, 3e3);
-    });
+  watch(
+    optsRef,
+    () => {
+      console.log("cek query", optsRef.value?.query);
 
-  ops && ops(socket.value);
+      connect();
+    },
+    { deep: true, immediate: true }
+  );
 
   return {
     socket,
     status,
     ping,
+    connect,
     onConnect,
     onConnectError,
     onDisconnect,

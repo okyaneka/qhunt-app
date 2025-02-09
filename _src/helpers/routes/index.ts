@@ -6,6 +6,7 @@ const routes = {
   },
   stage: {
     index: "/stage",
+    leaderboard: (id: string) => `/stage/${id}/leaderboard`,
     prolog: (id: string) => `/stage/${id}/prolog`,
     challenges: (id: string) => `/stage/${id}/challenges`,
   },
