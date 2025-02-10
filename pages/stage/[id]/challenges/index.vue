@@ -89,7 +89,7 @@ onUnmounted(() => {
         <div class="">
           <div class="flex gap-1 items-end">
             <span class="text-4xl font-bold"
-              >#{{ leaderboard?.ranks[0].rank || "-" }}</span
+              >#{{ leaderboard?.ranks[0]?.rank || "-" }}</span
             >
             <span>/{{ leaderboard?.total || "-" }}</span>
           </div>
