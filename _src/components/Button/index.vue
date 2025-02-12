@@ -16,7 +16,7 @@ const {
   Partial<RouterLinkProps> & {
     as?: "link" | "button";
     color?: "default" | "light";
-    variant?: "default" | "light";
+    variant?: "default" | "light" | "flat";
     size?: "sm" | "md" | "lg";
     disabled?: boolean;
     icon?: boolean;
@@ -30,7 +30,11 @@ const setVariant = () => {
         disabled
           ? "text-opacity-50 bg-opacity-20"
           : "bg-opacity-30 hover:bg-dark hover:bg-opacity-20 active:bg-opacity-30"
-      } transition `;
+      } `;
+    case "flat":
+      return `bg-dark bg-opacity-0 text-dark ${
+        disabled ? "text-opacity-50" : "hover:bg-opacity-5 active:bg-opacity-10"
+      } `;
 
     default:
       return `bg-dark text-white ${

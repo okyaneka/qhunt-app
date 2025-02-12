@@ -7,6 +7,8 @@ import AuthService from "~/_src/services/auth";
 import useAuthStore from "~/_src/stores/auth";
 import type { RendererElement } from "vue";
 
+definePageMeta({ layout: "mobile" });
+
 const authStore = useAuthStore();
 const route = useRoute();
 const { auth } = authStore;
@@ -25,7 +27,7 @@ const socketParams = computed(() => ({
   mode: "ranks",
 }));
 
-const { socket } = useSocket(
+const { socket, connect } = useSocket(
   namespace.leaderboard,
   {
     query: socketParams,
@@ -33,17 +35,31 @@ const { socket } = useSocket(
   },
   (io) => {
     io.on("setData", (data: LeaderboardData) => {
-      leaderboard.value = data;
+      setTimeout(() => {
+        leaderboard.value = data;
+      }, 0);
     });
   }
 );
 
+const onEnter = (el: Element) => {
+  const item = el as HTMLElement;
+  const index = item.dataset.index;
+  item.style.transitionDelay = `${50 * (Number(index) || 0)}ms`;
+};
+
+const onAfterEnter = (el: Element) => {
+  const item = el as HTMLElement;
+  item.style.transitionDelay = "0ms";
+};
+
 onMounted(() => {
-  // TID.value = "p";
+  connect();
 });
 
 onUnmounted(() => {
   socket.value?.disconnect();
+  // leaderboard.value = undefined;
 });
 </script>
 
@@ -55,32 +71,24 @@ onUnmounted(() => {
     <CLoader />
   </div>
 
-  <div v-else class="flex flex-col gap-4">
-    <div class="relative p-2">
-      <div class="absolute left-0 top-1/2 -translate-y-1/2">
-        <CButton
-          icon
-          variant="light"
-          as="link"
-          :to="routes.stage.challenges(id)"
-        >
-          <Icon name="ri:arrow-left-s-line" />
-        </CButton>
-      </div>
-      <h1 class="text-2xl text-center px-8">
-        Ranking {{ detail?.stage.name }}
-      </h1>
-    </div>
+  <div v-else class="flex flex-col">
+    <CBarTitle :back="routes.stage.challenges(id)">
+      Ranking {{ detail?.stage.name }}
+    </CBarTitle>
 
-    <TransitionGroup tag="div" class="relative">
+    <TransitionGroup
+      tag="div"
+      class="relative p-3 overflow-visible"
+      @enter="onEnter"
+      @after-enter="onAfterEnter"
+    >
       <CCard
         v-for="(item, i) in ranks"
         :key="item.userPublic.code"
-        class="mb-2"
+        class="mb-1"
         content-class="flex items-center justify-between"
-        :style="{ zIndex: ranks.length - i, transitionDelay: 100 * i + 'ms' }"
+        :style="{ zIndex: ranks.length - i }"
         :data-index="i"
-        @click="ranks.splice(i, 1)"
       >
         <div>
           <div class="text-2xl font-semibold">

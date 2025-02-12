@@ -6,6 +6,10 @@ import { stage, challenge } from "~/_src/services";
 import { namespace, useSocket } from "~/_src/helpers/socket";
 import { LeaderboardParamsValidator } from "qhunt-lib/validators/leaderboard";
 
+definePageMeta({
+  layout: "mobile",
+});
+
 const route = useRoute();
 const router = useRouter();
 
@@ -32,7 +36,7 @@ const socketParams = computed(() => ({
 
 const leaderboard = ref<LeaderboardData>();
 
-const { socket, connect } = useSocket(
+const { socket } = useSocket(
   namespace.leaderboard,
   {
     query: socketParams,
@@ -63,25 +67,12 @@ onUnmounted(() => {
     <CLoader />
   </div>
 
-  <div v-else class="flex flex-col gap-4">
-    <div class="relative p-2">
-      <div class="absolute left-0 top-1/2 -translate-y-1/2">
-        <CButton icon variant="light" as="link" :to="routes.stage.index">
-          <Icon name="ri:arrow-left-s-line" />
-        </CButton>
-      </div>
-      <h1 class="text-2xl text-center px-8">
-        {{ detail?.stage.name }}
-      </h1>
-    </div>
+  <div v-else class="flex flex-col">
+    <CBarTitle :back="routes.stage.index">
+      {{ detail?.stage.name }}
+    </CBarTitle>
 
-    <!-- <div>
-      <c-button @click="router.replace(routes.stage.prolog(id))"
-        >Baleni</c-button
-      >
-    </div> -->
-
-    <div class="flex flex-col gap-2">
+    <div class="flex flex-col gap-2 p-3">
       <CCard
         v-if="detail?.results"
         content-class="flex gap-4 justify-between items-center"
@@ -107,7 +98,11 @@ onUnmounted(() => {
       </CCard>
       <RouterLink
         v-for="item in challenges"
-        :to="routes.challenge.prolog(item.id)"
+        :to="
+          (item.status == 'completed'
+            ? routes.challenge.action
+            : routes.challenge.prolog)(item.id)
+        "
       >
         <CCard
           :class="{

@@ -15,6 +15,7 @@ import toast from "../toast";
 
 type LocalOptions = {
   ping: boolean;
+  manual: boolean;
 };
 
 const env = useEnv();
@@ -149,9 +150,7 @@ export const useSocket = (
   watch(
     optsRef,
     () => {
-      console.log("cek query", optsRef.value?.query);
-
-      connect();
+      if (!optsRef.value?.manual) connect();
     },
     { deep: true, immediate: true }
   );

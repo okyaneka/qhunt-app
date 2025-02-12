@@ -5,11 +5,12 @@ import { routes } from "~/_src/helpers";
 interface Props {
   results: UserChallengeResult;
   stageId: string;
+  animate: boolean;
 }
 
 useAttrs();
 
-const { stageId, results } = defineProps<Partial<Props>>();
+const { stageId, results, animate } = defineProps<Partial<Props>>();
 
 const showScore = ref(false);
 </script>
@@ -23,7 +24,7 @@ const showScore = ref(false);
         <div class="text-6xl font-bold text-center">
           <CAnimeCount
             :value="results.totalScore"
-            :duration="8e2"
+            :duration="animate ? 8e2 : 150"
             @finish="showScore = true"
           />
         </div>

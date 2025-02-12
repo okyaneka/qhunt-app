@@ -24,8 +24,8 @@ export default defineNuxtConfig({
       meta: [{ name: "description", content: packagejson.description }],
     },
 
-    layoutTransition: { name: "fade", mode: "out-in" },
-    pageTransition: { name: "fade", mode: "out-in" },
+    layoutTransition: { name: "page-fade", mode: "out-in" },
+    pageTransition: { name: "page-fade", mode: "out-in" },
   },
   devServer: { port: env.PORT, host: "0.0.0.0" },
   alias: {

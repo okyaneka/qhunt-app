@@ -35,19 +35,16 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="flex flex-col gap-4 min-h-[calc(100vh-24px)] relative">
-    <div class="absolute left-0 top-0">
-      <CButton
-        icon
-        variant="light"
-        as="link"
-        :to="routes.stage.challenges(detail?.userStage?.id || '')"
-      >
-        <Icon name="ri:arrow-left-s-line" />
-      </CButton>
-    </div>
+  <div class="flex flex-col min-h-[calc(100vh-72px)]">
+    <CBarTitle
+      :back="
+        detail?.userStage?.id
+          ? routes.stage.challenges(detail.userStage.id)
+          : routes.stage.index
+      "
+    ></CBarTitle>
 
-    <div v-if="isFetched" class="flex flex-col gap-2 my-auto">
+    <div v-if="isFetched" class="flex flex-col gap-2 my-auto p-3">
       <template v-if="detail?.status == USER_CHALLENGE_STATUS.Undiscovered">
         <CCard content-class="text-center">
           <div class="text-xl">
