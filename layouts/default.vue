@@ -43,18 +43,3 @@ onMounted(() => {
     </div>
   </main>
 </template>
-
-<style scoped>
-.default {
-  background: radial-gradient(
-      circle at 30% -20%,
-      rgba(56, 48, 56, 0.5) 0%,
-      rgba(56, 48, 56, 0) 50%
-    ),
-    radial-gradient(
-      circle at 100% 110%,
-      rgba(56, 48, 56, 0.3) 0%,
-      rgba(56, 48, 56, 0) 30%
-    );
-}
-</style>

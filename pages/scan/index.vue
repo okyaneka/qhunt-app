@@ -203,8 +203,8 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <CCard v-if="isLoaded" class="h-[calc(100vh-24px)]" no-line>
-    <div class="rounded h-full overflow-hidden relative p-2">
+  <div v-if="isLoaded" class="h-screen">
+    <div class="h-full overflow-hidden relative">
       <video
         ref="mediaRef"
         class="w-full h-full object-cover absolute top-0 left-0 z-0"
@@ -221,15 +221,9 @@ onUnmounted(() => {
       </Transition>
       <Transition v-if="mediaRef" name="fade">
         <div class="z-10 relative h-full flex flex-col gap-4">
-          <div class="flex justify-center relative my-2">
-            <div class="absolute left-0 top-1/2 -translate-y-1/2">
-              <CButton icon variant="light" @click="handleBack">
-                <Icon name="ri:arrow-left-s-line" />
-              </CButton>
-            </div>
-
-            <CChip> Scan QR Disini </CChip>
-          </div>
+          <CBarTitle :back="handleBack" variant="light">
+            <CChip class="text-base font-normal"> Scan QR Disini </CChip>
+          </CBarTitle>
 
           <div class="p-2 mt-auto flex flex-col gap-4">
             <div class="flex justify-center gap-2 z-10">
@@ -255,9 +249,9 @@ onUnmounted(() => {
         </div>
       </Transition>
     </div>
-  </CCard>
+  </div>
 
-  <div v-else class="p-4 flex h-[calc(100vh-24px)] justify-center items-center">
+  <div v-else class="p-4 flex h-screen justify-center items-center">
     <CCard v-if="isDenied" content-class="flex flex-col">
       <div class="text-center">
         <Icon name="ri:camera-off-fill" size="40" />
@@ -273,9 +267,3 @@ onUnmounted(() => {
     <CLoader v-else />
   </div>
 </template>
-
-<!-- <template>
-  <div class="p-4 flex h-[calc(100vh-24px)] justify-center items-center">
-    <CLoader />
-  </div>
-</template> -->

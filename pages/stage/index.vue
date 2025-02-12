@@ -2,6 +2,10 @@
 import { common, routes } from "~/_src/helpers";
 import { stage } from "~/_src/services";
 
+definePageMeta({
+  layout: "mobile",
+});
+
 const route = useRoute();
 const router = useRouter();
 
@@ -11,15 +15,8 @@ const stages = computed(() => data.value?.data.list || []);
 </script>
 
 <template>
-  <div class="flex flex-col gap-4">
-    <div class="relative p-2">
-      <div class="absolute left-0 top-1/2 -translate-y-1/2">
-        <CButton icon variant="light" as="link" :to="routes.index">
-          <Icon name="ri:home-2-fill" />
-        </CButton>
-      </div>
-      <h1 class="text-2xl text-center px-8">Tantangan Saya</h1>
-    </div>
+  <div class="flex flex-col">
+    <CBarTitle> Tantangan Saya </CBarTitle>
 
     <!-- <div>
       <c-button @click="router.replace(routes.stage.prolog(id))"
@@ -27,9 +24,9 @@ const stages = computed(() => data.value?.data.list || []);
       >
     </div> -->
 
-    <div class="flex flex-col gap-2">
-      <div class="flex justify-center">
-        <CCard v-if="isFetched && !stages.length" content-class="p-4">
+    <div class="flex flex-col gap-2 p-3">
+      <div v-if="isFetched && !stages.length" class="flex justify-center">
+        <CCard content-class="p-4">
           <div class="text-center">
             <Icon name="ri:box-2-line" size="40" />
           </div>

@@ -1,11 +1,23 @@
+:root {
+  --base-color: 236, 198, 159;
+}
+
 html {
   @apply font-serif;
 }
 
 body {
-  @apply bg-light
+  @apply bg-white
   /* @apply bg-white */
   /* @apply bg-black bg-opacity-20; */;
+}
+
+main {
+  background: radial-gradient(
+    circle at -20% 100%,
+    rgba(var(--base-color), 0.4) 0%,
+    rgba(var(--base-color), 0) 40%
+  );
 }
 
 a:not(.button, :has(*)) {
@@ -25,6 +37,16 @@ h4,
 h5,
 h6 {
   @apply font-semibold;
+}
+
+.page-fade-enter-active,
+.page-fade-leave-active {
+  @apply transition-opacity duration-150 ease-in;
+}
+
+.page-fade-enter-from,
+.page-fade-leave-to {
+  @apply opacity-0;
 }
 
 .fade-enter-active,

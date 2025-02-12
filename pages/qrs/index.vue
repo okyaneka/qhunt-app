@@ -25,6 +25,10 @@ const handleCopy = (text: string) => {
       <h1 class="text-center text-xl">List Kode QR</h1>
     </CCard>
 
+    <CQrCode
+      class="w-full"
+      :content="'https://b2e1-2a09-bac5-3a20-88c-00-da-d6.ngrok-free.app/stage'"
+    />
     <div class="grid grid-cols-2 gap-4">
       <CCard v-for="item in list" content-class="h-full">
         <div class="mb-2">

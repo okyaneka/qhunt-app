@@ -16,8 +16,9 @@ onMounted(() => {
   getDetail().then(() => {
     switch (detail.value?.settings.type) {
       case CHALLENGE_TYPES.Trivia:
-        router.replace(routes.challenge.trivia(id.value));
-        break;
+        return router.replace(routes.challenge.trivia(id.value));
+      case CHALLENGE_TYPES.PhotoHunt:
+        return router.replace(routes.challenge.photohunt(id.value));
       default:
         break;
     }
