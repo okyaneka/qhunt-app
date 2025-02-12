@@ -39,8 +39,8 @@ importers:
         specifier: ^2.3.0
         version: 2.3.0(typescript@5.7.3)(vue@3.5.13(typescript@5.7.3))
       qhunt-lib:
-        specifier: link:../qhunt-lib
-        version: link:../qhunt-lib
+        specifier: okyaneka:okyaneka/qhunt-lib
+        version: link:okyaneka:okyaneka/qhunt-lib
       qrcode:
         specifier: ^1.5.4
         version: 1.5.4
