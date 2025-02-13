@@ -10,27 +10,19 @@ definePageMeta({
 
 const router = useRouter();
 
+const { camera } = toRefs(useConfigStore());
+
 const mediaRef = ref<HTMLVideoElement>();
 const inputRef = ref<HTMLInputElement>();
 const stream = ref<MediaStream>();
 const devices = ref<MediaDeviceInfo[]>();
 const result = ref("");
-const active = ref(0);
 const isTorch = ref(false);
 const isTorchOn = ref(false);
 const isLoaded = ref(false);
 const isDenied = ref<boolean>();
 
 const { data, refetch: verify, isLoading } = qr.verify(result);
-
-const activeDevice = computed(
-  () => devices.value && devices.value[active.value]
-);
-
-const handleBack = () => {
-  const canBack = window.history.length;
-  canBack ? router.back() : router.push(routes.index);
-};
 
 const onVerify = (qrString: string) => {
   const qrResult = qrString;
@@ -48,9 +40,7 @@ const setDevice = async () => {
       track.stop();
     });
 
-  const opts = activeDevice.value
-    ? { deviceId: { exact: activeDevice.value.deviceId } }
-    : true;
+  const opts = camera.value ? { deviceId: { exact: camera.value } } : true;
 
   stream.value = await navigator.mediaDevices
     .getUserMedia({
@@ -104,7 +94,7 @@ const getPermission = async () => {
         throw new err();
       });
 
-  await getDevices();
+  if (!camera.value) await getDevices();
 };
 
 const getDevices = async () => {
@@ -112,9 +102,7 @@ const getDevices = async () => {
     (v) => v.kind === "videoinput"
   );
 
-  let i = 0;
   for (const device of devices.value) {
-    i++;
     const stream = await navigator.mediaDevices
       .getUserMedia({
         video: { deviceId: { exact: device.deviceId } },
@@ -125,15 +113,17 @@ const getDevices = async () => {
     if (!stream) continue;
     const track = stream.getTracks()[0];
     const capabilities = track.getCapabilities();
+    camera.value = device.deviceId;
     track.stop();
 
     if (
+      device.label.toLowerCase().includes("back") &&
       // @ts-ignore
       capabilities.focusMode &&
       // @ts-ignore
       (capabilities.focusMode as string[]).includes("continuous")
     )
-      active.value = i - 1;
+      return;
   }
 };
 
@@ -221,7 +211,7 @@ onUnmounted(() => {
       </Transition>
       <Transition v-if="mediaRef" name="fade">
         <div class="z-10 relative h-full flex flex-col gap-4">
-          <CBarTitle :back="handleBack" variant="light">
+          <CBarTitle :back="routes.index" variant="light">
             <CChip class="text-base font-normal"> Scan QR Disini </CChip>
           </CBarTitle>
 
