@@ -113,23 +113,3 @@ const resetState = () => {
     </div>
   </CAnimeSplashOut>
 </template>
-
-<style scoped>
-.move-out-enter-active,
-.move-out-leave-active {
-  @apply transition-all duration-150 ease-in;
-}
-
-.move-out-enter-from {
-  @apply translate-y-4;
-}
-
-.move-out-leave-to {
-  @apply -translate-y-4;
-}
-
-.move-out-enter-from,
-.move-out-leave-to {
-  @apply opacity-0;
-}
-</style>
