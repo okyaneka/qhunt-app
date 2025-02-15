@@ -25,9 +25,8 @@ const isDenied = ref<boolean>();
 const { data, refetch: verify, isLoading } = qr.verify(result);
 
 const onVerify = (qrString: string) => {
-  const qrResult = qrString;
   result.value =
-    qrResult
+    qrString
       .split("/")
       .filter((v) => v.trim())
       .pop() || "";
@@ -193,67 +192,9 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <div v-if="isLoaded" class="h-screen">
-    <div class="h-full overflow-hidden relative">
-      <video
-        ref="mediaRef"
-        class="w-full h-full object-cover absolute top-0 left-0 z-0"
-        playsinline
-        autoplay
-      />
-      <Transition name="fade" mode="out-in">
-        <div
-          v-if="isLoading"
-          class="absolute w-full h-full bg-black bg-opacity-20 left-0 top-0 flex justify-center items-center"
-        >
-          <CLoader light>Memeriksa Kode...</CLoader>
-        </div>
-      </Transition>
-      <Transition v-if="mediaRef" name="fade">
-        <div class="z-10 relative h-full flex flex-col gap-4">
-          <CBarTitle :back="routes.index" variant="light">
-            <CChip class="text-base font-normal"> Scan QR Disini </CChip>
-          </CBarTitle>
-
-          <div class="p-2 mt-auto flex flex-col gap-4">
-            <div class="flex justify-center gap-2 z-10">
-              <input
-                ref="inputRef"
-                class="hidden"
-                type="file"
-                accept="image/png,image/jpeg"
-                @change="onInputChange"
-              />
-              <CButton icon size="lg" @click="inputRef?.click()">
-                <Icon name="ri:image-fill" />
-              </CButton>
-              <CButton v-if="isTorch" icon size="lg" @click="toggleTorch">
-                <Icon
-                  :name="
-                    !isTorchOn ? 'ri:flashlight-fill' : 'ri:flashlight-line'
-                  "
-                />
-              </CButton>
-            </div>
-          </div>
-        </div>
-      </Transition>
-    </div>
-  </div>
-
-  <div v-else class="p-4 flex h-screen justify-center items-center">
-    <CCard v-if="isDenied" content-class="flex flex-col">
-      <div class="text-center">
-        <Icon name="ri:camera-off-fill" size="40" />
-      </div>
-      <div class="text-center max-w-72 mb-4">
-        Tolong aktifin kameranya ya. Kalau sudah bisa Refresh halamanya.
-        Terimakasih
-      </div>
-      <div class="text-center">
-        <CButton color="light" @click="handleRefresh">Refresh</CButton>
-      </div>
-    </CCard>
-    <CLoader v-else />
-  </div>
+  <CQrScanner class="h-screen w-full" from-file @scanned="onVerify">
+    <CBarTitle :back="routes.index" variant="light">
+      <CChip class="text-base font-normal"> Scan QR Disini </CChip>
+    </CBarTitle>
+  </CQrScanner>
 </template>
