@@ -3,6 +3,8 @@ import { CHALLENGE_TYPES } from "qhunt-lib/types";
 import { routes } from "~/_src/helpers";
 import { challenge } from "~/_src/services";
 
+definePageMeta({ layout: "blank" });
+
 const route = useRoute();
 const router = useRouter();
 
