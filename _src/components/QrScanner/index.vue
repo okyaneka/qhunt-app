@@ -1,18 +1,24 @@
 <script setup lang="ts">
 import { qrcode } from "qhunt-lib/helpers";
 import { toast } from "~/_src/helpers";
+import type { ResultPoint } from "@zxing/library";
 
 interface Props {
   fromFile: boolean;
   hideFlashlight: boolean;
+  disabled: boolean;
 }
 
 interface Emits {
   (e: "scanned", value: string): void;
+  (e: "ready"): void;
 }
 
-const { fromFile = false, hideFlashlight = false } =
-  defineProps<Partial<Props>>();
+const {
+  disabled = false,
+  fromFile = false,
+  hideFlashlight = false,
+} = defineProps<Partial<Props>>();
 
 const emit = defineEmits<Emits>();
 
@@ -20,14 +26,16 @@ useAttrs();
 
 const { camera } = toRefs(useConfigStore());
 
+const controller = ref(new AbortController());
 const mediaRef = ref<HTMLVideoElement>();
 const inputRef = ref<HTMLInputElement>();
 const stream = ref<MediaStream>();
-const result = ref("");
 const torchSupport = ref(false);
 const isTorchOn = ref(false);
 const isLoaded = ref(false);
 const isDenied = ref<boolean>();
+const meta = ref<any>();
+const lastFrame = ref<string>();
 
 const setDevice = async () => {
   if (stream.value)
@@ -45,31 +53,65 @@ const setDevice = async () => {
       const track = res.getTracks()[0];
       const capabilities = track.getCapabilities();
       const divider = Math.round(
-        // @ts-ignore
-        Math.max(capabilities.height.max, capabilities.width.max) / 1000
+        Math.max(capabilities.height?.max || 0, capabilities.width?.max || 0) /
+          1280
       );
-      await track.applyConstraints({
-        // @ts-ignore
-        height: capabilities.height.max / divider,
-        // @ts-ignore
-        width: capabilities.width.max / divider,
-      });
+      const constraints: MediaTrackConstraints = {
+        height: (capabilities.height?.max || 0) / divider,
+        width: (capabilities.width?.max || 0) / divider,
+      };
+      await track.applyConstraints(constraints);
 
       // @ts-ignore
       torchSupport.value = !!capabilities.torch;
       return res;
     });
+  setTimeout(() => {
+    emit("ready");
+  }, 1e3);
 };
 
 const startScanning = () => {
+  controller.value.abort();
   if (!stream.value || !mediaRef.value) return;
-  result.value = "";
   qrcode.scanByStream(stream.value).then((res) => {
+    controller.value.signal.addEventListener("abort", () => {
+      throw new Error("scan aborted");
+    });
+
     emit("scanned", res.getText());
+
+    // const points = res.getResultPoints();
+    // setPosition(points);
+    // processing.value = true;
+
     setTimeout(() => {
       startScanning();
     }, 1e3);
   });
+};
+
+const setPosition = (points: ResultPoint[]) => {
+  if (mediaRef.value && points.length === 4) {
+    const scaleX = mediaRef.value.clientWidth / mediaRef.value.videoWidth;
+    const scaleY = mediaRef.value.clientHeight / mediaRef.value.videoHeight;
+    const scale = Math.max(scaleX, scaleY);
+
+    const x = Math.min(...points.map((v) => v.getX()));
+    const y = Math.min(...points.map((v) => v.getY()));
+    const width = Math.max(...points.map((v) => v.getX())) - x;
+    const height = Math.max(...points.map((v) => v.getY())) - y;
+    const offsetX =
+      (mediaRef.value.videoWidth * scale - mediaRef.value.clientWidth) / 2;
+
+    meta.value = {
+      x: x * scale - offsetX,
+      y: y * scale,
+      width: width * scale,
+      height: height * scale,
+      scale,
+    };
+  }
 };
 
 const getPermission = async () => {
@@ -157,12 +199,51 @@ const handleRefresh = () => {
   location.reload();
 };
 
-watch([stream, mediaRef], async () => {
-  if (stream.value && mediaRef.value) {
-    mediaRef.value.srcObject = stream.value;
-    startScanning();
+const captureImage = () => {
+  const canvas = document.createElement("canvas");
+
+  const ctx = canvas.getContext("2d");
+  if (!ctx || !mediaRef.value) return;
+  canvas.width = mediaRef.value.videoWidth;
+  canvas.height = mediaRef.value.videoHeight;
+  ctx.drawImage(mediaRef.value, 0, 0, canvas.width, canvas.height);
+
+  canvas.toBlob((blob) => {
+    if (!blob) return;
+    const url = URL.createObjectURL(blob);
+    lastFrame.value = url;
+
+    // const a = document.createElement("a");
+    // a.href = url;
+    // a.target = "_blank";
+    // a.click();
+  }, "image/jpg");
+
+  canvas.remove();
+};
+
+watch(
+  [stream, mediaRef],
+  async () => {
+    if (stream.value && mediaRef.value) {
+      mediaRef.value.srcObject = stream.value;
+      startScanning();
+    }
+  },
+  { immediate: true }
+);
+
+watch(
+  () => disabled,
+  (value) => {
+    if (!value) setDevice();
+    else {
+      captureImage();
+      controller.value.abort();
+      stopTrack();
+    }
   }
-});
+);
 
 onMounted(() => {
   getPermission()
@@ -178,12 +259,45 @@ onUnmounted(() => {
 <template>
   <div class="flex justify-center items-center bg-black">
     <div v-if="isLoaded" class="h-full w-full overflow-hidden relative">
-      <video
-        ref="mediaRef"
-        class="w-full h-full object-cover absolute top-0 left-0 z-0"
-        playsinline
-        autoplay
-      />
+      <Transition name="fade-quick" mode="out-in">
+        <img
+          v-if="disabled"
+          class="w-full h-full object-cover absolute top-0 left-0 z-0 blur"
+          :src="lastFrame"
+        />
+        <video
+          v-else
+          ref="mediaRef"
+          class="w-full h-full object-cover absolute top-0 left-0 z-0"
+          playsinline
+          autoplay
+        />
+      </Transition>
+
+      <!-- Hanya detektor lokasi qr aja -->
+      <div
+        v-if="false"
+        class="absolute w-40 h-40 transition-all text-white pulse -m-8"
+        :style="{
+          left: (meta?.x || 0) + 'px',
+          top: (meta?.y || 0) + 'px',
+          width: (meta?.width || 0) + 'px',
+          height: (meta?.height || 0) + 'px',
+        }"
+      >
+        <div
+          class="absolute w-8 h-8 rounded-tl left-0 top-0 border-t-2 border-l-2"
+        ></div>
+        <div
+          class="absolute w-8 h-8 rounded-tr -right-16 top-0 border-t-2 border-r-2"
+        ></div>
+        <div
+          class="absolute w-8 h-8 rounded-br -right-16 -bottom-16 border-b-2 border-r-2"
+        ></div>
+        <div
+          class="absolute w-8 h-8 rounded-bl left-0 -bottom-16 border-b-2 border-l-2"
+        ></div>
+      </div>
 
       <CButton
         v-if="torchSupport && !hideFlashlight"
@@ -199,8 +313,8 @@ onUnmounted(() => {
         <Icon :name="isTorchOn ? 'ri:flashlight-fill' : 'ri:flashlight-line'" />
       </CButton>
 
-      <Transition v-if="mediaRef" name="fade">
-        <div class="z-10 relative">
+      <Transition name="fade">
+        <div class="z-10 relative h-full">
           <slot
             :toggleTorch="toggleTorch"
             :isTorchOn="isTorchOn"
@@ -240,6 +354,30 @@ onUnmounted(() => {
         <CButton color="light" @click="handleRefresh">Refresh</CButton>
       </div>
     </CCard>
-    <CLoader v-else />
+    <CLoader v-else light />
   </div>
 </template>
+
+<style lang="css" scoped>
+.pulse {
+  animation: pulse 500ms ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+    /* scale: 1; */
+    /* @apply scale-100; */
+  }
+  50% {
+    transform: scale(0.9);
+    /* scale: 0.9; */
+    /* @apply scale-90; */
+  }
+  100% {
+    transform: scale(1);
+    /* scale: 1; */
+    /* @apply scale-100; */
+  }
+}
+</style>
