@@ -61,7 +61,7 @@ const timeUsed = computed(() => {
                   <td class="pr-4">
                     <div class="flex gap-1 items-center">
                       <Icon name="ri:time-fill" />
-                      <span> Waktu Mengerjakan </span>
+                      <span> Waktu Pengerjaan </span>
                     </div>
                   </td>
                   <td>
