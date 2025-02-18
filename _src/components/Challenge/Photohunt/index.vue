@@ -156,12 +156,11 @@ onUnmounted(() => {
         </CCard>
       </div>
 
-      <div class="flex justify-center text-white">
-        <div
-          class="local-card px-2 py-1 text-xl font-semibold"
-          :class="{ '!text-red-400 animate-pulse': timer <= 30 }"
-        >
-          {{ dayjs(timer * 1e3).format("mm:ss") }}
+      <div class="flex justify-center">
+        <div class="local-card px-2 py-1 text-xl font-semibold text-white">
+          <span :class="{ 'text-red-400 animate-pulse': timer <= 30 }">
+            {{ dayjs(timer * 1e3).format("mm:ss") }}
+          </span>
         </div>
       </div>
 
