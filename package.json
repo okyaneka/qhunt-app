@@ -39,6 +39,7 @@
     "@types/canvas-confetti": "^1.9.0",
     "@types/qrcode": "^1.5.5",
     "@zxing/browser": "^0.1.5",
+    "@zxing/library": "^0.21.3",
     "joi": "^17.13.3",
     "mongoose": "^8.9.6",
     "typescript": "^5.7.3"
