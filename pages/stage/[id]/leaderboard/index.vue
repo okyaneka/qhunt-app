@@ -32,12 +32,11 @@ const { socket, connect } = useSocket(
   {
     query: socketParams,
     reconnectionAttempts: 4,
+    manual: true,
   },
   (io) => {
     io.on("setData", (data: LeaderboardData) => {
-      setTimeout(() => {
-        leaderboard.value = data;
-      }, 0);
+      leaderboard.value = data;
     });
   }
 );
