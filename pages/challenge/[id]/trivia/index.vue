@@ -147,14 +147,11 @@ onUnmounted(() => {
           <CButton
             color="light"
             variant="light"
-            size="sm"
             as="link"
             :to="routes.stage.challenges(String(detail?.userStage?.id))"
             >Kembali</CButton
           >
-          <!-- <CButton color="light" size="sm" @click="io?.connect()"
-            >Coba Lagi</CButton
-          > -->
+          <CButton color="light" @click="io?.connect()">Coba Lagi</CButton>
         </div>
       </CCard>
     </div>
