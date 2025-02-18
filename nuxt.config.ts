@@ -22,8 +22,8 @@ export default defineNuxtConfig({
       meta: [{ name: "description", content: packagejson.description }],
     },
 
-    layoutTransition: { name: "page-fade", mode: "out-in" },
-    pageTransition: { name: "page-fade", mode: "out-in" },
+    layoutTransition: { name: "fade-quick", mode: "out-in" },
+    pageTransition: { name: "fade-quick", mode: "out-in" },
   },
   ssr: false,
   routeRules: Object.fromEntries(ssr.map((route) => [route, { ssr: true }])),

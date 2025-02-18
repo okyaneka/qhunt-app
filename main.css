@@ -39,13 +39,13 @@ h6 {
   @apply font-semibold;
 }
 
-.page-fade-enter-active,
-.page-fade-leave-active {
+.fade-quick-enter-active,
+.fade-quick-leave-active {
   @apply transition-opacity duration-150 ease-in;
 }
 
-.page-fade-enter-from,
-.page-fade-leave-to {
+.fade-quick-enter-from,
+.fade-quick-leave-to {
   @apply opacity-0;
 }
 
