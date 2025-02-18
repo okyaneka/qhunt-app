@@ -11,7 +11,6 @@ import type {
   SocketStatus,
 } from "../types";
 import dayjs from "dayjs";
-import toast from "../toast";
 
 type LocalOptions = {
   ping: boolean;
@@ -24,6 +23,7 @@ export const namespace = {
   leaderboard: "/leaderboard",
   challenge: "/challenge",
   trivia: "/trivia",
+  photohunt: "/photohunt",
 } as const;
 
 export const useSocket = (
@@ -141,11 +141,6 @@ export const useSocket = (
 
     ops && ops(socket.value);
   };
-
-  // socket.value.io.on("error", (error: Error) => {
-  //   console.error(error.message);
-  //   errorCallback.value && errorCallback.value(error);
-  // });
 
   watch(
     optsRef,
