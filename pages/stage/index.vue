@@ -18,39 +18,43 @@ const stages = computed(() => data.value?.data.list || []);
   <div class="flex flex-col">
     <CBarTitle> Tantangan Saya </CBarTitle>
 
-    <!-- <div>
-      <c-button @click="router.replace(routes.stage.prolog(id))"
-        >Baleni</c-button
-      >
-    </div> -->
-
     <div class="flex flex-col gap-2 p-3">
-      <div v-if="isFetched && !stages.length" class="flex justify-center">
-        <CCard content-class="p-4">
-          <div class="text-center">
-            <Icon name="ri:box-2-line" size="40" />
-          </div>
-          <p class="text-center mb-2">
-            Tantanganmu masih kosong nih. Yuk, cari bersama!
-          </p>
-          <p class="text-center">
-            <CButton as="link" :to="routes.scan.index" color="light"
-              >Cari Kode QRnya Sekarang!</CButton
-            >
-          </p>
-        </CCard>
-      </div>
-
-      <CTransitionPullIn :items="stages" item-key="id" v-slot="{ item }">
-        <RouterLink :to="routes.stage.challenges(item.id)">
-          <CCardAlt hoverable content-class="flex items-center justify-between">
-            <div>
-              <div class="text-gray-600">({{ item.status }})</div>
-              <div class="text-lg">{{ item.stage.name }}</div>
+      <template v-if="isFetched">
+        <div v-if="!stages.length" class="flex justify-center">
+          <CCard content-class="p-4">
+            <div class="text-center">
+              <Icon name="ri:box-2-line" size="40" />
             </div>
-          </CCardAlt>
-        </RouterLink>
-      </CTransitionPullIn>
+            <p class="text-center mb-2">
+              Tantanganmu masih kosong nih. Yuk, cari bersama!
+            </p>
+            <p class="text-center">
+              <CButton as="link" :to="routes.scan.index" color="light"
+                >Cari Kode QRnya Sekarang!</CButton
+              >
+            </p>
+          </CCard>
+        </div>
+
+        <CTransitionPullIn
+          v-else
+          :items="stages"
+          item-key="id"
+          v-slot="{ item }"
+        >
+          <RouterLink :to="routes.stage.challenges(item.id)">
+            <CCardAlt
+              hoverable
+              content-class="flex items-center justify-between"
+            >
+              <div>
+                <div class="text-gray-600">({{ item.status }})</div>
+                <div class="text-lg">{{ item.stage.name }}</div>
+              </div>
+            </CCardAlt>
+          </RouterLink>
+        </CTransitionPullIn>
+      </template>
     </div>
   </div>
 </template>
