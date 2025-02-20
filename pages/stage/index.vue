@@ -41,16 +41,16 @@ const stages = computed(() => data.value?.data.list || []);
         </CCard>
       </div>
 
-      <RouterLink v-for="item in stages" :to="routes.stage.challenges(item.id)">
-        <CCard hoverable content-class="flex items-center justify-between">
-          <div>
-            <div class="text-sm text-gray-200">
-              <span class="italic"> ({{ item.status }}) </span>
+      <CTransitionPullIn :items="stages" item-key="id" v-slot="{ item }">
+        <RouterLink :to="routes.stage.challenges(item.id)">
+          <CCardAlt hoverable content-class="flex items-center justify-between">
+            <div>
+              <div class="text-gray-600">({{ item.status }})</div>
+              <div class="text-lg">{{ item.stage.name }}</div>
             </div>
-            <div class="text-lg">{{ item.stage.name }}</div>
-          </div>
-        </CCard>
-      </RouterLink>
+          </CCardAlt>
+        </RouterLink>
+      </CTransitionPullIn>
     </div>
   </div>
 </template>

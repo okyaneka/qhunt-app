@@ -4,7 +4,6 @@ import type { LeaderboardData, UserChallengeParams } from "qhunt-lib";
 import { common, routes } from "~/_src/helpers";
 import { stage, challenge } from "~/_src/services";
 import { namespace, useSocket } from "~/_src/helpers/socket";
-import { LeaderboardParamsValidator } from "qhunt-lib/validators/leaderboard";
 
 definePageMeta({
   layout: "mobile",
@@ -49,11 +48,6 @@ const { socket } = useSocket(
   }
 );
 
-onMounted(() => {
-  getDetail();
-  getChallengeList();
-});
-
 onUnmounted(() => {
   socket.value?.disconnect();
 });
@@ -96,38 +90,45 @@ onUnmounted(() => {
           </div>
         </div>
       </CCard>
-      <RouterLink
-        v-for="item in challenges"
-        :to="
-          (item.status == 'completed'
-            ? routes.challenge.action
-            : routes.challenge.prolog)(item.id)
-        "
-      >
-        <CCard
-          :class="{
-            'bg-opacity-80 text-opacity-80':
-              item.status === USER_CHALLENGE_STATUS.Undiscovered,
-          }"
-          hoverable
-          content-class="flex items-center justify-between"
-        >
-          <div>
-            <div class="text-sm text-gray-200">
-              #{{ item.challenge.order }}
-              <span class="capitalize"> ({{ item.settings.type }}) </span>
-            </div>
-            <div class="text-lg">{{ item.challenge.name }}</div>
-          </div>
-          <div v-if="item.results" class="flex items-center gap-1">
-            <Icon class="text-yellow-600" name="ri:copper-coin-fill" />
 
-            <div class="text-xl">
-              {{ item.results.totalScore }}
+      <CTransitionPullIn :items="challenges" item-key="id" v-slot="{ item }">
+        <RouterLink
+          class="mb-2 block"
+          :to="
+            (item.status == 'completed'
+              ? routes.challenge.action
+              : routes.challenge.prolog)(item.id)
+          "
+        >
+          <CCardAlt
+            hoverable
+            :faded="item.status === USER_CHALLENGE_STATUS.Undiscovered"
+            content-class="flex items-center justify-between"
+          >
+            <div>
+              <div class="text-sm text-gray-600">
+                #{{ item.challenge.order }}
+                <span class="capitalize"> ({{ item.settings.type }}) </span>
+              </div>
+              <div class="text-lg">{{ item.challenge.name }}</div>
             </div>
-          </div>
-        </CCard>
-      </RouterLink>
+            <div v-if="item.results" class="flex items-center gap-1">
+              <Icon class="text-yellow-600" name="ri:copper-coin-fill" />
+
+              <div class="text-xl">
+                {{ item.results.totalScore }}
+              </div>
+            </div>
+
+            <Icon
+              v-else-if="item.status === USER_CHALLENGE_STATUS.Undiscovered"
+              name="ri:forbid-2-fill"
+              class="text-gray-200"
+              size="48"
+            />
+          </CCardAlt>
+        </RouterLink>
+      </CTransitionPullIn>
     </div>
   </div>
 </template>
