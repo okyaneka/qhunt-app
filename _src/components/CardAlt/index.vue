@@ -3,6 +3,7 @@ import { twMerge } from "tailwind-merge";
 import type { HTMLAttributes } from "vue";
 
 type Props = {
+  dark: boolean;
   faded: boolean;
   hoverable: boolean;
   contentClass: HTMLAttributes["class"];
@@ -20,8 +21,13 @@ const { hoverable, contentClass } = defineProps<Partial<Props>>();
       'cursor-pointer transition-all hover:z-[9999]': hoverable,
       'hover:shadow-card-lg': hoverable && !faded,
       'hover:shadow-card': hoverable && faded,
-      'bg-white shadow-card': !faded,
-      'bg-gray-100 shadow-card-sm': faded,
+      'text-white': dark,
+      'bg-dark': dark && !faded,
+      'bg-dark-700': dark && faded,
+      'bg-white': !dark && !faded,
+      'bg-gray-100 ': !dark && faded,
+      'shadow-card': !faded,
+      'shadow-card-sm': faded,
     }"
   >
     <div :class="twMerge('p-3', contentClass)">
