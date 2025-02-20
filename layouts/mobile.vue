@@ -26,7 +26,7 @@ onMounted(() => {
 
 <template>
   <main class="mobile min-h-screen !bg-fixed bg-cover">
-    <div class="w-lg-center pb-26">
+    <div class="w-lg-center pb-26 overflow-x-clip">
       <slot />
     </div>
 

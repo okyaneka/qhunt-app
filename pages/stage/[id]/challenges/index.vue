@@ -122,8 +122,8 @@ onUnmounted(() => {
 
             <Icon
               v-else-if="item.status === USER_CHALLENGE_STATUS.Undiscovered"
-              name="ri:forbid-2-fill"
-              class="text-gray-200"
+              name="ri:spam-3-fill"
+              class="text-gray-300"
               size="48"
             />
           </CCardAlt>
