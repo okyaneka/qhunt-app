@@ -10,6 +10,12 @@ const tailwindcss: Partial<ModuleOptions> = {
         serif: ["Cormorant Infant", "ui-serif"],
       },
       extend: {
+        boxShadow: {
+          "card-sm": "rgba(0, 0, 0, 0.15) 0px 1px 7px",
+          card: "rgba(0, 0, 0, 0.15) 0px 3px 11px",
+          "card-lg": "rgba(0, 0, 0, 0.15) 0px 5px 15px",
+          "card-xl": "rgba(0, 0, 0, 0.15) 0px 7px 19px",
+        },
         colors: {
           dark: {
             DEFAULT: "#383038",
@@ -23,9 +29,9 @@ const tailwindcss: Partial<ModuleOptions> = {
             700: "#4e474e",
             800: "#383038",
             900: "#221922",
+            950: "#191019",
           },
           light: "#ECC69F",
-          hablebleb: "#120F91",
         },
       },
     },
