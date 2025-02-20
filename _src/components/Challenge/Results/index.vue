@@ -34,7 +34,7 @@ const timeUsed = computed(() => {
 
 <template>
   <Transition name="fade" mode="out-in">
-    <CCard v-if="results" content-class="flex flex-col gap-2">
+    <CCardAlt v-if="results" content-class="flex flex-col gap-2" dark>
       <div>
         <div class="text-xl font-bold text-center">
           {{ data?.challenge.name }}
@@ -145,7 +145,7 @@ const timeUsed = computed(() => {
           >
         </div>
       </Transition>
-    </CCard>
+    </CCardAlt>
   </Transition>
 </template>
 
