@@ -9,12 +9,15 @@ const { breads } = useToastProvider();
 
   <TransitionGroup
     tag="ul"
-    class="fixed bottom-12 w-full center flex flex-col gap-2 items-center z-[9999]"
+    class="fixed left-1/2 -translate-x-1/2 bottom-12 flex flex-col items-center gap-2 z-[9999]"
   >
-    <li v-for="bread in breads" :key="bread.key">
-      <CChip v-if="typeof bread.message === 'string'" :type="bread.type">{{
-        bread.message
-      }}</CChip>
+    <li v-for="bread in breads" :key="bread.key" class="">
+      <CChip
+        v-if="typeof bread.message === 'string'"
+        class="whitespace-nowrap"
+        :type="bread.type"
+        >{{ bread.message }}</CChip
+      >
       <component v-else :is="bread.message" />
     </li>
   </TransitionGroup>

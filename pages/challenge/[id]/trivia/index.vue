@@ -12,7 +12,7 @@ const route = useRoute();
 const trivia = ref<UserTrivia>();
 
 const id = computed(() => route.params.id as string);
-const { data } = challenge.detail(id);
+const { data, refetch } = challenge.detail(id);
 const detail = computed(() => data.value?.data);
 
 const socketParams = computed(() => ({
@@ -51,13 +51,17 @@ const {
       feedback.value = value;
     });
 
-    io.on("setResult", (value: UserChallengeResult, hasFinish?: boolean) => {
-      if (hasFinish) common.duar();
-      confetti.value = hasFinish;
-      isFinnish.value = true;
-      trivia.value = undefined;
-      result.value = value;
-    });
+    io.on(
+      "setResult",
+      async (value: UserChallengeResult, hasFinish?: boolean) => {
+        await refetch();
+        if (hasFinish) common.duar();
+        confetti.value = hasFinish;
+        isFinish.value = true;
+        trivia.value = undefined;
+        result.value = value;
+      }
+    );
 
     io.on("setScore", (value: number) => {
       score.value = value;
@@ -73,10 +77,6 @@ const {
   }
 );
 
-// io.value?.on("error", () => {
-//   connect();
-// });
-
 const setAnswer = (value?: string) => {
   io.value?.emit("setAnswer", value);
 };
@@ -85,7 +85,7 @@ const result = ref<UserChallengeResult>();
 const progress = ref("");
 const timer = ref(0);
 const score = ref(0);
-const isFinnish = ref(false);
+const isFinish = ref(false);
 const isShowFeedback = ref(false);
 const confetti = ref<boolean>();
 const feedback = ref("");
@@ -100,16 +100,22 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <div class="flex flex-col gap-4 min-h-[calc(100vh)] p-3">
+  <div class="flex flex-col gap-4 min-h-[calc(100vh)] p-3 relative">
+    <CBarTitle
+      class="z-[9999] absolute top-0 left-0 w-full"
+      v-if="detail?.userStage?.id"
+      :back="routes.stage.challenges(detail?.userStage?.id)"
+    ></CBarTitle>
+
     <div v-if="status == 'connected'" class="my-auto">
       <div v-if="!result" class="flex gap-4 items-center">
         <div>{{ ping }}ms</div>
       </div>
 
       <CChallengeResults
-        v-if="isFinnish && result"
+        v-if="isFinish && result"
         :animate="confetti"
-        :results="result"
+        :data="detail"
         :stageId="detail?.userStage?.id"
       />
 
@@ -141,14 +147,11 @@ onUnmounted(() => {
           <CButton
             color="light"
             variant="light"
-            size="sm"
             as="link"
             :to="routes.stage.challenges(String(detail?.userStage?.id))"
             >Kembali</CButton
           >
-          <!-- <CButton color="light" size="sm" @click="io?.connect()"
-            >Coba Lagi</CButton
-          > -->
+          <CButton color="light" @click="io?.connect()">Coba Lagi</CButton>
         </div>
       </CCard>
     </div>

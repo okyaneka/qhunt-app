@@ -39,7 +39,7 @@ onMounted(() => {
     class="story-prolog flex h-screen w-screen bg-black text-white fixed top-0 left-0"
     @click="telling"
   >
-    <div class="max-w-lg h-full w-[calc(100%-32px)] mx-auto relative">
+    <div class="w-lg-center h-full w-full relative">
       <Transition mode="out-in">
         <div
           class="p-4 h-full flex flex-col items-center justify-center select-none"

@@ -1,8 +1,6 @@
-import { tailwindcss, icon } from "./_src/configs";
-import { env } from "./_src/configs/env";
+import { env, font, ssr, icon, tailwindcss } from "./_src/configs";
 import fs from "fs";
 import path from "path";
-import font from "./_src/configs/font";
 
 // get data from package.json
 const packagejson: any = JSON.parse(
@@ -24,9 +22,11 @@ export default defineNuxtConfig({
       meta: [{ name: "description", content: packagejson.description }],
     },
 
-    layoutTransition: { name: "page-fade", mode: "out-in" },
-    pageTransition: { name: "page-fade", mode: "out-in" },
+    layoutTransition: { name: "fade-quick", mode: "out-in" },
+    pageTransition: { name: "fade-quick", mode: "out-in" },
   },
+  ssr: false,
+  routeRules: Object.fromEntries(ssr.map((route) => [route, { ssr: true }])),
   devServer: { port: env.PORT, host: "0.0.0.0" },
   alias: {
     "~src": "/_src",

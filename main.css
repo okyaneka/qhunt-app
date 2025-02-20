@@ -1,3 +1,13 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer utilities {
+  .w-lg-center {
+    @apply max-w-lg w-full mx-auto;
+  }
+}
+
 :root {
   --base-color: 236, 198, 159;
 }
@@ -7,17 +17,20 @@ html {
 }
 
 body {
-  @apply bg-white
-  /* @apply bg-white */
-  /* @apply bg-black bg-opacity-20; */;
+  @apply bg-white;
 }
 
 main {
   background: radial-gradient(
-    circle at -20% 100%,
-    rgba(var(--base-color), 0.4) 0%,
-    rgba(var(--base-color), 0) 40%
-  );
+      circle at 0 100%,
+      rgba(var(--base-color), 0.3) 0%,
+      rgba(var(--base-color), 0) 30%
+    ),
+    radial-gradient(
+      circle at 100% 0,
+      rgba(var(--base-color), 0.3) 0%,
+      rgba(var(--base-color), 0) 15%
+    );
 }
 
 a:not(.button, :has(*)) {
@@ -39,13 +52,13 @@ h6 {
   @apply font-semibold;
 }
 
-.page-fade-enter-active,
-.page-fade-leave-active {
+.fade-quick-enter-active,
+.fade-quick-leave-active {
   @apply transition-opacity duration-150 ease-in;
 }
 
-.page-fade-enter-from,
-.page-fade-leave-to {
+.fade-quick-enter-from,
+.fade-quick-leave-to {
   @apply opacity-0;
 }
 
@@ -67,4 +80,19 @@ h6 {
 .fade-up-enter-from,
 .fade-up-leave-to {
   @apply opacity-0 translate-y-4;
+}
+
+.move-out-enter-active,
+.move-out-leave-active {
+  @apply transition-all duration-150 ease-in;
+}
+.move-out-enter-from {
+  @apply translate-y-4;
+}
+.move-out-leave-to {
+  @apply -translate-y-4;
+}
+.move-out-enter-from,
+.move-out-leave-to {
+  @apply opacity-0;
 }

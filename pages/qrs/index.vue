@@ -17,6 +17,13 @@ const handleCopy = (text: string) => {
       toast.push("Code copied");
     });
 };
+
+watch(
+  () => data.value?.data.totalItems,
+  (value) => {
+    if (value) params.value.limit = value;
+  }
+);
 </script>
 
 <template>
@@ -25,18 +32,13 @@ const handleCopy = (text: string) => {
       <h1 class="text-center text-xl">List Kode QR</h1>
     </CCard>
 
-    <CQrCode
-      class="w-full"
-      :content="'https://b2e1-2a09-bac5-3a20-88c-00-da-d6.ngrok-free.app/stage'"
-    />
     <div class="grid grid-cols-2 gap-4">
       <CCard v-for="item in list" content-class="h-full">
         <div class="mb-2">
           <CQrCode class="w-full" :content="item.code" />
         </div>
         <div class="text-center capitalize">{{ item.content?.type }}</div>
-        <div class="text-center capitalize break-words">{{ item.code }}</div>
-        <div class="text-center">
+        <div v-if="item.content?.type !== 'photohunt'" class="text-center">
           <CButton icon color="light" @click="handleCopy(item.code)">
             <Icon name="ri:file-copy-line" />
           </CButton>

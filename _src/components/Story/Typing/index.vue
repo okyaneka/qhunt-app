@@ -81,12 +81,17 @@ watch(chunks, () => {
 });
 
 onMounted(() => {
+  document.addEventListener("click", handleClick);
   writing();
+});
+
+onUnmounted(() => {
+  document.removeEventListener("click", handleClick);
 });
 </script>
 
 <template>
-  <div @click="handleClick" class="h-full select-none">
+  <div class="h-full select-none">
     <div ref="contentRef" class="story-typing h-full overflow-auto">
       <span
         v-for="(chunk, i) in chunks"

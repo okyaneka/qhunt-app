@@ -2,7 +2,7 @@
 import type { RouteLocationRaw } from "vue-router";
 
 type Props = {
-  back: RouteLocationRaw | void;
+  back: RouteLocationRaw;
   icon: string;
   variant: "default" | "light" | "flat";
 };
@@ -20,15 +20,7 @@ const {
   <div class="p-2">
     <div class="relative h-14 flex items-center justify-center">
       <div v-if="back" class="absolute left-0 top-1/2 -translate-y-1/2">
-        <CButton
-          v-if="typeof back === 'function'"
-          icon
-          :variant="variant"
-          @click="back"
-        >
-          <Icon :name="icon" size="24" />
-        </CButton>
-        <CButton v-else icon :variant="variant" as="link" :to="back">
+        <CButton icon :variant="variant" as="link" :to="back">
           <Icon :name="icon" size="24" />
         </CButton>
       </div>

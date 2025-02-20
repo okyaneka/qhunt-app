@@ -1,11 +1,9 @@
 <script setup lang="ts">
 import type { LeaderboardData } from "qhunt-lib";
-import { request, routes } from "~/_src/helpers";
+import { routes } from "~/_src/helpers";
 import { namespace, useSocket } from "~/_src/helpers/socket";
 import { stage } from "~/_src/services";
-import AuthService from "~/_src/services/auth";
 import useAuthStore from "~/_src/stores/auth";
-import type { RendererElement } from "vue";
 
 definePageMeta({ layout: "mobile" });
 
@@ -14,7 +12,10 @@ const route = useRoute();
 const { auth } = authStore;
 
 const leaderboard = ref<LeaderboardData>();
-const ranks = computed(() => leaderboard.value?.ranks || []);
+const ranks = computed(
+  () =>
+    leaderboard.value?.ranks.map((v) => ({ ...v, key: v.userPublic.id })) || []
+);
 
 const id = computed(() => route.params.id as string);
 
@@ -32,12 +33,11 @@ const { socket, connect } = useSocket(
   {
     query: socketParams,
     reconnectionAttempts: 4,
+    manual: true,
   },
   (io) => {
     io.on("setData", (data: LeaderboardData) => {
-      setTimeout(() => {
-        leaderboard.value = data;
-      }, 0);
+      leaderboard.value = data;
     });
   }
 );
@@ -76,20 +76,13 @@ onUnmounted(() => {
       Ranking {{ detail?.stage.name }}
     </CBarTitle>
 
-    <TransitionGroup
-      tag="div"
-      class="relative p-3 overflow-visible"
-      @enter="onEnter"
-      @after-enter="onAfterEnter"
+    <CTransitionPullIn
+      class="p-3"
+      :items="ranks"
+      item-key="key"
+      v-slot="{ item }"
     >
-      <CCard
-        v-for="(item, i) in ranks"
-        :key="item.userPublic.code"
-        class="mb-1"
-        content-class="flex items-center justify-between"
-        :style="{ zIndex: ranks.length - i }"
-        :data-index="i"
-      >
+      <CCardAlt class="mb-2" content-class="flex items-center justify-between">
         <div>
           <div class="text-2xl font-semibold">
             #{{ item.rank }}
@@ -101,10 +94,10 @@ onUnmounted(() => {
               v-if="item.userPublic.id === auth?.id"
               class="text-lg text-gray-400 font-normal"
             >
-              (kamu)
+              (saya)
             </span>
           </div>
-          <div class="font-sans text-xs text-gray-300 uppercase">
+          <div class="font-sans text-xs text-gray-400 uppercase">
             USER ID:
             {{ item.userPublic.code.slice(0, 8) }}
           </div>
@@ -118,8 +111,8 @@ onUnmounted(() => {
             </div>
           </Transition>
         </div>
-      </CCard>
-    </TransitionGroup>
+      </CCardAlt>
+    </CTransitionPullIn>
   </div>
 </template>
 

@@ -4,7 +4,7 @@ import type { Type } from "~/_src/helpers";
 useAttrs();
 
 const { type = "default" } = defineProps<{
-  type?: Type;
+  type?: Type | "white" | "dark";
 }>();
 </script>
 
@@ -17,6 +17,8 @@ const { type = "default" } = defineProps<{
       'bg-green-700 text-white': type === 'success',
       'bg-yellow-700 text-white': type === 'warning',
       'bg-red-700 text-white': type === 'error',
+      'bg-white text-black': type === 'white',
+      'bg-dark text-white': type === 'dark',
     }"
   >
     <slot />

@@ -10,174 +10,25 @@ definePageMeta({
 
 const router = useRouter();
 
-const mediaRef = ref<HTMLVideoElement>();
-const inputRef = ref<HTMLInputElement>();
-const stream = ref<MediaStream>();
-const devices = ref<MediaDeviceInfo[]>();
 const result = ref("");
-const active = ref(0);
-const isTorch = ref(false);
-const isTorchOn = ref(false);
-const isLoaded = ref(false);
-const isDenied = ref<boolean>();
 
-const { data, refetch: verify, isLoading } = qr.verify(result);
+const isError = ref(false);
 
-const activeDevice = computed(
-  () => devices.value && devices.value[active.value]
-);
-
-const handleBack = () => {
-  const canBack = window.history.length;
-  canBack ? router.back() : router.push(routes.index);
-};
+const {
+  data,
+  refetch: verify,
+  isLoading,
+  isError: queryError,
+} = qr.verify(result);
 
 const onVerify = (qrString: string) => {
-  const qrResult = qrString;
   result.value =
-    qrResult
+    qrString
       .split("/")
       .filter((v) => v.trim())
       .pop() || "";
   verify();
 };
-
-const setDevice = async () => {
-  if (stream.value)
-    stream.value.getTracks().forEach((track) => {
-      track.stop();
-    });
-
-  const opts = activeDevice.value
-    ? { deviceId: { exact: activeDevice.value.deviceId } }
-    : true;
-
-  stream.value = await navigator.mediaDevices
-    .getUserMedia({
-      video: opts,
-    })
-    .then(async (res) => {
-      const track = res.getTracks()[0];
-      const capabilities = track.getCapabilities();
-      const divider = Math.round(
-        // @ts-ignore
-        Math.max(capabilities.height.max, capabilities.width.max) / 1000
-      );
-      await track.applyConstraints({
-        // @ts-ignore
-        height: capabilities.height.max / divider,
-        // @ts-ignore
-        width: capabilities.width.max / divider,
-      });
-
-      // @ts-ignore
-      isTorch.value = !!capabilities.torch;
-      return res;
-    });
-};
-
-const startScanning = () => {
-  if (!stream.value || !mediaRef.value) return;
-  result.value = "";
-  qrcode.scanByStream(stream.value).then((res) => {
-    onVerify(res.getText());
-    setTimeout(() => {
-      startScanning();
-    }, 1e3);
-  });
-};
-
-const getPermission = async () => {
-  const permission = await navigator.permissions.query({ name: "camera" });
-  if (permission.state === "denied") return (isDenied.value = true);
-  if (permission.state === "prompt")
-    await navigator.mediaDevices
-      .getUserMedia({
-        video: true,
-      })
-      .then((stream) => {
-        const track = stream.getTracks()[0];
-        track.stop();
-      })
-      .catch((err) => {
-        isDenied.value = true;
-        throw new err();
-      });
-
-  await getDevices();
-};
-
-const getDevices = async () => {
-  devices.value = (await navigator.mediaDevices.enumerateDevices()).filter(
-    (v) => v.kind === "videoinput"
-  );
-
-  let i = 0;
-  for (const device of devices.value) {
-    i++;
-    const stream = await navigator.mediaDevices
-      .getUserMedia({
-        video: { deviceId: { exact: device.deviceId } },
-      })
-      .catch((e) => {
-        console.log(e);
-      });
-    if (!stream) continue;
-    const track = stream.getTracks()[0];
-    const capabilities = track.getCapabilities();
-    track.stop();
-
-    if (
-      // @ts-ignore
-      capabilities.focusMode &&
-      // @ts-ignore
-      (capabilities.focusMode as string[]).includes("continuous")
-    )
-      active.value = i - 1;
-  }
-};
-
-const toggleTorch = async () => {
-  if (!stream.value) return;
-  const track = stream.value.getTracks()[0];
-
-  isTorchOn.value = !isTorchOn.value;
-  // @ts-ignore
-  await track.applyConstraints({ torch: isTorchOn.value });
-};
-
-const stopTrack = async () => {
-  if (stream.value) stream.value.getTracks().forEach((track) => track.stop());
-};
-
-const onInputChange = async () => {
-  if (!inputRef.value) return;
-  const { files } = inputRef.value;
-  if (!files) return;
-
-  qrcode
-    .scanByFile(files[0])
-    .then((res) => {
-      onVerify(res.getText());
-    })
-    .catch((e) => {
-      toast.push(`qr code cannot be found`, { type: "error" });
-    });
-  inputRef.value.type = "text";
-  await nextTick();
-  inputRef.value.type = "file";
-};
-
-const handleRefresh = () => {
-  location.reload();
-};
-
-watch([stream, mediaRef], async () => {
-  if (stream.value && mediaRef.value) {
-    mediaRef.value.srcObject = stream.value;
-    startScanning();
-  }
-});
 
 watch(data, () => {
   if (!data.value) return;
@@ -191,79 +42,53 @@ watch(data, () => {
   }
 });
 
-onMounted(() => {
-  getPermission()
-    .then(() => setDevice())
-    .then(() => (isLoaded.value = true));
-});
-
-onUnmounted(() => {
-  stopTrack();
+watch(queryError, () => {
+  isError.value = queryError.value;
 });
 </script>
 
 <template>
-  <div v-if="isLoaded" class="h-screen">
-    <div class="h-full overflow-hidden relative">
-      <video
-        ref="mediaRef"
-        class="w-full h-full object-cover absolute top-0 left-0 z-0"
-        playsinline
-        autoplay
-      />
-      <Transition name="fade" mode="out-in">
-        <div
-          v-if="isLoading"
-          class="absolute w-full h-full bg-black bg-opacity-20 left-0 top-0 flex justify-center items-center"
-        >
-          <CLoader light>Memeriksa Kode...</CLoader>
-        </div>
-      </Transition>
-      <Transition v-if="mediaRef" name="fade">
-        <div class="z-10 relative h-full flex flex-col gap-4">
-          <CBarTitle :back="handleBack" variant="light">
-            <CChip class="text-base font-normal"> Scan QR Disini </CChip>
-          </CBarTitle>
+  <div class="flex flex-col gap-4 min-h-[calc(100vh)] relative">
+    <CBarTitle
+      :back="routes.index"
+      class="z-[9999] absolute top-0 left-0 w-full"
+      variant="light"
+    >
+      <CChip class="text-base font-normal"> Scan QR Disini </CChip>
+    </CBarTitle>
 
-          <div class="p-2 mt-auto flex flex-col gap-4">
-            <div class="flex justify-center gap-2 z-10">
-              <input
-                ref="inputRef"
-                class="hidden"
-                type="file"
-                accept="image/png,image/jpeg"
-                @change="onInputChange"
-              />
-              <CButton icon size="lg" @click="inputRef?.click()">
-                <Icon name="ri:image-fill" />
-              </CButton>
-              <CButton v-if="isTorch" icon size="lg" @click="toggleTorch">
-                <Icon
-                  :name="
-                    !isTorchOn ? 'ri:flashlight-fill' : 'ri:flashlight-line'
-                  "
-                />
-              </CButton>
-            </div>
+    <CQrScanner
+      class="h-screen w-full"
+      :disabled="isError"
+      from-file
+      @scanned="onVerify"
+    >
+      <div class="h-full w-full relative">
+        <Transition name="fade">
+          <div
+            v-if="isError"
+            class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-full p-4 flex justify-center"
+          >
+            <CCard class="max-w-full w-80" content-class="flex flex-col gap-2">
+              <div>
+                <div class="flex justify-center">
+                  <Icon class="text-red-500" name="ri:close-line" size="48" />
+                </div>
+
+                <div class="text-xl font-bold text-center">
+                  Ups. Kode QR nya tidak valid!
+                </div>
+              </div>
+
+              <div class="text-center mt-4">
+                <CButton color="light" @click="isError = false">
+                  Cari Lagi!
+                </CButton>
+              </div>
+            </CCard>
           </div>
-        </div>
-      </Transition>
-    </div>
-  </div>
-
-  <div v-else class="p-4 flex h-screen justify-center items-center">
-    <CCard v-if="isDenied" content-class="flex flex-col">
-      <div class="text-center">
-        <Icon name="ri:camera-off-fill" size="40" />
+        </Transition>
       </div>
-      <div class="text-center max-w-72 mb-4">
-        Tolong aktifin kameranya ya. Kalau sudah bisa Refresh halamanya.
-        Terimakasih
-      </div>
-      <div class="text-center">
-        <CButton color="light" @click="handleRefresh">Refresh</CButton>
-      </div>
-    </CCard>
-    <CLoader v-else />
+    </CQrScanner>
   </div>
 </template>
