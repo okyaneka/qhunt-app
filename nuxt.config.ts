@@ -10,7 +10,6 @@ const packagejson: any = JSON.parse(
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
   watch: ["./_src/configs/**/*"],
-  css: ["@/main.css"],
   components: [
     { prefix: "C", path: "./_src/components/", extensions: ["vue"] },
   ],

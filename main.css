@@ -2,7 +2,13 @@
 @tailwind components;
 @tailwind utilities;
 
-@layer utilities {
+@layer base {
+  input {
+    @apply appearance-none border-none bg-transparent outline-none focus:ring-0 placeholder:text-gray-400;
+  }
+}
+
+@layer components {
   .w-lg-center {
     @apply max-w-lg w-full mx-auto;
   }
@@ -50,6 +56,21 @@ h4,
 h5,
 h6 {
   @apply font-semibold;
+}
+
+.decoration {
+  background: radial-gradient(
+      circle 80px at 20px 20px,
+      rgba(var(--base-color), 0.15) 0%,
+      rgba(var(--base-color), 0.15) 100%,
+      transparent 100%
+    ),
+    radial-gradient(
+      circle 120px at calc(100% - 40px) calc(100% + 60px),
+      rgba(var(--base-color), 0.15) 0%,
+      rgba(var(--base-color), 0.15) 100%,
+      transparent 100%
+    );
 }
 
 .fade-quick-enter-active,

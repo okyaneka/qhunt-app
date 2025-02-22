@@ -28,8 +28,8 @@ onMounted(() => {
 </script>
 
 <template>
-  <main class="default min-h-screen p-3 !bg-fixed bg-cover">
-    <div class="max-w-lg mx-auto">
+  <main class="default min-h-screen !bg-fixed bg-cover">
+    <div class="w-lg-center">
       <slot />
     </div>
 
