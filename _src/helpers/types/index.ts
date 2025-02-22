@@ -1,3 +1,13 @@
+export type PartialDeep<T> = {
+  [K in keyof T]?: T[K] extends Array<infer I>
+    ? I extends Record<string, any>
+      ? PartialDeep<I>[]
+      : I[]
+    : T[K] extends Record<string, any>
+    ? PartialDeep<T[K]>
+    : T[K];
+};
+
 export type CommonWpmOptions = {
   speed: number;
   buffer: number;
