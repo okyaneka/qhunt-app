@@ -18,7 +18,7 @@ const {
 
 <template>
   <div class="p-2">
-    <div class="relative h-14 flex items-center justify-center">
+    <div class="relative h-10 flex items-center justify-center">
       <div v-if="back" class="absolute left-0 top-1/2 -translate-y-1/2">
         <CButton icon :variant="variant" as="link" :to="back">
           <Icon :name="icon" size="24" />
