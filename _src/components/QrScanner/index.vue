@@ -274,31 +274,6 @@ onUnmounted(() => {
         />
       </Transition>
 
-      <!-- Hanya detektor lokasi qr aja -->
-      <div
-        v-if="false"
-        class="absolute w-40 h-40 transition-all text-white pulse -m-8"
-        :style="{
-          left: (meta?.x || 0) + 'px',
-          top: (meta?.y || 0) + 'px',
-          width: (meta?.width || 0) + 'px',
-          height: (meta?.height || 0) + 'px',
-        }"
-      >
-        <div
-          class="absolute w-8 h-8 rounded-tl left-0 top-0 border-t-2 border-l-2"
-        ></div>
-        <div
-          class="absolute w-8 h-8 rounded-tr -right-16 top-0 border-t-2 border-r-2"
-        ></div>
-        <div
-          class="absolute w-8 h-8 rounded-br -right-16 -bottom-16 border-b-2 border-r-2"
-        ></div>
-        <div
-          class="absolute w-8 h-8 rounded-bl left-0 -bottom-16 border-b-2 border-l-2"
-        ></div>
-      </div>
-
       <CButton
         v-if="torchSupport && !hideFlashlight"
         class="absolute top-[72px] right-4 z-[9999]"
@@ -341,7 +316,35 @@ onUnmounted(() => {
           </div>
         </div>
       </Transition>
+
+      <div class="overlay"></div>
+
+      <!-- Hanya detektor lokasi qr aja -->
+      <div
+        v-if="false"
+        class="absolute w-40 h-40 transition-all text-white pulse -m-8"
+        :style="{
+          left: (meta?.x || 0) + 'px',
+          top: (meta?.y || 0) + 'px',
+          width: (meta?.width || 0) + 'px',
+          height: (meta?.height || 0) + 'px',
+        }"
+      >
+        <div
+          class="absolute w-8 h-8 rounded-tl left-0 top-0 border-t-2 border-l-2"
+        ></div>
+        <div
+          class="absolute w-8 h-8 rounded-tr -right-16 top-0 border-t-2 border-r-2"
+        ></div>
+        <div
+          class="absolute w-8 h-8 rounded-br -right-16 -bottom-16 border-b-2 border-r-2"
+        ></div>
+        <div
+          class="absolute w-8 h-8 rounded-bl left-0 -bottom-16 border-b-2 border-l-2"
+        ></div>
+      </div>
     </div>
+
     <CCard v-else-if="isDenied" content-class="flex flex-col">
       <div class="text-center">
         <Icon name="ri:camera-off-fill" size="40" />
@@ -361,6 +364,16 @@ onUnmounted(() => {
 <style lang="css" scoped>
 .pulse {
   animation: pulse 500ms ease-in-out infinite;
+}
+
+.overlay {
+  @apply fixed inset-0 bg-transparent;
+}
+
+.overlay::before {
+  content: "";
+  box-shadow: rgba(0, 0, 0, 0.1) 0px 0px 20px, rgba(0, 0, 0, 0.25) 0 0 0 100vw;
+  @apply absolute w-[400px] h-[400px] max-w-[calc(100vh-32px)] top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-transparent rounded-lg;
 }
 
 @keyframes pulse {
