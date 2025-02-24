@@ -1,4 +1,6 @@
 <script setup lang="ts">
+useAttrs();
+
 const { light = false } = defineProps<{ light?: boolean }>();
 </script>
 

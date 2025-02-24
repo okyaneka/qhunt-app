@@ -257,7 +257,7 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <div class="flex justify-center items-center bg-black">
+  <div class="qr-scanner flex justify-center items-center bg-black">
     <div v-if="isLoaded" class="h-full w-full overflow-hidden relative">
       <Transition name="fade-quick" mode="out-in">
         <img
@@ -317,7 +317,7 @@ onUnmounted(() => {
         </div>
       </Transition>
 
-      <div class="overlay"></div>
+      <div class="scanner-overlay"></div>
 
       <!-- Hanya detektor lokasi qr aja -->
       <div
@@ -366,11 +366,11 @@ onUnmounted(() => {
   animation: pulse 500ms ease-in-out infinite;
 }
 
-.overlay {
+.scanner-overlay {
   @apply fixed inset-0 bg-transparent;
 }
 
-.overlay::before {
+.scanner-overlay::before {
   content: "";
   box-shadow: rgba(0, 0, 0, 0.1) 0px 0px 20px, rgba(0, 0, 0, 0.25) 0 0 0 100vw;
   @apply absolute w-[400px] h-[400px] max-w-[calc(100vh-32px)] top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-transparent rounded-lg;

@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { CLoader } from "#components";
 import type { ButtonHTMLAttributes, HTMLAttributes } from "vue";
 import { RouterLink, type RouterLinkProps } from "vue-router";
 
@@ -7,6 +8,7 @@ type Props = {
   color: "default" | string;
   variant: "default" | "light" | "flat";
   size: "sm" | "md" | "lg";
+  loading: boolean;
   disabled: boolean;
   bordered: boolean;
   icon: boolean;
@@ -26,6 +28,7 @@ const {
   prependIcon,
   appendIcon,
   bordered,
+  loading,
   ...props
 } = defineProps<Partial<Props>>();
 
@@ -34,6 +37,12 @@ const linkAttrs = computed(() => ({
   class: attrs.class,
   style: attrs.style,
   to: props.to || "",
+}));
+
+const buttonAttrs = computed<ButtonHTMLAttributes>(() => ({
+  type: "button",
+  ...attrs,
+  disabled: loading || attrs.disabled,
 }));
 
 const setVariant = () => {
@@ -72,10 +81,11 @@ const setIsIcon = () => {
 
 const className: HTMLAttributes["class"] = computed(() => {
   let theClass =
-    "button hover-overlay overflow-clip inline-flex justify-center items-center text-center transition select-none font-semibold ";
+    "button overlay overflow-clip inline-flex justify-center items-center text-center transition select-none font-semibold ";
   theClass += setVariant();
   theClass += setIsIcon();
   theClass += setSize();
+  theClass += disabled ? "disabled " : "overlay-hover ";
   theClass += bordered ? "border " : "";
 
   if (color != "default") {
@@ -83,6 +93,8 @@ const className: HTMLAttributes["class"] = computed(() => {
     if (variant == "default")
       theClass = theClass.replaceAll("text-white", "text-dark");
   }
+  if (color === "dark")
+    theClass = theClass.replaceAll("text-dark", "text-white");
 
   return theClass.trim();
 });
@@ -92,18 +104,32 @@ const className: HTMLAttributes["class"] = computed(() => {
   <component
     :is="as === 'link' ? RouterLink : 'button'"
     :class="className"
-    v-bind="as === 'link' ? linkAttrs : attrs"
+    v-bind="as === 'link' ? linkAttrs : buttonAttrs"
   >
-    <Icon v-if="prependIcon && !icon" class="-ml-1 mr-2" :name="prependIcon" />
+    <div
+      v-if="(prependIcon && !icon) || loading"
+      class="-ml-1 mr-2 flex items-center gap-1"
+    >
+      <CSpinner v-if="loading" :light="color === 'dark'" />
+      <Icon v-else-if="prependIcon" :name="prependIcon" />
+    </div>
     <div class="inline-flex relative">
       <slot />
     </div>
-    <Icon v-if="appendIcon && !icon" class="-mr-1 ml-2" :name="appendIcon" />
+    <div v-if="appendIcon && !icon" class="-mr-1 ml-2 flex items-center gap-1">
+      <Icon v-if="appendIcon" :name="appendIcon" />
+    </div>
   </component>
 </template>
 
 <style scoped>
-.hover-overlay {
-  @apply relative before:absolute before:inset-0 before:bg-gray-100 before:bg-opacity-0 before:transition-all before:duration-300 before:mix-blend-luminosity before:hover:bg-opacity-30 before:active:bg-gray-500 before:active:bg-opacity-10;
+.button.overlay {
+  @apply relative before:absolute before:inset-0 before:transition-all before:duration-300 before:mix-blend-luminosity;
+}
+.button.disabled {
+  @apply before:bg-gray-500 before:bg-opacity-10;
+}
+.button.overlay-hover {
+  @apply before:bg-gray-500 before:bg-opacity-0 before:hover:bg-opacity-5 before:active:bg-opacity-20;
 }
 </style>

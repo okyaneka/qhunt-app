@@ -1,6 +1,6 @@
 <script setup lang="ts">
-type Props = {
-  as: "input" | "textarea";
+export type BaseInputProps = {
+  as: "input" | "textarea" | "select";
   id: string;
   label: string;
   isInvalid: boolean;
@@ -10,7 +10,7 @@ type Props = {
   appendIcon: string;
 };
 
-const { as = "input" } = defineProps<Partial<Props>>();
+const { as = "input" } = defineProps<Partial<BaseInputProps>>();
 
 const randomId = computed(
   () => `input-${getCurrentInstance()?.uid.toString(36)}`
@@ -28,9 +28,8 @@ const randomId = computed(
       class="flex flex-nowrap gap-1.5 items-center rounded transition border"
       :class="{
         'border border-red-500 focus-within:ring-red-200': isInvalid,
-        'bg-gray-50 hover:bg-white focus-within:bg-white focus-within:ring-2 focus-within:ring-light-200':
-          !disabled,
-        'bg-gray-200 bg-opacity-60 text-gray-800 cursor-not-allowed': disabled,
+        'bg-white ring-light-200 hover:ring-2 focus-within:ring-2': !disabled,
+        'bg-gray-100 text-gray-800 cursor-not-allowed': disabled,
         'px-3 py-2 h-10': as == 'input',
       }"
     >
