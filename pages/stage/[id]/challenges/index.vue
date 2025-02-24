@@ -93,7 +93,7 @@ onUnmounted(() => {
 
       <CTransitionPullIn :items="challenges" item-key="id" v-slot="{ item }">
         <RouterLink
-          class="mb-2 block"
+          class="mb-4 block"
           :to="
             (item.status == 'completed'
               ? routes.challenge.action
