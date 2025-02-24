@@ -31,3 +31,12 @@ export type DefaultResponseList<T> = DefaultResponse<{
  *  "default" | "success" | "info" | "warning" | "error"
  */
 export type Type = "default" | "success" | "info" | "warning" | "error";
+export type MutationMethod =
+  | "delete"
+  | "DELETE"
+  | "patch"
+  | "PATCH"
+  | "post"
+  | "POST"
+  | "put"
+  | "PUT";

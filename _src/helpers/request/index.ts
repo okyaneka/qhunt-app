@@ -1,16 +1,9 @@
-import axios, { AxiosError, type AxiosRequestConfig } from "axios";
+import axios, { AxiosError, type AxiosResponse } from "axios";
 import { useMutation, useQuery } from "@tanstack/vue-query";
-import type {
-  DefaultedQueryObserverOptions,
-  QueryObserver,
-  QueryObserverOptions,
-  UndefinedInitialQueryOptions,
-  UseQueryOptions,
-  UseQueryReturnType,
-} from "@tanstack/vue-query";
+import type { MutationOptions, UseQueryOptions } from "@tanstack/vue-query";
 import { useEnv } from "~/_src/configs/env";
 import { useToastProvider } from "~/_src/providers/ToastProvider";
-import type { DefaultResponse } from "../types";
+import type { DefaultResponse, MutationMethod } from "../types";
 
 const env = useEnv();
 const { push } = useToastProvider();
@@ -50,8 +43,42 @@ export const get = <T = unknown>(
   });
 };
 
-export { axios };
+export const query = <T = unknown>(
+  url: MaybeRef<string>,
+  options?: Partial<UseQueryOptions<T> & { params: Ref<any> }>
+) => {
+  const params = options?.params || null;
 
-const request = { get } as const;
+  return useQuery<T>({
+    ...options,
+    queryKey: [url, params],
+    queryFn: () =>
+      axios
+        .get(toRef(url).value, { params: params?.value })
+        .then((res) => res.data),
+  });
+};
+
+export const mutate = <V = unknown, T = unknown>(
+  url: MaybeRef<string>,
+  options?: Partial<
+    MutationOptions<
+      AxiosResponse<DefaultResponse<T>>,
+      AxiosError<DefaultResponse>,
+      V
+    > & {
+      method: MutationMethod;
+    }
+  >
+) => {
+  const { method = "post" } = options || {};
+  return useMutation({
+    ...options,
+    mutationFn: async (payload) =>
+      axios({ method, url: toRef(url).value, data: payload }),
+  });
+};
+
+const request = { get, query, mutate } as const;
 
 export default request;
