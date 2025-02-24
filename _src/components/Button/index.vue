@@ -124,12 +124,12 @@ const className: HTMLAttributes["class"] = computed(() => {
 
 <style scoped>
 .button.overlay {
-  @apply relative before:absolute before:inset-0 before:transition-all before:duration-300 before:mix-blend-luminosity;
+  @apply relative before:absolute before:inset-0 before:transition-all before:duration-300 before:bg-gray-400 before:mix-blend-luminosity;
 }
 .button.disabled {
-  @apply before:bg-gray-500 before:bg-opacity-10;
+  @apply before:bg-opacity-10;
 }
 .button.overlay-hover {
-  @apply before:bg-gray-500 before:bg-opacity-0 before:hover:bg-opacity-5 before:active:bg-opacity-20;
+  @apply before:bg-opacity-0 before:hover:bg-opacity-40 before:active:bg-opacity-20;
 }
 </style>
