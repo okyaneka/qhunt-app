@@ -1,7 +1,10 @@
 const routes = {
   index: "/",
+  register: "/register",
+  login: "/login",
   home: "/home",
   profile: "/profile",
+  profileEdit: "/profile/edit",
   notification: "/notification",
   scan: {
     index: "/scan",
