@@ -3,7 +3,8 @@ const api = {
     me: "/me",
     register: "/register",
     profile: "/profile",
-    edit: "profile/edit",
+    edit: "/profile/edit",
+    photo: "/profile/photo",
   },
 } as const;
 

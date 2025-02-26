@@ -12,6 +12,7 @@ const items = [
 
 const route = useRoute();
 const showNav = ref(false);
+const { auth } = storeToRefs(useAuthStore());
 
 const isActive = (path: string) => {
   return route.path.indexOf(path) == 0;
@@ -60,14 +61,7 @@ onMounted(() => {
                 :name="item.icon"
                 :size="i === 2 ? '24' : '20'"
               />
-              <div
-                v-else
-                class="w-9 h-9 flex items-center justify-center rounded-full bg-dark text-white overflow-hidden"
-              >
-                <img
-                  src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRSA7_2hdizY8I5MyhNVjyMD0nBl2SS9oUl0g&s"
-                />
-              </div>
+              <CAvatar v-else class="w-9 h-9" :src="auth?.photo?.fileUrl" />
               <div v-if="i !== 4" class="text-sm">{{ item.label }}</div>
             </div>
           </RouterLink>

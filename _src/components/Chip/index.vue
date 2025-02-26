@@ -10,7 +10,7 @@ const { type = "default" } = defineProps<{
 
 <template>
   <div
-    class="inline-block text-center rounded-2xl bg-opacity-80 px-2.5 py-0.5 font-sans"
+    class="inline-block text-center rounded-2xl px-2.5 py-0.5 font-sans"
     :class="{
       'bg-gray-700 text-white': type === 'default',
       'bg-blue-700 text-white': type === 'info',

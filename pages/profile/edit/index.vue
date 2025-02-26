@@ -1,17 +1,14 @@
 <script setup lang="ts">
+// import auth from "~/_src/services/auth";
 import { push } from "~/_src/helpers/toast";
 import { routes } from "~/_src/helpers";
 import { toTypedSchema } from "@vee-validate/yup";
 import { useForm } from "vee-validate";
 import * as yup from "yup";
-// import auth from "~/_src/services/auth";
-import {
-  USER_PUBLIC_GENDER,
-  type UserPublicGender,
-  type UserPublicPayload,
-} from "qhunt-lib/types";
-import dayjs from "dayjs";
 import AuthService from "~/_src/services/auth";
+import dayjs from "dayjs";
+import { type UserPublicGender, type UserPublicPayload } from "qhunt-lib";
+import { USER_PUBLIC_GENDER } from "qhunt-lib/helpers/constants";
 
 definePageMeta({
   middleware: "auth",
@@ -35,10 +32,13 @@ const schema = yup.object({
     .matches(/^\+?\d{10,15}$/, "invalid phone number"),
 });
 
-const { auth } = useAuthStore();
+const { auth } = storeToRefs(useAuthStore());
+
 const router = useRouter();
 
 const { mutate, isPending } = AuthService.edit();
+const { mutate: mutatePhoto, isPending: isPendingPhoto } = AuthService.photo();
+const inputRef = ref<HTMLInputElement>();
 
 const {
   defineField,
@@ -51,10 +51,10 @@ const {
 } = useForm<UserPublicPayload>({
   validationSchema: toTypedSchema(schema),
   initialValues: {
-    name: auth?.name,
-    dob: auth?.dob,
-    gender: auth?.gender,
-    phone: auth?.phone,
+    name: auth.value?.name,
+    dob: auth.value?.dob,
+    gender: auth.value?.gender,
+    phone: auth.value?.phone,
   },
   validateOnMount: false,
 });
@@ -64,8 +64,30 @@ defineField("dob");
 defineField("gender");
 defineField("phone");
 
+const handleChange = async (e: Event) => {
+  if (!inputRef.value) return;
+  const files = inputRef.value?.files;
+  if (!files) return;
+  const file = files[0];
+  const formData = new FormData();
+  formData.append("tes", "nama");
+  formData.append("file", file);
+
+  mutatePhoto(formData, {
+    onSuccess: (res) => {
+      auth.value = res.data.data;
+      push("Sukses bro", { type: "success" });
+    },
+    onSettled: async () => {
+      if (!inputRef.value) return;
+      inputRef.value.type = "text";
+      await nextTick();
+      inputRef.value.type = "file";
+    },
+  });
+};
+
 const onSubmit = handleSubmit((value: UserPublicPayload) => {
-  console.log(value);
   mutate(value, {
     onSuccess: (res) => {
       router.push(routes.profile);
@@ -92,6 +114,27 @@ onMounted(() => {
       <CCardAlt content-class="decoration flex flex-col gap-2">
         <form class="flex flex-col gap-2" @submit.prevent="onSubmit()">
           <!-- <CInput v-model:value="values.name" label="Nama" /> -->
+
+          <div class="flex justify-center">
+            <input
+              class="hidden"
+              ref="inputRef"
+              type="file"
+              accept="image/*"
+              @change="handleChange"
+            />
+            <div class="relative">
+              <CAvatar class="shadow-card" :src="auth?.photo?.fileUrl" />
+              <CButton
+                class="!absolute bottom-0 right-2 ring-2 ring-white"
+                icon
+                size="sm"
+                @click="inputRef?.click()"
+              >
+                <Icon name="ri:pencil-fill" />
+              </CButton>
+            </div>
+          </div>
 
           <CInput
             :value="values.name"

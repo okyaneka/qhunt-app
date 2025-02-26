@@ -10,8 +10,6 @@ const items = ref([
   { label: "Kebujakan Privasi" },
   { label: "Tentang" },
 ]);
-
-const show = ref(false);
 </script>
 
 <template>
@@ -26,12 +24,7 @@ const show = ref(false);
       >
         <!-- Avatar -->
         <div class="flex justify-center absolute w-full left-0 -top-16">
-          <div
-            class="h-36 w-36 rounded-full bg-light shadow-md shadow-dark/40 bg-cover cursor-pointer"
-            :style="{
-              backgroundImage: `url(https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRSA7_2hdizY8I5MyhNVjyMD0nBl2SS9oUl0g&s)`,
-            }"
-          ></div>
+          <CAvatar class="shadow-card" :src="auth?.photo?.fileUrl" />
         </div>
 
         <!-- Action -->

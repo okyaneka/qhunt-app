@@ -29,6 +29,13 @@ export const edit = () => {
   });
 };
 
-const AuthService = { register, edit } as const;
+export const photo = () => {
+  return request.mutate<FormData, UserPublic>(api.auth.photo, {
+    method: "PUT",
+    onSuccess: async (res) => {},
+  });
+};
+
+const AuthService = { register, edit, photo } as const;
 
 export default AuthService;
