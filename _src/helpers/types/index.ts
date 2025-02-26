@@ -1,3 +1,17 @@
+import type { ValueOf } from "qhunt-lib";
+import type { HTMLAttributes } from "vue";
+import type { API } from "~/_src/constants";
+
+export type PartialDeep<T> = {
+  [K in keyof T]?: T[K] extends Array<infer I>
+    ? I extends Record<string, any>
+      ? PartialDeep<I>[]
+      : I[]
+    : T[K] extends Record<string, any>
+    ? PartialDeep<T[K]>
+    : T[K];
+};
+
 export type CommonWpmOptions = {
   speed: number;
   buffer: number;
@@ -21,3 +35,17 @@ export type DefaultResponseList<T> = DefaultResponse<{
  *  "default" | "success" | "info" | "warning" | "error"
  */
 export type Type = "default" | "success" | "info" | "warning" | "error";
+export type MutationMethod =
+  | "delete"
+  | "DELETE"
+  | "patch"
+  | "PATCH"
+  | "post"
+  | "POST"
+  | "put"
+  | "PUT";
+
+export type ListItem<T = Record<string, any>> = T &
+  Partial<{ class: HTMLAttributes["class"] }>;
+
+export type Api = ValueOf<typeof API>;

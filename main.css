@@ -2,54 +2,77 @@
 @tailwind components;
 @tailwind utilities;
 
-@layer utilities {
-  .w-lg-center {
-    @apply max-w-lg w-full mx-auto;
+@layer base {
+  :root {
+    --base-color: 236, 198, 159;
+  }
+
+  html {
+    @apply font-serif;
+  }
+
+  body {
+    @apply bg-white;
+  }
+
+  main {
+    background: radial-gradient(
+        circle at 0 100%,
+        rgba(var(--base-color), 0.3) 0%,
+        rgba(var(--base-color), 0) 30%
+      ),
+      radial-gradient(
+        circle at 100% 0,
+        rgba(var(--base-color), 0.3) 0%,
+        rgba(var(--base-color), 0) 15%
+      );
+  }
+
+  a:not(.button, :has(*)) {
+    @apply text-light-600 hover:underline;
+  }
+
+  b {
+    @apply font-semibold;
+  }
+  i {
+    @apply italic;
+  }
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    @apply font-semibold;
+  }
+
+  input,
+  textarea,
+  select {
+    @apply appearance-none border-none bg-transparent outline-none focus:ring-0 placeholder:text-gray-400;
   }
 }
 
-:root {
-  --base-color: 236, 198, 159;
-}
+@layer components {
+  .w-lg-center {
+    @apply max-w-lg w-full mx-auto;
+  }
 
-html {
-  @apply font-serif;
-}
-
-body {
-  @apply bg-white;
-}
-
-main {
-  background: radial-gradient(
-      circle at 0 100%,
-      rgba(var(--base-color), 0.3) 0%,
-      rgba(var(--base-color), 0) 30%
-    ),
-    radial-gradient(
-      circle at 100% 0,
-      rgba(var(--base-color), 0.3) 0%,
-      rgba(var(--base-color), 0) 15%
-    );
-}
-
-a:not(.button, :has(*)) {
-  @apply text-light hover:underline;
-}
-
-b {
-  @apply font-semibold;
-}
-i {
-  @apply italic;
-}
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
-  @apply font-semibold;
+  .decoration {
+    background: radial-gradient(
+        circle 80px at 20px 20px,
+        rgba(var(--base-color), 0.15) 0%,
+        rgba(var(--base-color), 0.15) 100%,
+        transparent 100%
+      ),
+      radial-gradient(
+        circle 120px at calc(100% - 40px) calc(100% + 60px),
+        rgba(var(--base-color), 0.15) 0%,
+        rgba(var(--base-color), 0.15) 100%,
+        transparent 100%
+      );
+  }
 }
 
 .fade-quick-enter-active,
@@ -95,4 +118,29 @@ h6 {
 .move-out-enter-from,
 .move-out-leave-to {
   @apply opacity-0;
+}
+
+/* Modal transition */
+.modal-enter-active,
+.modal-leave-active {
+  transition: all 150ms ease-in-out;
+}
+.modal-leave-active {
+  @apply delay-75;
+}
+.modal-enter-from,
+.modal-leave-to {
+  @apply opacity-0;
+}
+
+.modal-enter-active .card,
+.modal-leave-active .card {
+  transition: all 200ms ease-in-out;
+}
+.modal-enter-active .card {
+  @apply delay-75;
+}
+.modal-enter-from .card,
+.modal-leave-to .card {
+  @apply scale-75 opacity-0;
 }

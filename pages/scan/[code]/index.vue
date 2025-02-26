@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { QR_CONTENT_TYPES } from "qhunt-lib/types";
+import { QR_CONTENT_TYPES } from "qhunt-lib/constants";
 import { routes } from "~/_src/helpers";
 import { qr } from "~/_src/services";
 

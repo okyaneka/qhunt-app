@@ -1,5 +1,6 @@
 import confetti from "canvas-confetti";
 import type { CommonWpmOptions } from "../types";
+import dayjs, { type ConfigType } from "dayjs";
 
 export const duar = () => {
   const count = 200;
@@ -69,6 +70,53 @@ export const wpm = (
   return (wordCount / speed) * 60 * 1e3 + buffer;
 };
 
-const common = { wpm, split, duar } as const;
+/**
+ *
+ * @param values Record<string, any>
+ * @param prefix string
+ * @returns Recored<string, string | number | boolean | null | undefined>
+ */
+export const flattenValues = (
+  values: Record<string, any>,
+  prefix: string = ""
+) =>
+  Object.entries(values).reduce<
+    Record<string, string | number | boolean | null | undefined>
+  >((acc, [key, value]) => {
+    const newKey = prefix ? `${prefix}.${key}` : key;
+
+    if (Array.isArray(value)) {
+      Object.assign(
+        acc,
+        ...value.map((item, index) => {
+          return typeof item === "object" && item !== null
+            ? flattenValues(item, `${newKey}.${index}`)
+            : { [`${newKey}.${index}`]: item };
+        })
+      );
+    } else if (typeof value === "object" && value !== null) {
+      Object.assign(acc, flattenValues(value, newKey));
+    } else {
+      acc[newKey] = value;
+    }
+
+    return acc;
+  }, {});
+
+/**
+ * Get flatten keys from (any) object
+ * @param values Record<string, any>
+ * @param prefix string
+ * @returns Keys string[]
+ */
+export const flattenKeys = (values: Record<string, any>, prefix: string = "") =>
+  Object.keys(flattenValues(values));
+
+export const formatDate = (
+  rawDate: ConfigType,
+  format: string = "DD/MM/YYYY"
+) => dayjs(rawDate).format(format);
+
+const common = { wpm, split, duar, flattenValues, flattenKeys } as const;
 
 export default common;

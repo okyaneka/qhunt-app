@@ -33,7 +33,6 @@ const { socket, connect } = useSocket(
   {
     query: socketParams,
     reconnectionAttempts: 4,
-    manual: true,
   },
   (io) => {
     io.on("setData", (data: LeaderboardData) => {
@@ -41,17 +40,6 @@ const { socket, connect } = useSocket(
     });
   }
 );
-
-const onEnter = (el: Element) => {
-  const item = el as HTMLElement;
-  const index = item.dataset.index;
-  item.style.transitionDelay = `${50 * (Number(index) || 0)}ms`;
-};
-
-const onAfterEnter = (el: Element) => {
-  const item = el as HTMLElement;
-  item.style.transitionDelay = "0ms";
-};
 
 onMounted(() => {
   connect();
@@ -82,7 +70,11 @@ onUnmounted(() => {
       item-key="key"
       v-slot="{ item }"
     >
-      <CCardAlt class="mb-2" content-class="flex items-center justify-between">
+      <CCardAlt
+        flat
+        class="mb-2"
+        content-class="flex items-center justify-between"
+      >
         <div>
           <div class="text-2xl font-semibold">
             #{{ item.rank }}

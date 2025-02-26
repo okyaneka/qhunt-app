@@ -1,9 +1,11 @@
 <script setup lang="ts">
-import { USER_CHALLENGE_STATUS } from "qhunt-lib/types";
 import type { LeaderboardData, UserChallengeParams } from "qhunt-lib";
 import { common, routes } from "~/_src/helpers";
 import { stage, challenge } from "~/_src/services";
 import { namespace, useSocket } from "~/_src/helpers/socket";
+import { USER_CHALLENGE_STATUS } from "qhunt-lib/constants";
+import dayjs from "dayjs";
+import { formatDate } from "~/_src/helpers/common";
 
 definePageMeta({
   layout: "mobile",
@@ -27,6 +29,7 @@ const {
 
 const detail = computed(() => data.value?.data);
 const challenges = computed(() => challengesData.value?.data.list || []);
+const pageTitle = computed(() => `Quest: ${detail.value?.stage.name}`);
 
 const socketParams = computed(() => ({
   stageId: detail.value?.stage.id,
@@ -48,6 +51,8 @@ const { socket } = useSocket(
   }
 );
 
+useTitle(pageTitle);
+
 onUnmounted(() => {
   socket.value?.disconnect();
 });
@@ -62,11 +67,43 @@ onUnmounted(() => {
   </div>
 
   <div v-else class="flex flex-col">
-    <CBarTitle :back="routes.stage.index">
-      {{ detail?.stage.name }}
-    </CBarTitle>
+    <CBarTitle :back="routes.stage.index"> Detail Quest </CBarTitle>
 
     <div class="flex flex-col gap-2 p-3">
+      <CCardAlt
+        flat
+        class="decoration relative"
+        content-class="flex flex-col gap-1"
+      >
+        <div class="absolute top-2 right-2">
+          <CButton
+            class="shadow-card-sm"
+            variant="light"
+            color="light"
+            size="sm"
+            >Bantuan</CButton
+          >
+        </div>
+        <h1 class="text-4xl">{{ detail?.stage.name }}</h1>
+
+        <div v-if="detail?.stage.settings.periode">
+          <div class="font-sans text-gray-500 text-sm font-semibold">
+            Periode:
+          </div>
+          <h3 class="">
+            {{ formatDate(detail.stage.settings.periode.startDate) }} -
+            {{ formatDate(detail.stage.settings.periode.endDate) }}
+          </h3>
+          <!-- {{ leaderboard }} -->
+        </div>
+
+        <div>
+          <div class="font-sans text-gray-500 text-sm font-semibold">
+            Total Tantangan:
+          </div>
+          <h3 class="">{{ detail?.contents.length }}</h3>
+        </div>
+      </CCardAlt>
       <CCard
         v-if="detail?.results"
         content-class="flex gap-4 justify-between items-center"
@@ -93,7 +130,7 @@ onUnmounted(() => {
 
       <CTransitionPullIn :items="challenges" item-key="id" v-slot="{ item }">
         <RouterLink
-          class="mb-2 block"
+          class="mb-4 block"
           :to="
             (item.status == 'completed'
               ? routes.challenge.action

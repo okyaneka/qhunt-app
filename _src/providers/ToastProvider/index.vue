@@ -11,13 +11,10 @@ const { breads } = useToastProvider();
     tag="ul"
     class="fixed left-1/2 -translate-x-1/2 bottom-12 flex flex-col items-center gap-2 z-[9999]"
   >
-    <li v-for="bread in breads" :key="bread.key" class="">
-      <CChip
-        v-if="typeof bread.message === 'string'"
-        class="whitespace-nowrap"
-        :type="bread.type"
-        >{{ bread.message }}</CChip
-      >
+    <li v-for="bread in breads" :key="bread.key" class="px-4 max-w-full">
+      <CChip v-if="typeof bread.message === 'string'" :type="bread.type">{{
+        bread.message
+      }}</CChip>
       <component v-else :is="bread.message" />
     </li>
   </TransitionGroup>
@@ -28,9 +25,6 @@ const { breads } = useToastProvider();
 .v-enter-active,
 .v-leave-active {
   @apply transition-all ease-in-out duration-300;
-}
-.v-leave-active {
-  @apply absolute;
 }
 .v-enter-from,
 .v-leave-to {

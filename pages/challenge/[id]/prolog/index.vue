@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { USER_CHALLENGE_STATUS } from "qhunt-lib/types";
+import { USER_CHALLENGE_STATUS } from "qhunt-lib/constants";
 import { routes } from "~/_src/helpers";
 import { challenge } from "~/_src/services";
 

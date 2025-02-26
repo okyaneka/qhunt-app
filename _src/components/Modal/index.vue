@@ -32,7 +32,7 @@ watch(
 
 <template>
   <Teleport to="body">
-    <Transition name="fade-quick">
+    <Transition name="modal">
       <div
         v-if="show"
         class="fixed w-screen h-screen flex top-0 left-0 bg-black bg-opacity-50"
@@ -40,7 +40,9 @@ watch(
       >
         <div class="max-w-full m-auto p-3">
           <CCardAlt
-            :class="twMerge('w-96 max-w-full m-auto relative', elClass)"
+            :class="
+              twMerge('w-96 max-w-full m-auto relative delay-1000', elClass)
+            "
             content-class="p-0 max-h-[calc(100vh-24px)] overflow-auto"
             @click.stop
           >

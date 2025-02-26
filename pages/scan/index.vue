@@ -2,7 +2,7 @@
 import { qrcode } from "qhunt-lib/helpers";
 import { qr } from "~/_src/services";
 import { routes, toast } from "~/_src/helpers";
-import { QR_CONTENT_TYPES } from "qhunt-lib/types";
+import { QR_CONTENT_TYPES } from "qhunt-lib/constants";
 
 definePageMeta({
   layout: "blank",

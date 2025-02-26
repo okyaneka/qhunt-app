@@ -15,20 +15,11 @@ const timeout = ref();
 
 const isVisible = ref(false);
 const boundary = computed(() => {
-  if (process.client) {
-    return {
-      x: 16,
-      y: 16,
-      width: document.documentElement.clientWidth - 32,
-      height: document.documentElement.clientHeight - 32,
-    };
-  }
-
   return {
-    x: 16,
-    y: 16,
-    width: 0,
-    height: 0,
+    x: 8,
+    y: 8,
+    width: document.documentElement.clientWidth - 16,
+    height: document.documentElement.clientHeight - 16,
   };
 });
 
@@ -37,14 +28,14 @@ const { floatingStyles } = useFloating(elRef, contentRef, {
 
   middleware: [
     offset({
-      mainAxis: 16,
+      mainAxis: 4,
     }),
     flip({
-      padding: 8,
+      padding: 2,
       boundary: boundary.value,
     }),
     shift({
-      padding: 8,
+      padding: 2,
       boundary: boundary.value,
     }),
   ],
@@ -68,27 +59,11 @@ onClickOutside(targetRef, (event) => (isVisible.value = false));
     <div ref="elRef">
       <slot />
     </div>
-    <Transition>
-      <div
-        v-if="isVisible"
-        ref="contentRef"
-        class="bg-white bg-opacity-90 text-black rounded px-4 py-2 m-2 text-center"
-        :style="floatingStyles"
-      >
+
+    <Transition name="fade-quick">
+      <CCardAlt v-if="isVisible" ref="contentRef" :style="floatingStyles">
         <slot name="content" />
-      </div>
+      </CCardAlt>
     </Transition>
   </div>
 </template>
-
-<style scoped>
-.v-enter-active,
-.v-leave-active {
-  @apply transition-opacity duration-300;
-}
-
-.v-enter-from,
-.v-leave-to {
-  @apply opacity-0;
-}
-</style>

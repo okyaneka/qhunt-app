@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { CHALLENGE_TYPES } from "qhunt-lib/types";
+import { CHALLENGE_TYPES } from "qhunt-lib";
 import type { QrListParams } from "qhunt-lib";
 import { toast } from "~/_src/helpers";
 import { qr } from "~/_src/services";
