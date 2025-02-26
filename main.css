@@ -119,3 +119,28 @@ h6 {
 .move-out-leave-to {
   @apply opacity-0;
 }
+
+/* Modal transition */
+.modal-enter-active,
+.modal-leave-active {
+  transition: all 150ms ease-in-out;
+}
+.modal-leave-active {
+  @apply delay-75;
+}
+.modal-enter-from,
+.modal-leave-to {
+  @apply opacity-0;
+}
+
+.modal-enter-active .card,
+.modal-leave-active .card {
+  transition: all 300ms ease-in-out;
+}
+.modal-enter-active .card {
+  @apply delay-75;
+}
+.modal-enter-from .card,
+.modal-leave-to .card {
+  @apply scale-75 opacity-0;
+}

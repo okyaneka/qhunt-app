@@ -16,7 +16,7 @@ const { hoverable, contentClass } = defineProps<Partial<Props>>();
 
 <template>
   <div
-    class="rounded-lg overflow-clip"
+    class="card rounded-lg overflow-clip"
     :class="{
       'cursor-pointer transition-all hover:z-[9999]': hoverable,
       'hover:shadow-card-lg': hoverable && !faded,
