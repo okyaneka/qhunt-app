@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { CHALLENGE_TYPES } from "qhunt-lib/types";
+import { CHALLENGE_TYPES } from "qhunt-lib/constants";
 import { routes } from "~/_src/helpers";
 import { challenge } from "~/_src/services";
 

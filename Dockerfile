@@ -4,8 +4,8 @@ FROM node:20-alpine AS build
 
 ARG PORT=1234
 ARG APP_NAME="QHunt App"
-ARG APP_API_URL=http://api.google.com
-ARG APP_SOCKET_URL=http://socket.google.com
+ARG APP_API_URL=http://localhost:1234
+ARG APP_SOCKET_URL=http://localhost:1235
 
 WORKDIR /usr/src/app
 

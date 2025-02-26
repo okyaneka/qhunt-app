@@ -70,7 +70,11 @@ onUnmounted(() => {
       item-key="key"
       v-slot="{ item }"
     >
-      <CCardAlt class="mb-2" content-class="flex items-center justify-between">
+      <CCardAlt
+        flat
+        class="mb-2"
+        content-class="flex items-center justify-between"
+      >
         <div>
           <div class="text-2xl font-semibold">
             #{{ item.rank }}

@@ -20,8 +20,12 @@ axios.interceptors.response.use(
   (res) => res,
   (err: AxiosError<DefaultResponse>) => {
     if (process.client) {
-      const message = err.response?.data.message || err.message;
-      push(message, { type: "error" });
+      const res = err.response?.data;
+      const message = res?.message || err.message;
+      if (res && message == "validation_error") {
+        const validation = Object.values(res.error?.validation || {}) as any;
+        push(validation[0], { type: "error" });
+      } else push(message, { type: "error" });
     }
     return Promise.reject(err);
   }
@@ -37,9 +41,7 @@ export const get = <T = unknown>(
     ...options,
     queryKey: [url, params],
     queryFn: () =>
-      axios
-        .get(toRef(url).value, { params: params?.value })
-        .then((res) => res.data),
+      axios.get(unref(url), { params: params?.value }).then((res) => res.data),
   });
 };
 
@@ -53,13 +55,11 @@ export const query = <T = unknown>(
     ...options,
     queryKey: [url, params],
     queryFn: () =>
-      axios
-        .get(toRef(url).value, { params: params?.value })
-        .then((res) => res.data),
+      axios.get(unref(url), { params: unref(params) }).then((res) => res.data),
   });
 };
 
-export const mutate = <V = unknown, T = unknown>(
+export const mutate = <V = void, T = unknown>(
   url: MaybeRef<string>,
   options?: Partial<
     MutationOptions<
@@ -75,7 +75,7 @@ export const mutate = <V = unknown, T = unknown>(
   return useMutation({
     ...options,
     mutationFn: async (payload) =>
-      axios({ method, url: toRef(url).value, data: payload }),
+      axios({ method, url: unref(url), data: payload }),
   });
 };
 

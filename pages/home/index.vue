@@ -1,9 +1,12 @@
 <script setup lang="ts">
+import { useForm } from "vee-validate";
 import { toast } from "~/_src/helpers";
 
 definePageMeta({ layout: "mobile" });
 
 const show = ref(false);
+
+const form = useForm();
 
 const lights = [
   "rgb(250, 240, 231)",
@@ -34,19 +37,7 @@ const handleCopy = (text: string) => {
       <CButton @click="show = true">Buka Modal</CButton>
 
       <CCardAlt content-class="flex flex-col gap-4">
-        <div class="flex gap-2 justify-center flex-nowrap">
-          <div class="h-8 w-8 rounded-lg bg-red-50 item"></div>
-          <div class="h-8 w-8 rounded-lg bg-red-100 item"></div>
-          <div class="h-8 w-8 rounded-lg bg-red-200 item"></div>
-          <div class="h-8 w-8 rounded-lg bg-red-300 item"></div>
-          <div class="h-8 w-8 rounded-lg bg-red-400 item"></div>
-          <div class="h-8 w-8 rounded-lg bg-red-500 item"></div>
-          <div class="h-8 w-8 rounded-lg bg-red-600 item"></div>
-          <div class="h-8 w-8 rounded-lg bg-red-700 item"></div>
-          <div class="h-8 w-8 rounded-lg bg-red-800 item"></div>
-          <div class="h-8 w-8 rounded-lg bg-red-900 item"></div>
-          <div class="h-8 w-8 rounded-lg bg-red-950 item"></div>
-        </div>
+        <h3>Ini ah</h3>
 
         <div class="flex gap-2 justify-center flex-nowrap">
           <div class="h-8 w-8 rounded-lg bg-dark-50"></div>
@@ -76,13 +67,6 @@ const handleCopy = (text: string) => {
           <div class="h-8 w-8 rounded-lg bg-light-950"></div>
         </div>
       </CCardAlt>
-
-      <div class="rounded-lg overflow-clip bg-white shadow-card text-light">
-        <div class="p-40">
-          <slot />
-          <div class="text-mlue">hello 3</div>
-        </div>
-      </div>
     </div>
 
     <CModal v-model:show="show" title="Judul Modal">

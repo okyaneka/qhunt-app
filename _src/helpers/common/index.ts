@@ -1,5 +1,6 @@
 import confetti from "canvas-confetti";
 import type { CommonWpmOptions } from "../types";
+import dayjs, { type ConfigType } from "dayjs";
 
 export const duar = () => {
   const count = 200;
@@ -110,6 +111,11 @@ export const flattenValues = (
  */
 export const flattenKeys = (values: Record<string, any>, prefix: string = "") =>
   Object.keys(flattenValues(values));
+
+export const formatDate = (
+  rawDate: ConfigType,
+  format: string = "DD/MM/YYYY"
+) => dayjs(rawDate).format(format);
 
 const common = { wpm, split, duar, flattenValues, flattenKeys } as const;
 

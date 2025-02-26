@@ -1,3 +1,7 @@
+import type { ValueOf } from "qhunt-lib";
+import type { HTMLAttributes } from "vue";
+import type { API } from "~/_src/constants";
+
 export type PartialDeep<T> = {
   [K in keyof T]?: T[K] extends Array<infer I>
     ? I extends Record<string, any>
@@ -40,3 +44,8 @@ export type MutationMethod =
   | "POST"
   | "put"
   | "PUT";
+
+export type ListItem<T = Record<string, any>> = T &
+  Partial<{ class: HTMLAttributes["class"] }>;
+
+export type Api = ValueOf<typeof API>;

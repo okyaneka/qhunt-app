@@ -34,7 +34,7 @@ onMounted(() => {
     <Transition name="fade-up" mode="out-in">
       <div
         v-if="showNav"
-        class="w-lg-center fixed h-16 bottom-0 left-1/2 -translate-x-1/2"
+        class="w-lg-center fixed h-16 bottom-0 left-1/2 -translate-x-1/2 z-[999]"
       >
         <div
           class="flex justify-between items-center h-full rounded-t-2xl bg-white px-4 shadow-card text-dark"
