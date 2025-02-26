@@ -3,9 +3,9 @@ import { push } from "~/_src/helpers/toast";
 import { toTypedSchema } from "@vee-validate/yup";
 import { useForm } from "vee-validate";
 import * as yup from "yup";
-import auth from "~/_src/services/auth-service";
 import type { UserPayload } from "qhunt-lib";
 import { routes } from "~/_src/helpers";
+import AuthService from "~/_src/services/auth-service";
 
 definePageMeta({
   middleware: "no-auth",
@@ -13,14 +13,13 @@ definePageMeta({
 });
 
 const schema = yup.object({
-  name: yup.string().required().default(""),
   email: yup.string().email().required().default(""),
   password: yup.string().min(8).required().default(""),
 });
 
 const router = useRouter();
 
-const { mutate } = auth.register();
+const { mutate: login, isPending } = AuthService.login();
 
 const {
   defineField,
@@ -36,35 +35,25 @@ const {
 });
 
 defineField("email");
-defineField("name");
 defineField("password");
 
 const onSubmit = handleSubmit((value: UserPayload) => {
-  mutate(value, {
-    onSuccess: (res) => {
+  login(value, {
+    onSuccess: () => {
       router.push(routes.profile);
       push("Register Sukses!", { type: "success" });
     },
-    onError: (err) => {
-      // push("Error bro", { type: "error" });
-    },
   });
-});
-
-onMounted(() => {
-  setTimeout(() => {
-    resetForm({ errors: undefined });
-  }, 3e2);
 });
 </script>
 
 <template>
   <div class="flex flex-col -translate-y-7">
-    <CBarTitle>Daftar Dulu Yuk!</CBarTitle>
+    <CBarTitle>Login Yuk!</CBarTitle>
 
     <div class="px-3">
       <CCardAlt content-class="decoration flex flex-col gap-2">
-        <div class="text-center">Kamu juga bisa daftar dengan:</div>
+        <div class="text-center">Kamu juga bisa login dengan:</div>
         <div class="flex justify-center gap-2">
           <CButton
             color="white"
@@ -89,15 +78,8 @@ onMounted(() => {
           <!-- <CInput v-model:value="values.name" label="Nama" /> -->
 
           <CInput
-            :value="values.name"
-            label="Nama"
-            :is-invalid="errors.name !== undefined"
-            :message="errors.name"
-            @update:value="setFieldValue('name', $event)"
-          />
-
-          <CInput
             :value="values.email"
+            :disabled="isPending"
             label="Email"
             type="email"
             :is-invalid="errors.email !== undefined"
@@ -107,6 +89,7 @@ onMounted(() => {
 
           <CInput
             :value="values.password"
+            :disabled="isPending"
             label="Password"
             type="password"
             toggle-password
@@ -116,12 +99,13 @@ onMounted(() => {
           />
 
           <div class="flex justify-center">
-            <CButton color="light" type="submit">Daftar!</CButton>
+            <CButton color="light" :loading="isPending" type="submit"
+              >Login!</CButton
+            >
           </div>
-
           <div class="text-center">
-            Sudah punya akun?
-            <RouterLink :to="routes.login">Login</RouterLink>
+            Belum punya akun?
+            <RouterLink :to="routes.register">Daftar lah!</RouterLink>
           </div>
         </form>
       </CCardAlt>

@@ -5,10 +5,10 @@ import { routes } from "~/_src/helpers";
 import { toTypedSchema } from "@vee-validate/yup";
 import { useForm } from "vee-validate";
 import * as yup from "yup";
-import AuthService from "~/_src/services/auth";
+import AuthService from "~/_src/services/auth-service";
 import dayjs from "dayjs";
 import { type UserPublicGender, type UserPublicPayload } from "qhunt-lib";
-import { USER_PUBLIC_GENDER } from "qhunt-lib/helpers/constants";
+import { USER_PUBLIC_GENDER } from "qhunt-lib/constants";
 
 definePageMeta({
   middleware: "auth",
@@ -126,6 +126,7 @@ onMounted(() => {
             <div class="relative">
               <CAvatar class="shadow-card" :src="auth?.photo?.fileUrl" />
               <CButton
+                :disabled="isPending"
                 class="!absolute bottom-0 right-2 ring-2 ring-white"
                 icon
                 size="sm"
@@ -138,8 +139,8 @@ onMounted(() => {
 
           <CInput
             :value="values.name"
+            :disabled="isPending"
             label="Nama"
-            prepend-icon="ri:user-line"
             :is-invalid="errors.name !== undefined"
             :message="errors.name"
             @update:value="setFieldValue('name', $event)"
@@ -154,6 +155,7 @@ onMounted(() => {
 
           <CInput
             :value="dayjs(values.dob).format('YYYY-MM-DD')"
+            :disabled="isPending"
             label="Tanggal Lahir"
             type="date"
             :max="dayjs().format('YYYY-MM-DD')"
@@ -164,6 +166,7 @@ onMounted(() => {
 
           <CSelect
             label="Jenis Kelamin"
+            :disabled="isPending"
             placeholder="Pilih Jenis Kelamin"
             :items="Object.values(USER_PUBLIC_GENDER)"
             :is-invalid="errors.gender !== undefined"
@@ -174,6 +177,7 @@ onMounted(() => {
 
           <CInput
             :value="values.phone"
+            :disabled="isPending"
             label="Telepon"
             type="tel"
             :is-invalid="errors.phone !== undefined"

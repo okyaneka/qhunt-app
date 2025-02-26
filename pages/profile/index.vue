@@ -1,15 +1,32 @@
 <script setup lang="ts">
-import { routes } from "~/_src/helpers";
+import { routes, type ListItem } from "~/_src/helpers";
+import { push } from "~/_src/helpers/toast";
+import AuthService from "~/_src/services/auth-service";
 
 definePageMeta({ layout: "mobile" });
 
 const { auth } = useAuthStore();
+const { mutate: logout } = AuthService.logout();
 
 const items = ref([
   { label: "Syarat dan Ketentuan" },
   { label: "Kebujakan Privasi" },
   { label: "Tentang" },
 ]);
+
+const actions = [
+  {
+    class: "text-red-500 hover:bg-red-500 hover:text-white",
+    key: "logout",
+    label: "Logout",
+  },
+];
+
+const handleActionSelect = (value: string) => {
+  if (value === "logout") {
+    logout();
+  }
+};
 </script>
 
 <template>
@@ -63,6 +80,17 @@ const items = ref([
       <CCardAlt>
         <h3 class="mb-2">Baca baca dulu yuk!</h3>
         <CList :items="items" item-key="label" v-slot="{ item }">
+          {{ item.label }}
+        </CList>
+      </CCardAlt>
+
+      <CCardAlt v-if="auth?.user">
+        <CList
+          :items="actions"
+          item-key="key"
+          v-slot="{ item }"
+          @select="handleActionSelect"
+        >
           {{ item.label }}
         </CList>
       </CCardAlt>
