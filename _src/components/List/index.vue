@@ -1,6 +1,9 @@
 <script setup lang="ts" generic="T">
+import { twMerge } from "tailwind-merge";
+import type { ListItem } from "~/_src/helpers";
+
 type Props = {
-  items: T[];
+  items: ListItem<T>[];
   itemKey: keyof T;
 };
 
@@ -20,7 +23,12 @@ const { itemKey, items } = defineProps<Props>();
     <li
       v-for="item in items"
       :key="String(item[itemKey])"
-      class="px-2 py-1 cursor-pointer rounded transition hover:bg-dark-50"
+      :class="
+        twMerge(
+          'px-2 py-1 cursor-pointer rounded transition hover:bg-dark-50',
+          item.class
+        )
+      "
       @click="emit('select', String(item[itemKey]))"
     >
       <slot :item />

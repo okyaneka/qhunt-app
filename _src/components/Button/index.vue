@@ -108,7 +108,8 @@ const className: HTMLAttributes["class"] = computed(() => {
   >
     <div
       v-if="(prependIcon && !icon) || loading"
-      class="-ml-1 mr-2 flex items-center gap-1"
+      class="-ml-1 flex items-center gap-1"
+      :class="{ 'mr-1': size === 'sm', 'mr-2': size !== 'sm' }"
     >
       <CSpinner v-if="loading" :light="color === 'dark'" />
       <Icon v-else-if="prependIcon" :name="prependIcon" />
@@ -116,7 +117,11 @@ const className: HTMLAttributes["class"] = computed(() => {
     <div class="inline-flex relative">
       <slot />
     </div>
-    <div v-if="appendIcon && !icon" class="-mr-1 ml-2 flex items-center gap-1">
+    <div
+      v-if="appendIcon && !icon"
+      class="-mr-1 ml-1 flex items-center gap-1"
+      :class="{ 'ml-1': size === 'sm', 'ml-2': size !== 'sm' }"
+    >
       <Icon v-if="appendIcon" :name="appendIcon" />
     </div>
   </component>
