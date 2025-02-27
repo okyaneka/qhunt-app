@@ -1,8 +1,10 @@
 <script setup lang="ts">
 import { CHALLENGE_TYPES } from "qhunt-lib/constants";
 import { routes } from "~/_src/helpers";
+import { setTitle } from "~/_src/helpers/common";
 import { challenge } from "~/_src/services";
 
+setTitle("Challenge");
 definePageMeta({ layout: "blank" });
 
 const route = useRoute();

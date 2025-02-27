@@ -1,7 +1,9 @@
 <script setup lang="ts">
 import { useForm } from "vee-validate";
 import { toast } from "~/_src/helpers";
+import { setTitle } from "~/_src/helpers/common";
 
+setTitle("Home");
 definePageMeta({ layout: "mobile" });
 
 const show = ref(false);

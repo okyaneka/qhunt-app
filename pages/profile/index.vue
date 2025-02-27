@@ -1,8 +1,10 @@
 <script setup lang="ts">
 import { routes, type ListItem } from "~/_src/helpers";
+import { setTitle } from "~/_src/helpers/common";
 import { push } from "~/_src/helpers/toast";
 import AuthService from "~/_src/services/auth-service";
 
+setTitle("Profile");
 definePageMeta({ layout: "mobile" });
 
 const { auth } = useAuthStore();
@@ -56,23 +58,27 @@ const handleActionSelect = (value: string) => {
             {{ auth?.code.slice(0, 8) }}
           </p>
 
-          <div v-if="auth?.user" class="flex flex-col items-center">
-            <h1 class="font-bold text-2xl">{{ auth.user.name }}</h1>
-            <p class="">{{ auth.user.email }}</p>
-          </div>
+          <template v-if="auth?.user">
+            <div class="flex flex-col items-center">
+              <h1 class="font-bold text-2xl">{{ auth.user.name }}</h1>
+              <p class="">{{ auth.user.email }}</p>
+            </div>
+          </template>
           <div
             v-else
             class="flex flex-col gap-1 items-center p-3 bg-light-50 rounded mb-4 w-72"
           >
-            <div class="text-center">
+            <div class="text-center mb-1">
               Kayaknya kamu belum pernah melakukan pendaftaran ya? Daftar dulu
               yuk! Biar progressmu tidak hilang.
             </div>
-            <CButton as="link" :to="routes.register" color="light"
-              >Daftar dulu</CButton
-            >
-            <div>Atau</div>
-            <CButton as="link" :to="routes.login" color="light">Login</CButton>
+
+            <CButton as="link" :to="routes.register">Daftar dulu</CButton>
+
+            <div>
+              atau
+              <RouterLink :to="routes.login">Login</RouterLink>
+            </div>
           </div>
         </div>
       </CCardAlt>
