@@ -24,8 +24,8 @@ export default defineNuxtConfig({
     layoutTransition: { name: "fade-quick", mode: "out-in" },
     pageTransition: { name: "fade-quick", mode: "out-in" },
   },
-  ssr: false,
-  routeRules: Object.fromEntries(ssr.map((route) => [route, { ssr: true }])),
+  ssr: true,
+  routeRules: Object.fromEntries(ssr.map((route) => [route, { ssr: false }])),
   devServer: { port: env.PORT, host: "0.0.0.0" },
   alias: {
     "~src": "/_src",
