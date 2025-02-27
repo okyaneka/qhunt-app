@@ -18,8 +18,8 @@ const boundary = computed(() => {
   return {
     x: 8,
     y: 8,
-    width: document.documentElement.clientWidth - 16,
-    height: document.documentElement.clientHeight - 16,
+    width: (document?.documentElement.clientWidth || 0) - 16,
+    height: (document?.documentElement.clientHeight || 0) - 16,
   };
 });
 
@@ -55,15 +55,17 @@ onClickOutside(targetRef, (event) => (isVisible.value = false));
 </script>
 
 <template>
-  <div ref="targetRef" @mouseenter="show(true)" @mouseleave="show(false)">
-    <div ref="elRef">
-      <slot />
-    </div>
+  <ClientOnly>
+    <div ref="targetRef" @mouseenter="show(true)" @mouseleave="show(false)">
+      <div ref="elRef">
+        <slot />
+      </div>
 
-    <Transition name="fade-quick">
-      <CCardAlt v-if="isVisible" ref="contentRef" :style="floatingStyles">
-        <slot name="content" />
-      </CCardAlt>
-    </Transition>
-  </div>
+      <Transition name="fade-quick">
+        <CCardAlt v-if="isVisible" ref="contentRef" :style="floatingStyles">
+          <slot name="content" />
+        </CCardAlt>
+      </Transition>
+    </div>
+  </ClientOnly>
 </template>
