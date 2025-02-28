@@ -5,7 +5,7 @@ export default defineNuxtPlugin(() => {
   const env = useEnv();
 
   firebase.init({
-    apiKey: env.FIREBASE_KEY,
-    authDomain: env.FIREBASE_AUTH_DOMAIN,
+    apiKey: env.public.FIREBASE_KEY,
+    authDomain: env.public.FIREBASE_AUTH_DOMAIN,
   });
 });
