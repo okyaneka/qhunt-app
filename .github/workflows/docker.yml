@@ -13,8 +13,6 @@ jobs:
     env:
       PORT: ${{vars.PORT || 3000}}
       APP_NAME: ${{vars.APP_NAME || ''}}
-      APP_API_URL: ${{vars.APP_API_URL || ''}}
-      APP_SOCKET_URL: ${{vars.APP_SOCKET_URL || ''}}
 
     steps:
       - name: Checkout repository
@@ -38,8 +36,6 @@ jobs:
           build-args: |
             PORT=${{env.PORT}}
             APP_NAME=${{env.APP_NAME}}
-            APP_API_URL=${{env.APP_API_URL}}
-            APP_SOCKET_URL=${{env.APP_SOCKET_URL}}
           tags: |
             ghcr.io/${{ github.repository_owner }}/qhunt-app:latest
             ghcr.io/${{ github.repository_owner }}/qhunt-app:${{ github.sha }}

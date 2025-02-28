@@ -17,8 +17,6 @@ type LocalOptions = {
   manual: boolean;
 };
 
-const env = useEnv();
-
 export const namespace = {
   leaderboard: "/leaderboard",
   challenge: "/challenge",
@@ -31,6 +29,8 @@ export const useSocket = (
   opts?: MaybeRef<Partial<ManagerOptions & SocketOptions & LocalOptions>>,
   ops?: (socket: Socket) => void | Promise<void>
 ) => {
+  const env = useEnv();
+
   const optsRef = toRef(opts);
   const socket = ref<Socket>();
   const status = ref<SocketStatus>("connecting");
@@ -78,7 +78,7 @@ export const useSocket = (
   const connect = () => {
     socket.value?.disconnect();
 
-    socket.value = io(`${env.APP_SOCKET_URL}${namespace}`, {
+    socket.value = io(`${env.public.APP_SOCKET_URL}${namespace}`, {
       withCredentials: true,
       path: "/socket",
       ...optsRef.value,

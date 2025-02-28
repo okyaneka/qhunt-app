@@ -3,8 +3,6 @@ import type { CommonWpmOptions } from "../types";
 import dayjs, { type ConfigType } from "dayjs";
 import { useEnv } from "~/_src/configs/env";
 
-const env = useEnv();
-
 export const duar = () => {
   const count = 200;
   const defaults = {
@@ -121,8 +119,10 @@ export const formatDate = (
 ) => dayjs(rawDate).format(format);
 
 export const setTitle = (title?: string) => {
+  const env = useEnv();
+
   return useSeoMeta({
-    title: `${title ? title + " - " : ""} ${env.APP_NAME}`.trim(),
+    title: `${title ? title + " - " : ""} ${env.public.APP_NAME}`.trim(),
   });
 };
 

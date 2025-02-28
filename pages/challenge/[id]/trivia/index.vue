@@ -1,9 +1,7 @@
 <script setup lang="ts">
-import { io as p } from "socket.io-client";
 import type { UserChallengeResult, UserTrivia } from "qhunt-lib";
 import { common, routes, socket, toast } from "~/_src/helpers";
 import { challenge } from "~/_src/services";
-import { useEnv } from "~/_src/configs/env";
 import { setTitle } from "~/_src/helpers/common";
 
 setTitle("Trivia Challenge");
