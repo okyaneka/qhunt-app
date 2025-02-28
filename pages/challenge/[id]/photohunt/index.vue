@@ -1,8 +1,10 @@
 <script setup lang="ts">
 import { USER_CHALLENGE_STATUS } from "qhunt-lib/constants";
 import { common, routes } from "~/_src/helpers";
+import { setTitle } from "~/_src/helpers/common";
 import { challenge } from "~/_src/services";
 
+setTitle("Photohunt Challenge");
 definePageMeta({
   layout: "blank",
   protected: true,

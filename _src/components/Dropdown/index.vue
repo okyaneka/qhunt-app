@@ -34,8 +34,8 @@ const boundary = computed(() => {
   return {
     x: 8,
     y: 8,
-    width: document.documentElement.clientWidth - 16,
-    height: document.documentElement.clientHeight - 16,
+    width: (document?.documentElement.clientWidth || 0) - 16,
+    height: (document?.documentElement.clientHeight || 0) - 16,
   };
 });
 
@@ -76,36 +76,38 @@ onClickOutside(
 </script>
 
 <template>
-  <div ref="triggerRef">
-    <slot :attrs="attrs" />
-  </div>
+  <ClientOnly>
+    <div ref="triggerRef">
+      <slot :attrs="attrs" />
+    </div>
 
-  <Teleport to="body">
-    <Transition name="fade-quick">
-      <div v-if="isVisible">
-        <div
-          ref="arrowRef"
-          class="bg-red-400 w-2 h-2"
-          :style="middlewareData.arrow"
-        ></div>
-        <CCardAlt
-          v-if="isVisible"
-          ref="contentRef"
-          :style="floatingStyles"
-          content-class="p-1.5 w-40 max-w-full"
-        >
-          <CList
-            :items="[{ label: 'List item 3' }, { label: 'List item 2' }]"
-            v-slot="{ item }"
-            item-key="label"
-            @select="handleSelect"
+    <Teleport to="body">
+      <Transition name="fade-quick">
+        <div v-if="isVisible">
+          <div
+            ref="arrowRef"
+            class="bg-red-400 w-2 h-2"
+            :style="middlewareData.arrow"
+          ></div>
+          <CCardAlt
+            v-if="isVisible"
+            ref="contentRef"
+            :style="floatingStyles"
+            content-class="p-1.5 w-40 max-w-full"
           >
-            <div>{{ item.label }}</div>
-          </CList>
-          <!-- <div>{{ middlewareData.arrow }}</div> -->
-          <slot name="content" />
-        </CCardAlt>
-      </div>
-    </Transition>
-  </Teleport>
+            <CList
+              :items="[{ label: 'List item 3' }, { label: 'List item 2' }]"
+              v-slot="{ item }"
+              item-key="label"
+              @select="handleSelect"
+            >
+              <div>{{ item.label }}</div>
+            </CList>
+            <!-- <div>{{ middlewareData.arrow }}</div> -->
+            <slot name="content" />
+          </CCardAlt>
+        </div>
+      </Transition>
+    </Teleport>
+  </ClientOnly>
 </template>

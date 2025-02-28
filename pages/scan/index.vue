@@ -1,12 +1,14 @@
 <script setup lang="ts">
-import { qrcode } from "qhunt-lib/helpers";
 import { qr } from "~/_src/services";
-import { routes, toast } from "~/_src/helpers";
+import { routes } from "~/_src/helpers";
 import { QR_CONTENT_TYPES } from "qhunt-lib/constants";
+import { setTitle } from "~/_src/helpers/common";
 
 definePageMeta({
   layout: "blank",
 });
+
+setTitle("Scan");
 
 const router = useRouter();
 

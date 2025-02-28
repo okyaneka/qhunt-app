@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import type { LeaderboardData } from "qhunt-lib";
 import { routes } from "~/_src/helpers";
+import { setTitle } from "~/_src/helpers/common";
 import { namespace, useSocket } from "~/_src/helpers/socket";
 import { stage } from "~/_src/services";
 import useAuthStore from "~/_src/stores/auth";
@@ -41,6 +42,7 @@ const { socket, connect } = useSocket(
   }
 );
 
+setTitle(`Quest leaderboard ${data.value?.data.stage.name}`);
 onMounted(() => {
   connect();
 });

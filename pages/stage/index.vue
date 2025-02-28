@@ -1,7 +1,9 @@
 <script setup lang="ts">
 import { common, routes } from "~/_src/helpers";
+import { setTitle } from "~/_src/helpers/common";
 import { stage } from "~/_src/services";
 
+setTitle("Quests");
 definePageMeta({
   layout: "mobile",
 });
@@ -16,7 +18,7 @@ const stages = computed(() => data.value?.data.list || []);
 
 <template>
   <div class="flex flex-col">
-    <CBarTitle> Tantangan Saya </CBarTitle>
+    <CBarTitle> Quests </CBarTitle>
 
     <div class="flex flex-col gap-2 p-3">
       <template v-if="isFetched">

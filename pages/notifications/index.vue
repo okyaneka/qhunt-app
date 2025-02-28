@@ -1,13 +1,13 @@
 <script setup lang="ts">
 import { setTitle } from "~/_src/helpers/common";
 
-setTitle("Home");
+setTitle("Notifications");
 definePageMeta({ layout: "mobile" });
 </script>
 
 <template>
   <div class="flex flex-col">
-    <CBarTitle>Home</CBarTitle>
+    <CBarTitle>Notifikasi</CBarTitle>
 
     <div class="px-3 flex flex-col gap-8">
       <CCardAlt content-class="flex flex-col gap-4 decoration">

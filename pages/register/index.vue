@@ -6,7 +6,9 @@ import * as yup from "yup";
 import auth from "~/_src/services/auth-service";
 import type { UserPayload } from "qhunt-lib";
 import { routes } from "~/_src/helpers";
+import { setTitle } from "~/_src/helpers/common";
 
+setTitle("Register");
 definePageMeta({
   middleware: "no-auth",
   layout: "blank",

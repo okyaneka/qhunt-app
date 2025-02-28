@@ -5,7 +5,7 @@ import { stage, challenge } from "~/_src/services";
 import { namespace, useSocket } from "~/_src/helpers/socket";
 import { USER_CHALLENGE_STATUS } from "qhunt-lib/constants";
 import dayjs from "dayjs";
-import { formatDate } from "~/_src/helpers/common";
+import { formatDate, setTitle } from "~/_src/helpers/common";
 
 definePageMeta({
   layout: "mobile",
@@ -29,7 +29,6 @@ const {
 
 const detail = computed(() => data.value?.data);
 const challenges = computed(() => challengesData.value?.data.list || []);
-const pageTitle = computed(() => `Quest: ${detail.value?.stage.name}`);
 
 const socketParams = computed(() => ({
   stageId: detail.value?.stage.id,
@@ -51,7 +50,7 @@ const { socket } = useSocket(
   }
 );
 
-useTitle(pageTitle);
+setTitle(`Challenges`);
 
 onUnmounted(() => {
   socket.value?.disconnect();

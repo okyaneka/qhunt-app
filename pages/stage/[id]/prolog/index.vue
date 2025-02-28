@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { routes } from "~/_src/helpers";
+import { setTitle } from "~/_src/helpers/common";
 import { stage } from "~/_src/services";
 
 definePageMeta({
@@ -12,6 +13,8 @@ const router = useRouter();
 const id = computed(() => route.params.id as string);
 
 const { data, refetch: getDetail, isFetched } = stage.detail(id);
+
+setTitle(`Quest Prolog ${data.value?.data.stage.name}`);
 
 onMounted(() => {
   getDetail();

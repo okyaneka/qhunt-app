@@ -9,7 +9,9 @@ import AuthService from "~/_src/services/auth-service";
 import dayjs from "dayjs";
 import { type UserPublicGender, type UserPublicPayload } from "qhunt-lib";
 import { USER_PUBLIC_GENDER } from "qhunt-lib/constants";
+import { setTitle } from "~/_src/helpers/common";
 
+setTitle("Edit Profile");
 definePageMeta({
   middleware: "auth",
   layout: "mobile",

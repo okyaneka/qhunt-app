@@ -1,6 +1,9 @@
 import confetti from "canvas-confetti";
 import type { CommonWpmOptions } from "../types";
 import dayjs, { type ConfigType } from "dayjs";
+import { useEnv } from "~/_src/configs/env";
+
+const env = useEnv();
 
 export const duar = () => {
   const count = 200;
@@ -116,6 +119,12 @@ export const formatDate = (
   rawDate: ConfigType,
   format: string = "DD/MM/YYYY"
 ) => dayjs(rawDate).format(format);
+
+export const setTitle = (title?: string) => {
+  return useSeoMeta({
+    title: `${title ? title + " - " : ""} ${env.APP_NAME}`.trim(),
+  });
+};
 
 const common = { wpm, split, duar, flattenValues, flattenKeys } as const;
 
