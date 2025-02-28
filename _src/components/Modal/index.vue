@@ -35,7 +35,7 @@ watch(
     <Transition name="modal">
       <div
         v-if="show"
-        class="fixed w-screen h-screen flex top-0 left-0 bg-black bg-opacity-50"
+        class="fixed w-screen h-screen flex top-0 left-0 bg-black bg-opacity-50 z-[1000]"
         @click="emit('update:show', false)"
       >
         <div class="max-w-full m-auto p-3">

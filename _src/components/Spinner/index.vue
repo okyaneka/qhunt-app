@@ -1,18 +1,18 @@
 <script setup lang="ts">
+import { twMerge } from "tailwind-merge";
+
 useAttrs();
 
 const { light = false } = defineProps<{ light?: boolean }>();
 </script>
 
 <template>
-  <div class="flex flex-col gap-2 items-center">
-    <div
-      class="spinner"
-      :style="{
-        '--base-color': `var(--${light ? 'light' : 'dark'}-color)`,
-      }"
-    ></div>
-  </div>
+  <div
+    :class="twMerge('spinner w-4 h-4', String($attrs.class))"
+    :style="{
+      '--base-color': `var(--${light ? 'light' : 'dark'}-color)`,
+    }"
+  ></div>
 </template>
 
 <style scoped>
@@ -20,7 +20,7 @@ const { light = false } = defineProps<{ light?: boolean }>();
   --light-color: theme(colors.light.DEFAULT);
   --dark-color: theme(colors.dark.DEFAULT);
   --width: 3px;
-  @apply w-4 h-4 rounded-full;
+  @apply rounded-full;
   background: radial-gradient(farthest-side, var(--base-color) 94%, #0000)
       top/var(--width) var(--width) no-repeat,
     conic-gradient(#0000 30%, var(--base-color));
