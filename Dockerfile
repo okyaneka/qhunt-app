@@ -4,8 +4,6 @@ FROM node:20-alpine AS build
 
 ARG PORT=1234
 ARG APP_NAME="QHunt App"
-ARG APP_API_URL=http://localhost:1234
-ARG APP_SOCKET_URL=http://localhost:1235
 
 WORKDIR /usr/src/app
 
@@ -17,8 +15,6 @@ COPY . .
 
 ENV PORT=${PORT}
 ENV APP_NAME=${APP_NAME}
-ENV APP_API_URL=${APP_API_URL}
-ENV APP_SOCKET_URL=${APP_SOCKET_URL}
 
 RUN pnpm build
 
