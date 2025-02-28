@@ -11,7 +11,7 @@ const env = useEnv();
   <div class="flex flex-col gap-4">
     <CCard content-class="flex flex-col">
       <h1 class="text-3xl font-bold text-center">
-        Welcome to {{ env.APP_NAME }}
+        Welcome to {{ env.public.APP_NAME }}
       </h1>
     </CCard>
 
