@@ -14,13 +14,14 @@ const AuthGlobalMiddleware = defineNuxtRouteMiddleware(async (to) => {
     ? useRequestHeaders(["cookie"])
     : undefined;
 
-  const { data } = await useFetch<UserPublic>("/api/me", {
-    credentials: "include",
-    headers,
-    lazy: import.meta.client,
-  });
+  if (import.meta.client || headers?.cookie) {
+    const { data } = await useFetch<UserPublic>("/api/me", {
+      credentials: "include",
+      headers,
+    });
 
-  if (data.value) authStore.auth = data.value;
+    if (data.value) authStore.auth = data.value;
+  }
 });
 
 export default AuthGlobalMiddleware;
