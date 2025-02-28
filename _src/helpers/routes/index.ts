@@ -5,7 +5,7 @@ const routes = {
   home: "/home",
   profile: "/profile",
   profileEdit: "/profile/edit",
-  notification: "/notification",
+  notifications: "/notifications",
   scan: {
     index: "/scan",
     code: (code: string) => `/scan/${code}`,

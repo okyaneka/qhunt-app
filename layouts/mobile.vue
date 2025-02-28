@@ -6,7 +6,11 @@ const items = [
   { label: "Home", to: routes.home, icon: "ri:home-4-fill" },
   { label: "Quest", to: routes.stage.index, icon: "ri:sword-fill" },
   { label: "Scan", to: routes.scan.index, icon: "ri:qr-code-line" },
-  { label: "Message", to: routes.notification, icon: "ri:notification-3-fill" },
+  {
+    label: "Message",
+    to: routes.notifications,
+    icon: "ri:notification-3-fill",
+  },
   { label: "Profile", to: routes.profile, icon: "ri:user-fill" },
 ];
 
@@ -61,7 +65,11 @@ onMounted(() => {
                 :name="item.icon"
                 :size="i === 2 ? '24' : '20'"
               />
-              <CAvatar v-else class="w-9 h-9" :src="auth?.photo?.fileUrl" />
+              <CAvatar
+                v-else
+                class="w-9 h-9 bg-white border"
+                :src="auth?.user?.photo"
+              />
               <div v-if="i !== 4" class="text-sm">{{ item.label }}</div>
             </div>
           </RouterLink>
