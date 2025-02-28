@@ -72,7 +72,6 @@ const handleChange = async (e: Event) => {
   if (!files) return;
   const file = files[0];
   const formData = new FormData();
-  formData.append("tes", "nama");
   formData.append("file", file);
 
   mutatePhoto(formData, {
@@ -126,9 +125,13 @@ onMounted(() => {
               @change="handleChange"
             />
             <div class="relative">
-              <CAvatar class="shadow-card" :src="auth?.photo?.fileUrl" />
+              <CAvatar
+                class="shadow-card"
+                :loading="isPendingPhoto"
+                :src="auth?.user?.photo"
+              />
               <CButton
-                :disabled="isPending"
+                :disabled="isPending || isPendingPhoto"
                 class="!absolute bottom-0 right-2 ring-2 ring-white"
                 icon
                 size="sm"

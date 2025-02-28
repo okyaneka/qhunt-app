@@ -3,6 +3,9 @@ export const env = {
   APP_NAME: process.env.APP_NAME || "",
   APP_API_URL: process.env.APP_API_URL || "",
   APP_SOCKET_URL: process.env.APP_SOCKET_URL || "",
+
+  FIREBASE_KEY: process.env.FIREBASE_KEY || "",
+  FIREBASE_AUTH_DOMAIN: process.env.FIREBASE_AUTH_DOMAIN || "",
 } as const;
 
 export const useEnv = () => {

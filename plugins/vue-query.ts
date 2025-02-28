@@ -17,12 +17,6 @@ export default defineNuxtPlugin((nuxt) => {
 
   nuxt.vueApp.use(VueQueryPlugin, options);
 
-  // if (import.meta.server) {
-  //   nuxt.hooks.hook("app:rendered", () => {
-  //     vueQueryState.value = dehydrate(queryClient);
-  //   });
-  // }
-
   if (import.meta.client) {
     hydrate(queryClient, vueQueryState.value);
   }

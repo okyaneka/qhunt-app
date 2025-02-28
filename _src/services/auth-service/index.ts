@@ -9,20 +9,24 @@ import type {
 import { request, routes } from "~/_src/helpers";
 import { getMe } from "../_locals";
 import { push } from "~/_src/helpers/toast";
+import type { User } from "firebase/auth";
+import { firebase } from "qhunt-lib/plugins/firebase";
 
 export const login = () => {
   return request.mutate<UserLoginPayload, Auth>(API.AUTH_LOGIN, {
-    onSuccess: async () => {
-      await getMe();
-    },
+    onSuccess: () => getMe(),
   });
 };
 
 export const register = () => {
   return request.mutate<UserPayload, Auth>(API.AUTH_REGISTER, {
-    onSuccess: async () => {
-      await getMe();
-    },
+    onSuccess: () => getMe(),
+  });
+};
+
+export const googleSign = () => {
+  return request.mutate<User, Auth>(API.AUTH_GOOGLE_SIGN, {
+    onSuccess: () => getMe(),
   });
 };
 
@@ -52,13 +56,21 @@ export const logout = () => {
 
   return request.mutate(API.AUTH_LOGOUT, {
     onSuccess: () => {
+      firebase.signOut();
       authStore.auth = undefined;
       push("Berhasil Logout", { type: "success" });
-      router.replace(routes.login);
+      router.push(routes.login);
     },
   });
 };
 
-const AuthService = { register, edit, photo, logout, login } as const;
+const AuthService = {
+  register,
+  googleSign,
+  edit,
+  photo,
+  logout,
+  login,
+} as const;
 
 export default AuthService;

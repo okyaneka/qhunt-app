@@ -1,7 +1,7 @@
 <script setup lang="ts">
+import { firebase } from "qhunt-lib/plugins/firebase";
 import { routes, type ListItem } from "~/_src/helpers";
 import { setTitle } from "~/_src/helpers/common";
-import { push } from "~/_src/helpers/toast";
 import AuthService from "~/_src/services/auth-service";
 
 setTitle("Profile");
@@ -24,10 +24,8 @@ const actions = [
   },
 ];
 
-const handleActionSelect = (value: string) => {
-  if (value === "logout") {
-    logout();
-  }
+const handleActionSelect = async (value: string) => {
+  if (value === "logout") logout();
 };
 </script>
 
@@ -43,7 +41,7 @@ const handleActionSelect = (value: string) => {
       >
         <!-- Avatar -->
         <div class="flex justify-center absolute w-full left-0 -top-16">
-          <CAvatar class="shadow-card" :src="auth?.photo?.fileUrl" />
+          <CAvatar class="shadow-card" :src="auth?.user?.photo" />
         </div>
 
         <!-- Action -->

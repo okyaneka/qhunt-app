@@ -1,4 +1,4 @@
-import axios, { AxiosHeaders } from "axios";
+import axios, { AxiosError, AxiosHeaders } from "axios";
 import type { UserPublic } from "qhunt-lib";
 import { API } from "~/_src/constants";
 import type { DefaultResponse } from "~/_src/helpers";
@@ -8,16 +8,23 @@ export default defineEventHandler(async (event) => {
   const headers = new AxiosHeaders();
   if (Cookie) headers.set("Cookie", Cookie);
 
-  const { data, ...res } = await axios.get<DefaultResponse<UserPublic>>(
-    API.AUTH_ME,
-    {
+  const res = await axios
+    .get<DefaultResponse<UserPublic>>(API.AUTH_ME, {
       withCredentials: true,
       headers,
-    }
-  );
+    })
+    .catch((err: AxiosError<DefaultResponse>) => {
+      const headers = err.response?.headers;
 
-  const setCookieHeader = res.headers["set-cookie"];
-  if (setCookieHeader) setHeader(event, "Set-Cookie", setCookieHeader);
+      if (headers) setHeader(event, "Set-Cookie", headers["set-cookie"]);
 
-  return data.data;
+      throw createError({
+        status: err.status,
+        message: err.response?.data.message || err.message,
+      });
+    });
+
+  setHeader(event, "Set-Cookie", res.headers["set-cookie"]);
+
+  return res.data.data;
 });
