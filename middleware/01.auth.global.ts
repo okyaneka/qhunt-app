@@ -1,11 +1,11 @@
 import ssr from "~/_src/configs/ssr";
 import { useAuthStore } from "~/stores";
-import { getMe } from "~/_src/services/_locals";
-import dayjs from "dayjs";
 import type { UserPublic } from "qhunt-lib";
+import { push } from "~/_src/helpers/toast";
 
 const AuthGlobalMiddleware = defineNuxtRouteMiddleware(async (to) => {
   if (ssr.includes(to.path)) return;
+  const TID_API = useCookie("TID_API");
 
   const authStore = useAuthStore();
   if (authStore.auth) return;
@@ -14,12 +14,21 @@ const AuthGlobalMiddleware = defineNuxtRouteMiddleware(async (to) => {
     ? useRequestHeaders(["cookie"])
     : undefined;
 
-  if (import.meta.client || headers?.cookie) {
-    const { data } = await useFetch<UserPublic>("/api/me", {
+  if (import.meta.client || TID_API.value) {
+    const { data, error, refresh } = await useFetch<UserPublic>("/api/me", {
       credentials: "include",
       headers,
+      lazy: import.meta.client,
+      server: import.meta.server,
     });
 
+    if (error.value) {
+      if (import.meta.client) {
+        const message = error.value.data?.message || error.value.message;
+        push(message, { type: "error" });
+      }
+      await refresh();
+    }
     if (data.value) authStore.auth = data.value;
   }
 });
