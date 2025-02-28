@@ -3,10 +3,11 @@ import { push } from "~/_src/helpers/toast";
 import { toTypedSchema } from "@vee-validate/yup";
 import { useForm } from "vee-validate";
 import * as yup from "yup";
-import auth from "~/_src/services/auth-service";
+import AuthService from "~/_src/services/auth-service";
 import type { UserPayload } from "qhunt-lib";
 import { routes } from "~/_src/helpers";
 import { setTitle } from "~/_src/helpers/common";
+import { firebase } from "qhunt-lib/plugins/firebase";
 
 setTitle("Register");
 definePageMeta({
@@ -22,7 +23,8 @@ const schema = yup.object({
 
 const router = useRouter();
 
-const { mutate } = auth.register();
+const { mutate: register } = AuthService.register();
+const { mutate: gSign } = AuthService.googleSign();
 
 const {
   defineField,
@@ -41,17 +43,19 @@ defineField("email");
 defineField("name");
 defineField("password");
 
+const onSuccess = () => {
+  router.push(routes.profile);
+  push("Register Sukses!", { type: "success" });
+};
+
 const onSubmit = handleSubmit((value: UserPayload) => {
-  mutate(value, {
-    onSuccess: (res) => {
-      router.push(routes.profile);
-      push("Register Sukses!", { type: "success" });
-    },
-    onError: (err) => {
-      // push("Error bro", { type: "error" });
-    },
-  });
+  register(value, { onSuccess });
 });
+
+const googleSignin = async () => {
+  const { user } = await firebase.signInWithGoogle();
+  gSign(user, { onSuccess });
+};
 
 onMounted(() => {
   setTimeout(() => {
@@ -80,7 +84,7 @@ onMounted(() => {
             color="white"
             bordered
             prepend-icon="logos:google-icon"
-            @click="resetForm()"
+            @click="googleSignin"
           >
             Google
           </CButton>

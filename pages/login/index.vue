@@ -7,6 +7,7 @@ import type { UserPayload } from "qhunt-lib";
 import { routes } from "~/_src/helpers";
 import AuthService from "~/_src/services/auth-service";
 import { setTitle } from "~/_src/helpers/common";
+import { firebase } from "qhunt-lib/plugins/firebase";
 
 setTitle("Login");
 definePageMeta({
@@ -39,6 +40,13 @@ const {
 defineField("email");
 defineField("password");
 
+const { mutate: gSign } = AuthService.googleSign();
+
+const onSuccess = () => {
+  router.push(routes.profile);
+  push("Register Sukses!", { type: "success" });
+};
+
 const onSubmit = handleSubmit((value: UserPayload) => {
   login(value, {
     onSuccess: () => {
@@ -47,6 +55,11 @@ const onSubmit = handleSubmit((value: UserPayload) => {
     },
   });
 });
+
+const googleSignin = async () => {
+  const { user } = await firebase.signInWithGoogle();
+  gSign(user, { onSuccess });
+};
 </script>
 
 <template>
@@ -69,9 +82,9 @@ const onSubmit = handleSubmit((value: UserPayload) => {
             color="white"
             bordered
             prepend-icon="logos:google-icon"
-            @click="resetForm()"
+            @click="googleSignin"
           >
-            Google
+            Googles
           </CButton>
         </div>
         <hr />
