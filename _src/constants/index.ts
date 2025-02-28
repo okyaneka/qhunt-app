@@ -6,4 +6,5 @@ export const API = {
   AUTH_EDIT: "/profile/edit",
   AUTH_PHOTO: "/profile/photo",
   AUTH_LOGOUT: "/logout",
+  AUTH_GOOGLE_SIGN: "/google-sign",
 } as const;
