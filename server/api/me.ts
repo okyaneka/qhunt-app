@@ -28,7 +28,7 @@ export default defineEventHandler(async (event) => {
       if (headers && headers["set-cookie"])
         setHeader(event, "Set-Cookie", headers["set-cookie"]);
 
-      return null;
+      return false;
     });
 
   return res;
