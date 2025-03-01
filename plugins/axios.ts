@@ -22,8 +22,6 @@ export default defineNuxtPlugin(() => {
     (err: AxiosError<DefaultResponse>) => {
       const res = err.response?.data;
       if (import.meta.client) {
-        console.log(res?.code);
-
         const message = res?.message || err.message;
         if (res && message == "validation_error") {
           const validation = Object.values(res.error?.validation || {}) as any;
