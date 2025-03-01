@@ -2,11 +2,13 @@ import { API } from "~/_src/constants";
 import type {
   Auth,
   UserLoginPayload,
+  UserPasswordPayload,
   UserPayload,
   UserPublic,
+  UserPublicFull,
   UserPublicPayload,
 } from "qhunt-lib";
-import { request, routes } from "~/_src/helpers";
+import { type DefaultResponse, request, routes } from "~/_src/helpers";
 import { getMe } from "../_locals";
 import { push } from "~/_src/helpers/toast";
 import type { User } from "firebase/auth";
@@ -16,6 +18,10 @@ export const login = () => {
   return request.mutate<UserLoginPayload, Auth>(API.AUTH_LOGIN, {
     onSuccess: () => getMe(),
   });
+};
+
+export const me = () => {
+  return request.query<DefaultResponse<UserPublicFull>>(API.AUTH_ME_FULL);
 };
 
 export const register = () => {
@@ -43,9 +49,17 @@ export const edit = () => {
   });
 };
 
+export const password = () => {
+  const router = useRouter();
+  return request.mutate<UserPasswordPayload, UserPublic>(API.AUTH_PASSWORD, {
+    method: "patch",
+    onSuccess: () => getMe(),
+  });
+};
+
 export const photo = () => {
   return request.mutate<FormData, UserPublic>(API.AUTH_PHOTO, {
-    method: "PUT",
+    method: "patch",
     onSuccess: async (res) => {},
   });
 };
@@ -65,12 +79,14 @@ export const logout = () => {
 };
 
 const AuthService = {
-  register,
-  googleSign,
   edit,
-  photo,
-  logout,
+  googleSign,
   login,
+  logout,
+  password,
+  me,
+  photo,
+  register,
 } as const;
 
 export default AuthService;
