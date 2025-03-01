@@ -4,10 +4,10 @@ import { routes, type DefaultResponse } from "~/_src/helpers";
 import { useToastProvider } from "~/_src/providers/ToastProvider";
 
 export default defineNuxtPlugin(() => {
-  const authStore = useAuthStore();
   const { push } = useToastProvider();
-  const router = useRouter();
+  const authStore = useAuthStore();
   const env = useEnv();
+  const router = useRouter();
 
   axios.defaults.baseURL = env.public.APP_API_URL;
   axios.defaults.withCredentials = true;
@@ -19,7 +19,7 @@ export default defineNuxtPlugin(() => {
 
   axios.interceptors.response.use(
     (res) => res,
-    (err: AxiosError<DefaultResponse>) => {
+    async (err: AxiosError<DefaultResponse>) => {
       const res = err.response?.data;
       if (import.meta.client) {
         const message = res?.message || err.message;
@@ -30,6 +30,7 @@ export default defineNuxtPlugin(() => {
 
         if (res?.code == 401) {
           authStore.auth = undefined;
+          await useFetch("/api/me", { credentials: "include" });
           router.push(routes.login);
         }
       }

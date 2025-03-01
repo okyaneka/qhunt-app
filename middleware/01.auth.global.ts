@@ -22,13 +22,11 @@ const AuthGlobalMiddleware = defineNuxtRouteMiddleware(async (to) => {
       server: import.meta.server,
     });
 
-    if (error.value) {
-      if (import.meta.client) {
-        const message = error.value.data?.message || error.value.message;
-        push(message, { type: "error" });
-      }
-      await refresh();
+    if (error.value && import.meta.client) {
+      const message = error.value.data?.message || error.value.message;
+      push(message, { type: "error" });
     }
+    if (error.value || !data.value) await refresh();
     if (data.value) authStore.auth = data.value;
   }
 });

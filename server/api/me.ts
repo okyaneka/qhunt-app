@@ -13,28 +13,23 @@ export default defineEventHandler(async (event) => {
       withCredentials: true,
       headers,
     })
-    .catch((err: AxiosError<DefaultResponse>) => {
-      const { response } = err;
-      const headers = response?.headers;
-
+    .then((res) => {
+      const headers = res.headers;
       if (headers && headers["set-cookie"])
         setHeader(event, "Set-Cookie", headers["set-cookie"]);
 
-      if (response?.status === 401) {
-        return () => sendRedirect(event, "/login");
-      } else if (err.response)
-        throw createError({
-          status: response?.status,
-          message: err.response?.data.message || err.message,
-        });
+      return res.data.data;
+    })
+    .catch((err: AxiosError<DefaultResponse>) => {
+      const { response } = err;
+      console.log();
+
+      const headers = response?.headers;
+      if (headers && headers["set-cookie"])
+        setHeader(event, "Set-Cookie", headers["set-cookie"]);
+
+      return null;
     });
 
-  if (typeof res === "function") res();
-  else if (res) {
-    const resHeaders = res.headers;
-    if (resHeaders && resHeaders["set-cookie"])
-      setHeader(event, "Set-Cookie", resHeaders["set-cookie"]);
-
-    return res.data.data;
-  }
+  return res;
 });
