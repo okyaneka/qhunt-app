@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { firebase } from "qhunt-lib/plugins/firebase";
 import { routes, type ListItem } from "~/_src/helpers";
 import { setTitle } from "~/_src/helpers/common";
 import AuthService from "~/_src/services/auth-service";
@@ -16,7 +15,13 @@ const items = ref([
   { label: "Tentang" },
 ]);
 
-const actions = [
+const actions: ListItem[] = [
+  {
+    as: "link",
+    to: routes.UPDATE_PASSWORD,
+    key: "password",
+    label: "Update Password",
+  },
   {
     class: "text-red-500 hover:bg-red-500 hover:text-white",
     key: "logout",

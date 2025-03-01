@@ -1,5 +1,6 @@
 import type { ValueOf } from "qhunt-lib";
 import type { HTMLAttributes } from "vue";
+import type { RouterLinkProps } from "vue-router";
 import type { API } from "~/_src/constants";
 
 export type PartialDeep<T> = {
@@ -46,6 +47,8 @@ export type MutationMethod =
   | "PUT";
 
 export type ListItem<T = Record<string, any>> = T &
-  Partial<{ class: HTMLAttributes["class"] }>;
+  Partial<
+    { class: HTMLAttributes["class"]; as: "link" | "button" } & RouterLinkProps
+  >;
 
 export type Api = ValueOf<typeof API>;

@@ -5,6 +5,7 @@ const routes = {
   home: "/home",
   profile: "/profile",
   profileEdit: "/profile/edit",
+  UPDATE_PASSWORD: "/profile/update-password",
   notifications: "/notifications",
   scan: {
     index: "/scan",

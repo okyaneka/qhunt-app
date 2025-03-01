@@ -72,8 +72,9 @@ const inputValue = computed({
     >
       <slot name="append" />
 
-      <template v-if="type == 'password' && togglePassword">
+      <template v-if="type == 'password' && togglePassword && !disabled">
         <CButton
+          tabindex="-1"
           icon
           variant="flat"
           size="sm"

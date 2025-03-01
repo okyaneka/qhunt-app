@@ -20,7 +20,15 @@ const randomId = computed(
 <template>
   <div class="flex flex-col">
     <slot v-if="$slots.label" name="label" />
-    <label v-if="label" :for="id || randomId" class="font-bold mb-1">
+    <label
+      v-if="label"
+      :for="id || randomId"
+      class="font-bold mb-1"
+      :class="{
+        'text-red-500': isInvalid && !disabled,
+        'text-gray-400': disabled,
+      }"
+    >
       {{ label }}
     </label>
 
