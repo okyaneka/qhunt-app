@@ -2,6 +2,8 @@ import axios, { AxiosError, type AxiosResponse } from "axios";
 import { useMutation, useQuery } from "@tanstack/vue-query";
 import type { MutationOptions, UseQueryOptions } from "@tanstack/vue-query";
 import type { DefaultResponse, MutationMethod } from "../types";
+import type { ValueOf } from "qhunt-lib";
+import { API } from "~/_src/constants";
 
 export const get = <T = unknown>(
   url: MaybeRef<string>,
@@ -18,7 +20,7 @@ export const get = <T = unknown>(
 };
 
 export const query = <T = unknown>(
-  url: MaybeRef<string>,
+  url: MaybeRef<ValueOf<typeof API>>,
   options?: Partial<UseQueryOptions<T> & { params: Ref<any> }>
 ) => {
   const params = options?.params || null;

@@ -22,7 +22,6 @@ export default defineEventHandler(async (event) => {
     })
     .catch((err: AxiosError<DefaultResponse>) => {
       const { response } = err;
-      console.log();
 
       const headers = response?.headers;
       if (headers && headers["set-cookie"])
