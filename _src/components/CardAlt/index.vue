@@ -3,6 +3,7 @@ import { twMerge } from "tailwind-merge";
 import type { HTMLAttributes } from "vue";
 
 type Props = {
+  decoration: boolean;
   flat: boolean;
   dark: boolean;
   faded: boolean;
@@ -20,6 +21,7 @@ const { hoverable, contentClass } = defineProps<Partial<Props>>();
     class="card rounded-lg overflow-clip"
     :class="{
       border: flat,
+      decoration: decoration,
       'cursor-pointer transition-all hover:z-[9999]': hoverable,
       'hover:shadow-card-lg': hoverable && !faded && !flat,
       'hover:shadow-card': hoverable && faded && !flat,
