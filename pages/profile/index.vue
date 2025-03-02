@@ -9,11 +9,11 @@ definePageMeta({ layout: "mobile" });
 const { auth } = useAuthStore();
 const { mutate: logout } = AuthService.logout();
 
-const items = ref([
+const items: ListItem[] = [
   { label: "Syarat dan Ketentuan" },
   { label: "Kebujakan Privasi" },
-  { label: "Tentang" },
-]);
+  { as: "link", to: routes.ABOUT, label: "Tentang" },
+];
 
 const actions: ListItem[] = [
   {
