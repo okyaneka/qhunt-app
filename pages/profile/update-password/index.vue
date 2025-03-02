@@ -75,7 +75,7 @@ const onSubmit = handleSubmit((value: UserPasswordPayload) => {
 <template>
   <div class="flex flex-col">
     <CBarTitle>Update Password</CBarTitle>
-    <div>{{ user }}</div>
+
     <div class="px-3">
       <CCardAlt content-class="decoration flex flex-col gap-2">
         <form class="flex flex-col gap-2" @submit.prevent="onSubmit()">

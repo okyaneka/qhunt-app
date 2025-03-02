@@ -52,3 +52,9 @@ export type ListItem<T = Record<string, any>> = T &
   >;
 
 export type Api = ValueOf<typeof API>;
+
+export type SliderItem = {
+  title: string;
+  subtitle?: string;
+  image?: string;
+};

@@ -40,7 +40,9 @@
   }
   h1,
   h2,
-  h3,
+  h3 {
+    @apply font-bold;
+  }
   h4,
   h5,
   h6 {
@@ -73,7 +75,7 @@
   }
 }
 
-@layer components {
+@layer utilities {
   .w-lg-center {
     @apply max-w-lg w-full mx-auto;
   }
