@@ -2,10 +2,10 @@ import axios, { AxiosError, AxiosHeaders, type AxiosInstance } from "axios";
 import type { UserPublic } from "qhunt-lib";
 import { API } from "~/_src/constants";
 import type { DefaultResponse } from "~/_src/helpers";
+import { createApi } from "~/_src/helpers/request";
 
 export default defineEventHandler(async (event) => {
-  const globalInstance = globalThis as { __API__?: AxiosInstance };
-  const $api = globalInstance.__API__;
+  const $api = createApi();
   if (!$api) throw createError("instance not found");
 
   const Cookie = getHeaders(event).cookie;
