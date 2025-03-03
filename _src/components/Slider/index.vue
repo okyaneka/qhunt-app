@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { RouterLink } from "vue-router";
 import type { SliderItem } from "~/_src/helpers";
 
 type Props = {
@@ -7,11 +8,13 @@ type Props = {
   interval: number;
   navigation: boolean;
   pauseOnHover: boolean;
+  arrow: boolean;
 };
 
 useAttrs();
 
 const {
+  arrow,
   interval = 3e3,
   height = 320,
   items,
@@ -21,15 +24,18 @@ const {
 const slots = useSlots();
 
 const sliderRef = ref<HTMLElement>();
+const slideContentRef =
+  ref<(HTMLElement | InstanceType<typeof RouterLink>)[]>();
 const isTouched = ref(false);
 const isPause = ref(false);
 const quickActiveIndex = ref(0);
 const activeIndex = ref(0);
 const slideInterval = ref<NodeJS.Timeout>();
 const slideTimeout = ref<NodeJS.Timeout>();
+const slideContentHeight = ref(0);
 
 const slotItems = computed(() =>
-  Object.keys(slots).filter((key) => key.startsWith("item-"))
+  (Object.keys(slots) || []).filter((key) => key.startsWith("item-"))
 );
 
 const itemsLength = computed(
@@ -42,17 +48,6 @@ const visibleItems = computed<number[]>(() => {
 });
 
 const center = computed(() => Math.floor(visibleItems.value.length / 2));
-
-const centerIndex = computed(() => {
-  return (activeIndex.value + center.value) % itemsLength.value;
-});
-
-const quickSortedVisibleItems = computed(() => {
-  const rest = [...visibleItems.value];
-  const index = (quickActiveIndex.value + 1 + center.value) % itemsLength.value;
-  const spliced = rest.splice(index);
-  return [...spliced, ...rest];
-});
 
 const sortedVisibleItems = computed(() => {
   const rest = [...visibleItems.value];
@@ -127,7 +122,7 @@ const sliderOnScroll = (event: Event) => {
     const slider = sliderRef.value;
     if (!slider) return;
     if (slider.scrollLeft == defaultPos.value) return;
-    const adder = slider.scrollLeft > defaultPos.value ? 1 : -1;
+    const adder = (slider.scrollLeft - defaultPos.value) / scrollWidth.value;
 
     activeIndex.value =
       (activeIndex.value + adder + itemsLength.value) % itemsLength.value;
@@ -149,6 +144,19 @@ const uninit = () => {
   clearTimeout(slideTimeout.value);
   clearInterval(slideInterval.value);
 };
+
+watch(
+  quickActiveIndex,
+  async (index) => {
+    if (import.meta.client) {
+      await nextTick();
+      const el = document.querySelectorAll(".slide-content");
+      const activeEl = el[center.value + 1];
+      if (activeEl) slideContentHeight.value = activeEl.clientHeight;
+    }
+  },
+  { immediate: true }
+);
 
 onMounted(() => init());
 
@@ -176,15 +184,20 @@ onUnmounted(() => uninit());
           }"
         >
           <slot v-if="slotItems.length" :name="`item-${item + 1}`" />
-          <div class="slide-content" v-else-if="items && items[item]">
+          <component
+            v-else-if="items && items[item]"
+            :is="items[item].to ? RouterLink : 'div'"
+            class="slide-content"
+            :to="items[item].to"
+          >
             <h2>{{ items[item].title }}</h2>
             <p>{{ items[item].subtitle }}</p>
-          </div>
+          </component>
         </div>
       </template>
     </div>
 
-    <div v-if="navigation" class="slide-nav relative">
+    <div v-if="navigation" class="slide-nav">
       <div
         v-for="item in visibleItems"
         :key="item"
@@ -192,6 +205,23 @@ onUnmounted(() => uninit());
         :class="{ active: item === quickActiveIndex }"
         @click="onSetPos(item)"
       ></div>
+    </div>
+
+    <div
+      v-if="arrow && slideContentHeight"
+      class="slide-nav-arrow"
+      :style="{ bottom: `${slideContentHeight}px` }"
+    >
+      <div class="slide-nav-prev">
+        <CButton size="sm" variant="light" color="white" icon @click="onPrev">
+          <Icon name="ri:arrow-left-line" />
+        </CButton>
+      </div>
+      <div class="slide-nav-next">
+        <CButton size="sm" variant="light" color="white" icon @click="onNext">
+          <Icon name="ri:arrow-right-line" />
+        </CButton>
+      </div>
     </div>
   </div>
 </template>
@@ -208,10 +238,10 @@ onUnmounted(() => uninit());
     scrollbar-width: none;
   }
   .slide-item {
-    @apply snap-start snap-always flex flex-col flex-none w-full bg-red-50 bg-cover bg-center;
+    @apply snap-start snap-always flex flex-col flex-none w-full bg-cover bg-center select-none;
   }
   .slide-content {
-    @apply p-3 bg-dark bg-opacity-50 text-white mt-auto;
+    @apply p-3 block bg-dark bg-opacity-50 text-white mt-auto;
   }
   .slide-nav {
     @apply absolute bottom-2 right-2 max-w-80 flex gap-1 cursor-pointer;
@@ -221,6 +251,19 @@ onUnmounted(() => uninit());
   }
   .slide-nav-item.active {
     @apply bg-opacity-100;
+  }
+  .slide-nav-arrow {
+    @apply absolute w-full left-0 transition-all duration-300;
+  }
+  .slide-nav-prev,
+  .slide-nav-next {
+    @apply absolute bottom-2;
+  }
+  .slide-nav-prev {
+    @apply left-2;
+  }
+  .slide-nav-next {
+    @apply right-2;
   }
 }
 </style>

@@ -57,4 +57,5 @@ export type SliderItem = {
   title: string;
   subtitle?: string;
   image?: string;
+  to?: RouterLinkProps["to"];
 };

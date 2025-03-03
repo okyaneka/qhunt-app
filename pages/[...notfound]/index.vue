@@ -2,7 +2,7 @@
 import { routes } from "~/_src/helpers";
 import { setTitle } from "~/_src/helpers/common";
 
-setTitle("Scan");
+setTitle("Halaman Tidak Ditemukan");
 </script>
 
 <template>

@@ -74,10 +74,7 @@ setTitle("About");
       </div>
 
       <div class="mt-auto">
-        <p class="text-center">
-          &copy;2025
-          <RouterLink :to="routes.home">{{ env.public.APP_NAME }}</RouterLink>
-        </p>
+        <CCopy />
       </div>
     </div>
   </div>
