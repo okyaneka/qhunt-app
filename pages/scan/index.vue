@@ -3,6 +3,7 @@ import { qr } from "~/_src/services";
 import { routes } from "~/_src/helpers";
 import { QR_CONTENT_TYPES } from "qhunt-lib/constants";
 import { setTitle } from "~/_src/helpers/common";
+import CQrScanner from "~/_src/components/QrScanner/index.vue";
 
 definePageMeta({
   layout: "blank",
@@ -12,8 +13,8 @@ setTitle("Scan");
 
 const router = useRouter();
 
+const scannerRef = ref<InstanceType<typeof CQrScanner>>();
 const result = ref("");
-
 const isError = ref(false);
 
 const {
@@ -60,9 +61,11 @@ watch(queryError, () => {
     </CBarTitle>
 
     <CQrScanner
+      ref="scannerRef"
       class="h-screen w-full"
       :disabled="isError"
       from-file
+      manual
       @scanned="onVerify"
     >
       <div class="h-full w-full relative">
@@ -83,7 +86,13 @@ watch(queryError, () => {
               </div>
 
               <div class="text-center mt-4">
-                <CButton color="light" @click="isError = false">
+                <CButton
+                  color="light"
+                  @click="
+                    scannerRef?.startScanning();
+                    isError = false;
+                  "
+                >
                   Cari Lagi!
                 </CButton>
               </div>
