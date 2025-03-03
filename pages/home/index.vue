@@ -16,7 +16,7 @@ const eventItems: SliderItem[] = [
   {
     title: "Solution Asik Banget",
     subtitle: "24 - 28 Maret 2025",
-    // to: "#",
+    to: "#",
     image:
       "https://act-webstatic.hoyoverse.com/puzzle/hk4e/pz_QaiBDjkyxb/resource/puzzle/2024/12/09/0fe98545fc1dc91013ae70e6c820f2fb_8135622234369919869.png?x-oss-process=image/format,webp/quality,Q_90",
   },
@@ -34,24 +34,42 @@ definePageMeta({ layout: "mobile" });
 
 const { $pwa } = useNuxtApp();
 const env = useEnv();
+const prompt = ref<BeforeInstallPromptEvent>();
 
-const install = async () => {
-  const res = await $pwa?.install();
-  console.log({ res });
+const setPrompt = (event: Event) => {
+  event.preventDefault();
+  prompt.value = event as BeforeInstallPromptEvent;
 };
 
-onMounted(() => {});
+const install = async () => {
+  if (prompt.value) {
+    prompt.value.prompt();
+  }
+};
+
+onMounted(() => {
+  window.addEventListener("beforeinstallprompt", setPrompt);
+});
+
+onUnmounted(() => {
+  window.removeEventListener("beforeinstallprompt", setPrompt);
+});
 </script>
 
 <template>
   <div class="flex flex-col gap-4">
-    <CCardAlt
-      class="rounded-t-none"
-      content-class="flex flex-col bg-dark text-white"
-    >
-      <h4 class="text-center">Sugeng Rawuh dateng Para Petualang</h4>
-      <h2 class="text-center">Selamat datang di {{ env.public.APP_NAME }}!</h2>
-    </CCardAlt>
+    <div>
+      <CBarTitle>Home</CBarTitle>
+
+      <div class="flex py-2 flex-col bg-dark text-white shadow-card">
+        <h3 class="text-center overflow-hidden whitespace-nowrap">
+          <span class="animate-marquee">
+            Sugeng Rawuh dateng Para Petualang! Selamat datang di
+            <span class="font-bold"> {{ env.public.APP_NAME }}! </span>
+          </span>
+        </h3>
+      </div>
+    </div>
 
     <div class="flex flex-col gap-4 px-3">
       <CCardAlt content-class="p-0">
@@ -127,7 +145,7 @@ onMounted(() => {});
 
       <CCardAlt>
         <div class="mb-2">
-          <h3>Ikuti Event Saat Ini!</h3>
+          <h3>Event Spesial Buat Kamu!</h3>
         </div>
         <CSlider
           :height="200"
@@ -161,3 +179,22 @@ onMounted(() => {});
     </div>
   </div>
 </template>
+
+<style scoped>
+@keyframes marquee {
+  from {
+    transform: translateX(60%);
+  }
+  to {
+    transform: translateX(-100%);
+  }
+}
+
+.animate-marquee {
+  @apply select-none inline-block uppercase font-medium;
+  animation: marquee 10s linear infinite;
+}
+.animate-marquee:hover {
+  animation-play-state: paused;
+}
+</style>
