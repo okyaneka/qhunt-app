@@ -1,4 +1,5 @@
 const routes = {
+  ABOUT: "/about",
   index: "/",
   register: "/register",
   login: "/login",
@@ -6,6 +7,10 @@ const routes = {
   profile: "/profile",
   profileEdit: "/profile/edit",
   UPDATE_PASSWORD: "/profile/update-password",
+  EVENTS: "/events",
+  TERMS: "/terms-conditions",
+  PRIVACY: "/privacy-policy",
+  CONTACT: "/contact",
   notifications: "/notifications",
   scan: {
     index: "/scan",

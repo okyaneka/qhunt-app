@@ -1,4 +1,3 @@
-import ToastProvider from "./index.vue";
 import type { Bread } from "./types";
 
 const breads = ref<Bread[]>([]);
@@ -32,5 +31,3 @@ export const useToastProvider = () => {
 };
 
 export * from "./types";
-
-export default ToastProvider;

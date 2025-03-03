@@ -1,14 +1,18 @@
-import axios, { AxiosError, AxiosHeaders } from "axios";
+import axios, { AxiosError, AxiosHeaders, type AxiosInstance } from "axios";
 import type { UserPublic } from "qhunt-lib";
 import { API } from "~/_src/constants";
 import type { DefaultResponse } from "~/_src/helpers";
+import { createApi } from "~/_src/helpers/request";
 
 export default defineEventHandler(async (event) => {
+  const $api = createApi();
+  if (!$api) throw createError("instance not found");
+
   const Cookie = getHeaders(event).cookie;
   const headers = new AxiosHeaders();
   if (Cookie) headers.set("Cookie", Cookie);
 
-  const res = await axios
+  const res = await $api
     .get<DefaultResponse<UserPublic>>(API.AUTH_ME, {
       withCredentials: true,
       headers,

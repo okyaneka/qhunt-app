@@ -1,6 +1,7 @@
 import { env, font, ssr, icon, tailwindcss } from "./_src/configs";
 import fs from "fs";
 import path from "path";
+import { pwa } from "./_src/configs";
 
 // get data from package.json
 const packagejson: any = JSON.parse(
@@ -18,7 +19,13 @@ export default defineNuxtConfig({
       charset: "utf-8",
       viewport: "width=device-width, initial-scale=1",
       title: env.APP_NAME,
-      meta: [{ name: "description", content: packagejson.description }],
+      meta: [
+        { charset: "utf-8" },
+        { name: "version", content: packagejson.version },
+        { name: "description", content: packagejson.description },
+        { name: "author", content: "noone" },
+        { name: "robots", content: "index, follow" },
+      ],
     },
 
     layoutTransition: { name: "fade-quick", mode: "out-in" },
@@ -31,15 +38,16 @@ export default defineNuxtConfig({
     "~src": "/_src",
   },
   runtimeConfig: {
-    public: env,
+    public: { ...env, APP_VERSION: packagejson.version },
   },
   compatibilityDate: "2024-11-01",
   devtools: { enabled: true },
   modules: [
+    "@vueuse/nuxt",
+    "@pinia/nuxt",
     ["@nuxtjs/tailwindcss", tailwindcss],
     ["@nuxtjs/google-fonts", font],
     ["@nuxt/icon", icon],
-    "@vueuse/nuxt",
-    "@pinia/nuxt",
+    ["@vite-pwa/nuxt", pwa],
   ],
 });
