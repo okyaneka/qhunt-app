@@ -1,3 +1,5 @@
+import type { MutationOptions, UseQueryOptions } from "@tanstack/vue-query";
+import type { AxiosError, AxiosResponse } from "axios";
 import type { ValueOf } from "qhunt-lib";
 import type { HTMLAttributes } from "vue";
 import type { RouterLinkProps } from "vue-router";
@@ -45,6 +47,19 @@ export type MutationMethod =
   | "POST"
   | "put"
   | "PUT";
+
+export type ExtendedQueryOptions<T = unknown, V = any> = UseQueryOptions<
+  T,
+  AxiosError<DefaultResponse>
+> & { params: MaybeRef<any> };
+
+export type ExtendedMutationOptions<V = unknown, T = unknown> = MutationOptions<
+  AxiosResponse<DefaultResponse<T>>,
+  AxiosError<DefaultResponse>,
+  V
+> & {
+  method: MutationMethod;
+};
 
 export type ListItem<T = Record<string, any>> = T &
   Partial<

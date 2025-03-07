@@ -1,7 +1,16 @@
 import axios, { AxiosError, type AxiosResponse } from "axios";
 import { useMutation, useQuery } from "@tanstack/vue-query";
-import type { MutationOptions, UseQueryOptions } from "@tanstack/vue-query";
-import type { DefaultResponse, MutationMethod } from "../types";
+import type {
+  MutationOptions,
+  QueryOptions,
+  UseQueryOptions,
+} from "@tanstack/vue-query";
+import type {
+  DefaultResponse,
+  ExtendedMutationOptions,
+  ExtendedQueryOptions,
+  MutationMethod,
+} from "../types";
 import type { ValueOf } from "qhunt-lib";
 import { API } from "~/_src/constants";
 import { useEnv } from "~/_src/configs/env";
@@ -62,6 +71,7 @@ export const get = <T = unknown>(
 
   return useQuery<T>({
     ...options,
+
     queryKey: [url, params],
     queryFn: () =>
       $api.get(unref(url), { params: params?.value }).then((res) => res.data),
@@ -69,13 +79,13 @@ export const get = <T = unknown>(
 };
 
 export const query = <T = unknown>(
-  url: MaybeRef<ValueOf<typeof API>>,
-  options?: Partial<UseQueryOptions<T> & { params: Ref<any> }>
+  url: MaybeRef<string>,
+  options?: Partial<ExtendedQueryOptions<T>>
 ) => {
   const { $api } = useNuxtApp();
   const params = options?.params || null;
 
-  return useQuery<T>({
+  return useQuery<T, AxiosError<DefaultResponse>>({
     ...options,
     queryKey: [url, params],
     queryFn: () =>
@@ -85,23 +95,17 @@ export const query = <T = unknown>(
 
 export const mutate = <V = void, T = unknown>(
   url: MaybeRef<string>,
-  options?: Partial<
-    MutationOptions<
-      AxiosResponse<DefaultResponse<T>>,
-      AxiosError<DefaultResponse>,
-      V
-    > & {
-      method: MutationMethod;
-    }
-  >
+  options?: Partial<ExtendedMutationOptions<V, T>>
 ) => {
   const { $api } = useNuxtApp();
   const { method = "post" } = options || {};
 
   return useMutation({
     ...options,
-    mutationFn: async (payload) =>
-      $api({ method, url: unref(url), data: payload }),
+    mutationFn: async (payload) => {
+      console.log("url", toValue(url));
+      return $api({ method, url: toValue(url), data: payload });
+    },
   });
 };
 
