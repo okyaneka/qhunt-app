@@ -68,11 +68,20 @@
     @apply text-base;
   }
 
-  input,
+  input:not([type="checkbox"]):not([type="radio"]),
   textarea,
   select,
   div.input {
     @apply appearance-none border-none bg-transparent outline-none focus:ring-0 placeholder:text-gray-400;
+  }
+  input:is([type="checkbox"], [type="radio"]) {
+    @apply h-4 w-4 cursor-pointer transition-all appearance-none border border-dark checked:bg-dark checked:border-dark checked:disabled:bg-gray-500 hover:disabled:cursor-none disabled:border-gray-500;
+  }
+  input[type="checkbox"] {
+    @apply rounded;
+  }
+  input[type="radio"] {
+    @apply rounded-full;
   }
 }
 
