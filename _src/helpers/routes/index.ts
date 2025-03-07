@@ -29,6 +29,16 @@ const routes = {
     action: (id: string) => `/challenge/${id}/action`,
     result: (id: string) => `/challenge/${id}/result`,
   },
+  admin: {
+    feature: {
+      list: `/__admin/feature`,
+      create: `/__admin/feature/create`,
+      edit: (id: string) => `/__admin/feature/${id}/edit`,
+    },
+  },
+  FEATURE: "/features",
+  FEATURE_TYPE: (type: string) => `/features/${type}`,
+  FEATURE_CONTENT: (type: string, slug: string) => `/features/${type}/${slug}`,
 } as const;
 
 export default routes;

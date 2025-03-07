@@ -7,6 +7,7 @@ interface Props {
   fromFile: boolean;
   hideFlashlight: boolean;
   disabled: boolean;
+  manual: boolean;
 }
 
 interface Emits {
@@ -18,6 +19,7 @@ const {
   disabled = false,
   fromFile = false,
   hideFlashlight = false,
+  manual,
 } = defineProps<Partial<Props>>();
 
 const emit = defineEmits<Emits>();
@@ -72,6 +74,7 @@ const setDevice = async () => {
 };
 
 const startScanning = () => {
+  meta.value = undefined;
   controller.value.abort();
   if (!stream.value || !mediaRef.value) return;
   qrcode.scanByStream(stream.value).then((res) => {
@@ -79,15 +82,17 @@ const startScanning = () => {
       throw new Error("scan aborted");
     });
 
-    emit("scanned", res.getText());
-
-    // const points = res.getResultPoints();
-    // setPosition(points);
-    // processing.value = true;
-
+    const points = res.getResultPoints();
+    setPosition(points);
     setTimeout(() => {
-      startScanning();
-    }, 1e3);
+      emit("scanned", res.getText());
+    }, 3e2);
+
+    if (!manual) {
+      setTimeout(() => {
+        startScanning();
+      }, 1e3);
+    }
   });
 };
 
@@ -97,10 +102,12 @@ const setPosition = (points: ResultPoint[]) => {
     const scaleY = mediaRef.value.clientHeight / mediaRef.value.videoHeight;
     const scale = Math.max(scaleX, scaleY);
 
-    const x = Math.min(...points.map((v) => v.getX()));
-    const y = Math.min(...points.map((v) => v.getY()));
-    const width = Math.max(...points.map((v) => v.getX())) - x;
-    const height = Math.max(...points.map((v) => v.getY())) - y;
+    const Xs = points.map((v) => v.getX());
+    const Ys = points.map((v) => v.getY());
+    const x = Math.min(...Xs);
+    const y = Math.min(...Ys);
+    const width = Math.max(...Xs) - x;
+    const height = Math.max(...Ys) - y;
     const offsetX =
       (mediaRef.value.videoWidth * scale - mediaRef.value.clientWidth) / 2;
 
@@ -245,6 +252,8 @@ watch(
   }
 );
 
+defineExpose({ startScanning });
+
 onMounted(() => {
   getPermission()
     .then(() => setDevice())
@@ -274,19 +283,38 @@ onUnmounted(() => {
         />
       </Transition>
 
-      <CButton
-        v-if="torchSupport && !hideFlashlight"
-        class="absolute top-[72px] right-4 z-[9999]"
-        :class="{
-          'bg-opacity-50': !isTorchOn,
-          'bg-white !text-dark': isTorchOn,
-        }"
-        size="sm"
-        icon
-        @click="toggleTorch"
+      <div
+        v-if="!hideFlashlight || !fromFile"
+        class="absolute top-16 right-4 z-[9999] flex gap-2"
       >
-        <Icon :name="isTorchOn ? 'ri:flashlight-fill' : 'ri:flashlight-line'" />
-      </CButton>
+        <CButton
+          v-if="torchSupport && !hideFlashlight"
+          :class="{
+            'bg-opacity-50': !isTorchOn,
+            'bg-white !text-dark': isTorchOn,
+          }"
+          size="sm"
+          icon
+          @click="toggleTorch"
+        >
+          <Icon
+            :name="isTorchOn ? 'ri:flashlight-fill' : 'ri:flashlight-line'"
+          />
+        </CButton>
+
+        <template v-if="fromFile">
+          <input
+            ref="inputRef"
+            class="hidden"
+            type="file"
+            accept="image/png,image/jpeg"
+            @change="onInputChange"
+          />
+          <CButton icon size="sm" @click="inputRef?.click()">
+            <Icon name="ri:image-fill" />
+          </CButton>
+        </template>
+      </div>
 
       <Transition name="fade">
         <div class="z-10 relative h-full">
@@ -298,31 +326,23 @@ onUnmounted(() => {
         </div>
       </Transition>
 
-      <Transition v-if="mediaRef && fromFile" name="fade">
-        <div class="absolute bottom-0 left-0 w-full p-4 flex flex-col gap-4">
-          <div class="flex justify-center gap-2 z-10">
-            <template v-if="fromFile">
-              <input
-                ref="inputRef"
-                class="hidden"
-                type="file"
-                accept="image/png,image/jpeg"
-                @change="onInputChange"
-              />
-              <CButton icon size="lg" @click="inputRef?.click()">
-                <Icon name="ri:image-fill" />
-              </CButton>
-            </template>
-          </div>
-        </div>
-      </Transition>
-
-      <div class="scanner-overlay"></div>
+      <div class="scanner-overlay">
+        <div
+          class="clip"
+          :style="{
+            left: meta?.x ? `${meta.x}px` : undefined,
+            top: meta?.y ? `${meta.y}px` : undefined,
+            width: meta?.width ? `${meta.width}px` : undefined,
+            height: meta?.height ? `${meta.height}px` : undefined,
+            transform: meta?.scale ? `scale(${meta.scale + 0.4})` : undefined,
+          }"
+        ></div>
+      </div>
 
       <!-- Hanya detektor lokasi qr aja -->
       <div
         v-if="false"
-        class="absolute w-40 h-40 transition-all text-white pulse -m-8"
+        class="absolute w-28 h-28 transition-all text-white pulse -m-8"
         :style="{
           left: (meta?.x || 0) + 'px',
           top: (meta?.y || 0) + 'px',
@@ -363,17 +383,16 @@ onUnmounted(() => {
 
 <style lang="css" scoped>
 .pulse {
-  animation: pulse 500ms ease-in-out infinite;
+  animation: pulse 500ms ease-in-out infinite alternate;
 }
 
 .scanner-overlay {
   @apply fixed inset-0 bg-transparent;
 }
 
-.scanner-overlay::before {
-  content: "";
-  box-shadow: rgba(0, 0, 0, 0.1) 0px 0px 20px, rgba(0, 0, 0, 0.25) 0 0 0 100vw;
-  @apply absolute w-[400px] h-[400px] max-w-[calc(100vh-32px)] top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-transparent rounded-lg;
+.scanner-overlay .clip {
+  @apply absolute w-80 h-80 max-w-[calc(100vw-32px)] top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-transparent rounded-lg transition-all;
+  box-shadow: rgba(0, 0, 0, 0.1) 0px 0px 20px, rgba(0, 0, 0, 0.25) 0 0 0 200vw;
 }
 
 @keyframes pulse {
@@ -382,13 +401,8 @@ onUnmounted(() => {
     /* scale: 1; */
     /* @apply scale-100; */
   }
-  50% {
-    transform: scale(0.9);
-    /* scale: 0.9; */
-    /* @apply scale-90; */
-  }
   100% {
-    transform: scale(1);
+    transform: scale(0.95);
     /* scale: 1; */
     /* @apply scale-100; */
   }

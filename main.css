@@ -70,7 +70,8 @@
 
   input,
   textarea,
-  select {
+  select,
+  div.input {
     @apply appearance-none border-none bg-transparent outline-none focus:ring-0 placeholder:text-gray-400;
   }
 }
@@ -78,6 +79,14 @@
 @layer utilities {
   .w-lg-center {
     @apply max-w-lg w-full mx-auto;
+  }
+
+  div.content > *:not(:last-child) {
+    @apply mb-2;
+  }
+
+  div.content > p {
+    @apply text-justify;
   }
 
   .decoration {
@@ -94,6 +103,33 @@
         transparent 100%
       );
   }
+
+  @keyframes shimmer {
+    0% {
+      background-position: 200% 0;
+    }
+    100% {
+      background-position: -200% 0;
+    }
+  }
+
+  .skeleton {
+    background: linear-gradient(90deg, #e0e0e0 25%, #f0f0f0 50%, #e0e0e0 75%);
+    background-size: 200% 100%;
+    animation: shimmer 3s infinite linear;
+  }
+}
+.tox .tox-toolbar__group {
+  @apply !px-1;
+}
+.tox .tox-toolbar__primary {
+  @apply !bg-light !px-1;
+}
+.tox .tox-tbtn {
+  @apply !bg-dark !text-white;
+}
+.tox .tox-tbtn svg {
+  @apply !fill-current;
 }
 
 .fade-quick-enter-active,

@@ -39,6 +39,7 @@ const randomId = computed(
         'bg-white ring-light-200 hover:ring-2 focus-within:ring-2': !disabled,
         'bg-gray-100 text-gray-800 cursor-not-allowed': disabled,
         'px-3 py-2 h-10': as == 'input',
+        'flex-col': as == 'textarea',
       }"
     >
       <div
@@ -66,6 +67,10 @@ const randomId = computed(
           :name="appendIcon"
         />
       </div>
+    </div>
+
+    <div v-if="$slots['help-text']" class="text-gray-500 px-2 pt-1">
+      <slot name="help-text" />
     </div>
 
     <div v-if="message" class="text-sm" :class="{ 'text-red-500': isInvalid }">

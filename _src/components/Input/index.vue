@@ -92,6 +92,10 @@ const inputValue = computed({
       </template>
     </template>
 
+    <template v-if="$slots['help-text']" #help-text>
+      <slot name="help-text" />
+    </template>
+
     <template #default="{ id }">
       <input
         v-bind="attrs"

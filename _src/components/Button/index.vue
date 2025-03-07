@@ -42,7 +42,7 @@ const linkAttrs = computed(() => ({
 const buttonAttrs = computed<ButtonHTMLAttributes>(() => ({
   type: "button",
   ...attrs,
-  disabled: loading || attrs.disabled,
+  disabled: disabled || loading || attrs.disabled,
 }));
 
 const setVariant = () => {

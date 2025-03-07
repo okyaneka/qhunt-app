@@ -13,6 +13,7 @@ export default defineNuxtConfig({
   watch: ["./_src/configs/**/*"],
   components: [
     { prefix: "C", path: "./_src/components/", extensions: ["vue"] },
+    { prefix: "CL", path: "./_src/components/_locals", extensions: ["vue"] },
   ],
   app: {
     head: {
@@ -32,7 +33,7 @@ export default defineNuxtConfig({
     pageTransition: { name: "fade-quick", mode: "out-in" },
   },
   ssr: true,
-  routeRules: Object.fromEntries(ssr.map((route) => [route, { ssr: false }])),
+  // routeRules: Object.fromEntries(ssr.map((route) => [route, { ssr: false }])),
   devServer: { port: env.PORT, host: "0.0.0.0" },
   alias: {
     "~src": "/_src",

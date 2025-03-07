@@ -1,7 +1,7 @@
 <script
   setup
   lang="ts"
-  generic="T extends { label: string; value: string } | string"
+  generic="T extends ({ label: string; value: string } | string)"
 >
 import type { SelectHTMLAttributes } from "vue";
 import type { BaseInputProps } from "../_base/BaseInput.vue";

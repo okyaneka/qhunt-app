@@ -114,18 +114,59 @@ export const flattenKeys = (values: Record<string, any>, prefix: string = "") =>
   Object.keys(flattenValues(values));
 
 export const formatDate = (
-  rawDate: ConfigType,
+  rawDate: ConfigType = new Date(),
   format: string = "DD/MM/YYYY"
 ) => dayjs(rawDate).format(format);
 
-export const setTitle = (title?: string) => {
+export const setTitle = (title?: MaybeRef<string>) => {
   const env = useEnv();
 
   return useSeoMeta({
-    title: `${title ? title + " - " : ""} ${env.public.APP_NAME}`.trim(),
+    title: `${toValue(title) ? toValue(title) + " - " : ""} ${
+      env.public.APP_NAME
+    }`.trim(),
   });
 };
 
-const common = { wpm, split, duar, flattenValues, flattenKeys } as const;
+export const objectToFormData = (
+  obj: Record<string, any>,
+  formData = new FormData(),
+  parentKey = ""
+) => {
+  for (const key in obj) {
+    if (!obj.hasOwnProperty(key)) continue;
+
+    const value = obj[key];
+    const fullKey = parentKey ? `${parentKey}[${key}]` : key;
+
+    if (value instanceof File) {
+      formData.append(fullKey, value);
+    } else if (Array.isArray(value)) {
+      value.forEach((item, index) => {
+        objectToFormData({ [`${key}[${index}]`]: item }, formData, parentKey);
+      });
+    } else if (typeof value === "object" && value !== null) {
+      objectToFormData(value, formData, fullKey);
+    } else if (value !== undefined) {
+      formData.append(fullKey, value);
+    }
+  }
+
+  return formData;
+};
+
+export const capitalize = (words: string) => {
+  return words.replace(/\b\w/g, (char) => char.toUpperCase());
+};
+
+const common = {
+  wpm,
+  capitalize,
+  split,
+  duar,
+  flattenValues,
+  flattenKeys,
+  objectToFormData,
+} as const;
 
 export default common;
