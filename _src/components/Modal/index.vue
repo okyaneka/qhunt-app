@@ -6,7 +6,9 @@ import type { HTMLAttributes } from "vue";
 interface Props {
   show: boolean;
   title: string;
+  width: number | string;
   class: HTMLAttributes["class"];
+  contentClass: HTMLAttributes["class"];
 }
 
 type Emits = {
@@ -17,7 +19,12 @@ type Emits = {
 
 defineOptions({ inheritAttrs: false });
 
-const { show = false, class: elClass } = defineProps<Partial<Props>>();
+const {
+  show = false,
+  class: elClass,
+  contentClass,
+  width = 400,
+} = defineProps<Partial<Props>>();
 
 const emit = defineEmits<Emits>();
 
@@ -40,10 +47,9 @@ watch(
       >
         <div class="max-w-full m-auto p-3">
           <CCardAlt
-            :class="
-              twMerge('w-96 max-w-full m-auto relative delay-1000', elClass)
-            "
+            :class="twMerge('max-w-full m-auto relative delay-1000', elClass)"
             content-class="p-0 max-h-[calc(100vh-24px)] overflow-auto"
+            :style="{ width: width + 'px' }"
             @click.stop
           >
             <div class="absolute w-full left-0 top-0 flex p-1">
@@ -61,7 +67,13 @@ watch(
             <div v-if="title" class="font-bold px-4 py-2 text-lg">
               {{ title }}
             </div>
-            <div :class="{ 'px-4 pb-3': title, 'px-4 py-3': !title }">
+            <div
+              :class="{
+                'px-4 pb-3': title,
+                'px-4 py-3': !title,
+                [contentClass]: true,
+              }"
+            >
               <slot />
             </div>
           </CCardAlt>

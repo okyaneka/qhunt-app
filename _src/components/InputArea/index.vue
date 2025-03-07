@@ -44,6 +44,10 @@ const inputValue = computed({
       <slot name="append" />
     </template>
 
+    <template v-if="$slots['help-text']" #help-text>
+      <slot name="help-text" />
+    </template>
+
     <template #default="{ id }">
       <textarea
         v-bind="attrs"

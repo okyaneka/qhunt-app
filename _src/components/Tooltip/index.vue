@@ -57,12 +57,17 @@ onClickOutside(targetRef, (event) => (isVisible.value = false));
 <template>
   <ClientOnly>
     <div ref="targetRef" @mouseenter="show(true)" @mouseleave="show(false)">
-      <div ref="elRef">
+      <div ref="elRef" class="flex">
         <slot />
       </div>
 
       <Transition name="fade-quick">
-        <CCardAlt v-if="isVisible" ref="contentRef" :style="floatingStyles">
+        <CCardAlt
+          v-if="isVisible"
+          class="max-w-40 text-center"
+          ref="contentRef"
+          :style="floatingStyles"
+        >
           <slot name="content" />
         </CCardAlt>
       </Transition>

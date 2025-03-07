@@ -5,6 +5,7 @@ export const env = {
   APP_SOCKET_URL: "",
   FIREBASE_KEY: "",
   FIREBASE_AUTH_DOMAIN: "",
+  TINY_MCE_KEY: "",
 } as const;
 
 export const useEnv = () => {

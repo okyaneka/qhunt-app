@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { twMerge } from "tailwind-merge";
 import type { HTMLAttributes } from "vue";
+import { RouterLink, type RouteLocationRaw } from "vue-router";
 
 type Props = {
   decoration: boolean;
@@ -9,22 +10,28 @@ type Props = {
   faded: boolean;
   hoverable: boolean;
   contentClass: HTMLAttributes["class"];
+  to: RouteLocationRaw;
 };
 
 useAttrs();
 
-const { hoverable, contentClass } = defineProps<Partial<Props>>();
+const { to, hoverable, contentClass } = defineProps<Partial<Props>>();
+
+const isHoverable = computed(() => hoverable || to);
 </script>
 
 <template>
-  <div
-    class="card rounded-lg overflow-clip"
+  <component
+    :is="to ? RouterLink : 'div'"
+    class="card rounded-lg overflow-clip block"
+    :to="to"
     :class="{
       border: flat,
       decoration: decoration,
-      'cursor-pointer transition-all hover:z-[9999]': hoverable,
-      'hover:shadow-card-lg': hoverable && !faded && !flat,
-      'hover:shadow-card': hoverable && faded && !flat,
+      'cursor-pointer transition-all hover:z-[9999]': isHoverable,
+      'hover:shadow-card-lg': isHoverable && !faded && !flat,
+      'hover:shadow-card': isHoverable && faded && !flat,
+      'hover:bg-gray-50': isHoverable && !faded && flat,
       'text-white': dark,
       'bg-dark': dark && !faded,
       'bg-dark-700': dark && faded,
@@ -37,5 +44,5 @@ const { hoverable, contentClass } = defineProps<Partial<Props>>();
     <div :class="twMerge('p-3', contentClass)">
       <slot />
     </div>
-  </div>
+  </component>
 </template>
