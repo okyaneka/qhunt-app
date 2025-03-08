@@ -1,7 +1,7 @@
-<script setup lang="ts" generic="T extends InputOption">
+<script setup lang="ts">
 export type InputOption = {
   label: string;
-  value: string | number;
+  value: string | number | boolean;
 };
 
 type InputValue = boolean | string | number | string[] | number[];
@@ -47,7 +47,7 @@ const inputValue = computed({
 
 <template>
   <div class="flex flex-col">
-    <slot v-if="$slots.label" name="label" />
+    <slot v-if="$slots.label" name="label" :for="elId" />
     <label
       v-if="label"
       :for="elId"
@@ -62,7 +62,10 @@ const inputValue = computed({
 
     <div
       class="flex gap-1"
-      :class="{ 'flex-col': view === 'col', 'flex-row': view === 'row' }"
+      :class="{
+        'flex-col items-start': view === 'col',
+        'flex-row': view === 'row',
+      }"
     >
       <label v-for="option in options" class="flex items-center gap-1">
         <div class="flex relative">
@@ -77,7 +80,7 @@ const inputValue = computed({
             }"
           />
           <Icon
-            class="text-white absolute top-0 left-0 w-full h-full"
+            class="text-white absolute top-0 left-0 w-full h-full cursor-pointer"
             name="ri:check-line"
           />
         </div>

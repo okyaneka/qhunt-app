@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import type { FeatureListParams } from "qhunt-lib";
+import type { FeatureListParams, FeatureType } from "qhunt-lib";
+import { FEATURE_TYPES } from "qhunt-lib/constants";
 import LOGO from "~/_src/assets/images/logo-grey-trimmed.png";
 import { routes } from "~/_src/helpers";
 import { setTitle } from "~/_src/helpers/common";
@@ -12,18 +13,24 @@ import {
 definePageMeta({ layout: "desktop" });
 setTitle("Feature");
 
+const type = ref<FeatureType | "">("");
 const search = ref("");
 const deleteId = ref<string>("");
-const params = ref<Partial<FeatureListParams>>({ page: 1, limit: 10 });
+const params = ref<Partial<FeatureListParams>>({
+  page: 1,
+  limit: 10,
+  type: undefined,
+});
 const deleteModal = ref(false);
 
-const { data, refetch } = useFeatureList({ params });
+const { isFetched, data, refetch } = useFeatureList({ params });
 const { mutate, isPending } = useFeatureDelete(deleteId);
 
 const featureList = computed(() => data.value?.data.list || []);
 
 const setParams = useDebounceFn(() => {
   params.value.search = search.value;
+  params.value.type = type.value ? type.value : undefined;
 }, 5e2);
 
 const handleDelete = (id: string) => {
@@ -32,7 +39,6 @@ const handleDelete = (id: string) => {
 };
 
 const handleConfirmDelete = () => {
-  console.log("p");
   if (!deleteId.value) return push("Tidak ada feature yang dipilih");
   mutate(
     {},
@@ -46,7 +52,7 @@ const handleConfirmDelete = () => {
   );
 };
 
-watch(search, () => {
+watch([search, type], () => {
   setParams();
 });
 </script>
@@ -57,18 +63,25 @@ watch(search, () => {
 
     <div class="flex gap-2">
       <div class="flex gap-2 ml-auto">
+        <div class="w-32">
+          <CSelect
+            v-model:value="type"
+            :items="['', ...Object.values(FEATURE_TYPES)]"
+            placeholder="Tipe"
+          />
+        </div>
         <CInput
           placeholder="Cari Judul"
           v-model:value="search"
           append-icon="ri:search-line"
         ></CInput>
         <CButton as="link" :to="routes.admin.feature.create" size="sm">
-          Tambah Feature
+          Tambah
         </CButton>
       </div>
     </div>
 
-    <div class="flex flex-col gap-3">
+    <div v-if="isFetched" class="flex flex-col gap-3">
       <CTransitionPullIn :items="featureList" item-key="id" v-slot="{ item }">
         <CCardAlt class="mb-3" content-class="flex gap-2">
           <div class="flex items-center h-40 border rounded">
@@ -86,13 +99,23 @@ watch(search, () => {
 
           <div class="flex flex-col gap-1">
             <h3>{{ item.title }}</h3>
-            <p>{{ item.status }}</p>
+            <div>
+              <CLFeatureChipType :type="item.type" />
+            </div>
+
+            <p class="flex gap-1">
+              <span class="capitalize">
+                {{ item.status }}
+              </span>
+              <span class="font-bold" v-if="item.featured"> Featured </span>
+            </p>
+
             <p>
-              <a :href="`/events/${item.type}/${item.slug}`" target="_blank">
+              <a :href="`/features/${item.type}/${item.slug}`" target="_blank">
                 Kunjungi link
               </a>
             </p>
-            <div class="flex gap-2">
+            <div class="flex gap-1">
               <CButton
                 as="link"
                 :to="routes.admin.feature.edit(item.id)"
@@ -105,19 +128,28 @@ watch(search, () => {
                 class="bg-red-500"
                 @click="handleDelete(item.id)"
               >
-                <Icon name="ri:delete-bin-line" />
+                <Icon name="ri:archive-fill" />
               </CButton>
             </div>
           </div>
         </CCardAlt>
       </CTransitionPullIn>
+
+      <div v-if="!featureList.length">Belum ada artikel</div>
+
+      <div v-else>
+        <CPagination
+          v-model:page="params.page"
+          :total-page="data?.data.totalPages"
+        />
+      </div>
     </div>
 
     <CLModalConfirm
       v-model:show="deleteModal"
       :is-loading="isPending"
-      title="Hapus Feature"
-      message="Apakah kamu yakin ingin menghapus feature ini?"
+      title="Arsip Feature"
+      message="Apakah kamu yakin ingin mengarsipkan feature ini?"
       @confirm="handleConfirmDelete()"
     />
   </div>

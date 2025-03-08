@@ -8,7 +8,10 @@ const attrs = useAttrs() as HTMLAttributes;
 <template>
   <div
     :class="
-      twMerge('skeleton min-h-4 w-full bg-gray-200 shimmer ', attrs.class || '')
+      twMerge(
+        'skeleton min-h-4 w-full bg-gray-200 shimmer rounded',
+        attrs.class || ''
+      )
     "
   ></div>
 </template>

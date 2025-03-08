@@ -102,10 +102,7 @@ export const mutate = <V = void, T = unknown>(
 
   return useMutation({
     ...options,
-    mutationFn: async (payload) => {
-      console.log("url", toValue(url));
-      return $api({ method, url: toValue(url), data: payload });
-    },
+    mutationFn: (payload) => $api({ method, url: toValue(url), data: payload }),
   });
 };
 
