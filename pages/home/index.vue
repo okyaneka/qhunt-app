@@ -136,20 +136,7 @@ onUnmounted(() => {
       </CSlider>
     </CCardAlt>
 
-    <CCardAlt>
-      <div class="mb-2">
-        <h3>Event Spesial Buat Kamu!</h3>
-      </div>
-      <CSlider
-        :height="200"
-        pause-on-hover
-        navigation
-        arrow
-        :interval="5e3"
-        :items="eventItems"
-      >
-      </CSlider>
-    </CCardAlt>
+    <CLHomeFeature />
 
     <CCardAlt v-if="!$pwa?.isPWAInstalled" decoration>
       <h4 class="text-center mb-4">
