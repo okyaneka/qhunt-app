@@ -14,9 +14,9 @@ const { isPending, mutate } = useFeatureCreate();
 const handleSubmit = async (value: FeatureForm) => {
   const formData = objectToFormData(value);
   mutate(formData, {
-    onSuccess: () => {
+    onSuccess: (res) => {
       push("Sukses bro 😎");
-      router.push(routes.admin.feature.list);
+      router.replace(routes.admin.feature.edit(res.data.data.id));
     },
   });
 };
@@ -24,7 +24,7 @@ const handleSubmit = async (value: FeatureForm) => {
 
 <template>
   <div class="p-3 flex-col gap-2">
-    <h1>Feature</h1>
+    <h1>Create Feature</h1>
 
     <CLFeatureForm :is-loading="isPending" @submit="handleSubmit" />
   </div>

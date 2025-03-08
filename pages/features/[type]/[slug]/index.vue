@@ -26,7 +26,7 @@ if (error.value) {
 
 const detail = computed(() => data.value?.data);
 const breadcrumb = computed<Breadcrumb[]>(() => [
-  { title: "Features", href: routes.FEATURE },
+  { title: "Home", href: routes.HOME },
   { title: params.value.type, href: routes.FEATURE_TYPE(params.value.type) },
   { title: detail.value?.title || "", href: "#" },
 ]);
@@ -51,7 +51,10 @@ setTitle(detail.value?.title ?? "404 Artikel Tidak Ditemukan");
     <CBreadcrumb :breadcrumb="breadcrumb" />
     <CCardAlt content-class="p-0">
       <div v-if="detail.featuredImage?.fileUrl" class="overflow-hidden">
-        <img :src="detail.featuredImage.fileUrl" />
+        <img
+          class="aspect-[3/1] object-cover"
+          :src="detail.featuredImage.fileUrl"
+        />
       </div>
       <div class="flex flex-col gap-3 p-4">
         <div>

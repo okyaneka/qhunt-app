@@ -17,7 +17,7 @@ export const useFeatureList = (
 };
 
 export const useFeatureCreate = () => {
-  return request.mutate<FormData>(API.ADMIN_FEATURE_CREATE);
+  return request.mutate<FormData, Feature>(API.ADMIN_FEATURE_CREATE);
 };
 
 export const useFeatureDetail = (
@@ -53,12 +53,6 @@ export const useFeatureDelete = (
   });
 };
 
-export const useFeatureListPublished = (
-  options?: Partial<ExtendedQueryOptions<DefaultResponseList<Feature>>>
-) => {
-  return request.query(API.FEATURE_LIST, options);
-};
-
 export const useFeatureDetailPublished = (
   type: string,
   slug: string,
@@ -70,7 +64,8 @@ export const useFeatureDetailPublished = (
 export const useFeatureListFetch = (
   options?: UseFetchOptions<DefaultResponseList<Feature>>
 ) => {
-  return useFetch(API.FEATURE_LIST, {
+  const config = useEnv().public;
+  return useFetch(`${config.APP_API_URL}${API.FEATURE_LIST}`, {
     ...options,
     method: "get",
     credentials: "include",

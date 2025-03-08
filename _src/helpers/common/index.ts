@@ -147,6 +147,8 @@ export const objectToFormData = (
       });
     } else if (typeof value === "object" && value !== null) {
       objectToFormData(value, formData, fullKey);
+      // } else if (typeof value === "boolean") {
+      //   formData.append(fullKey, value ? "1" : "0");
     } else if (value !== undefined) {
       formData.append(fullKey, value);
     }

@@ -3,6 +3,7 @@ import "swiper/css";
 import "swiper/css/autoplay";
 import "swiper/css/scrollbar";
 
+import LOGO from "~/_src/assets/images/logo-grey-trimmed.png";
 import { Swiper, SwiperSlide } from "swiper/vue";
 import { Autoplay, Scrollbar } from "swiper/modules";
 import { RouterLink } from "vue-router";
@@ -104,13 +105,16 @@ watch(
     >
       <template v-for="item in visibleItems" :key="item">
         <SwiperSlide
-          class="slide-item"
+          class="slide-item bg-gray-100"
+          :class="{
+            '!bg-contain': items && !items[item].image,
+          }"
           :style="{
             height: `${height}px`,
             backgroundImage:
               slotItems.length || !items?.length || !items[item]
                 ? 'unset'
-                : `url(${items[item].image})`,
+                : `url(${items[item].image || LOGO})`,
           }"
         >
           <slot v-if="slotItems.length" :name="`item-${item + 1}`" />
@@ -168,7 +172,7 @@ watch(
     scrollbar-width: none;
   }
   .slide-item {
-    @apply snap-start snap-always flex flex-col flex-none w-full bg-cover bg-center select-none overflow-hidden;
+    @apply snap-start snap-always flex flex-col flex-none w-full bg-cover bg-center select-none overflow-hidden bg-no-repeat;
   }
   .slide-content {
     @apply p-3 block bg-dark bg-opacity-50 text-white mt-auto;

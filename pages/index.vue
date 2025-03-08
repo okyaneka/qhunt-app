@@ -4,6 +4,8 @@ import WINNERS from "~/_src/assets/images/winners.svg";
 import { useEnv } from "~/_src/configs/env";
 import { routes } from "~/_src/helpers";
 
+definePageMeta({ redirect: routes.HOME });
+
 const env = useEnv();
 </script>
 
@@ -66,9 +68,7 @@ const env = useEnv();
     </CCard>
 
     <CCard content-class="p-4 text-center">
-      <CButton as="link" :to="routes.stage.index" color="light"
-        >Tantangan Saya</CButton
-      >
+      <CButton as="link" :to="routes.home" color="light">Buka Aplikasi</CButton>
     </CCard>
 
     <CCard content-class="flex flex-col gap-4">

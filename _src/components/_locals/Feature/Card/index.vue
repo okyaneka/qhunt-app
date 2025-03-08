@@ -30,20 +30,12 @@ const onImageError = () => {
     >
       <img
         v-if="item.featuredImage?.fileUrl && !imageError"
-        class="absolute top-0 left-0 object-cover"
+        class="absolute top-0 left-0 object-cover h-full w-full"
         :src="item.featuredImage.fileUrl"
         @error="onImageError"
       />
       <div class="mt-auto z-10">
-        <CChip v-if="item.type == 'event'" class="text-sm" type="success"
-          >Event</CChip
-        >
-        <CChip v-else-if="item.type == 'patch'" class="text-sm" type="warning"
-          >Patch</CChip
-        >
-        <CChip v-else-if="item.type == 'info'" class="text-sm" type="info"
-          >Info</CChip
-        >
+        <CLFeatureChipType :type="item.type" />
       </div>
     </div>
     <div class="p-3 flex flex-col gap-">
