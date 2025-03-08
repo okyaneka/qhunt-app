@@ -1,9 +1,3 @@
 User-agent: *
-Disallow: /
-Allow: /$
-Allow: /home$
-Allow: /events$
-Allow: /about$
-Allow: /terms-conditions$
-Allow: /privacy-policy$
-Allow: /contact$
+Disallow: /__admin
+Allow: /
