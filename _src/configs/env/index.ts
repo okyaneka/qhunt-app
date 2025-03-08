@@ -7,7 +7,7 @@ export const env = {
   FIREBASE_KEY: "",
   FIREBASE_AUTH_DOMAIN: "",
   TINY_MCE_KEY: "",
-  GOOGLE_ADSENSE: process.env.GOOGLE_ADSENSE || "",
+  GOOGLE_ADSENSE: "",
 } as const;
 
 export const useEnv = () => {

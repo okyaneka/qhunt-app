@@ -8,8 +8,6 @@ const packagejson: any = JSON.parse(
   fs.readFileSync(path.resolve(__dirname, "package.json"), "utf-8")
 );
 
-const { GOOGLE_ADSENSE, ...config } = env;
-
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
   watch: ["./_src/configs/**/*"],
@@ -24,7 +22,6 @@ export default defineNuxtConfig({
       title: env.APP_NAME,
       meta: [
         { charset: "utf-8" },
-        { name: "google-adsense-account", content: GOOGLE_ADSENSE },
         { name: "version", content: packagejson.version },
         { name: "description", content: packagejson.description },
         { name: "author", content: "noone" },
@@ -44,7 +41,7 @@ export default defineNuxtConfig({
     "~src": "/_src",
   },
   runtimeConfig: {
-    public: { ...config, APP_VERSION: packagejson.version },
+    public: { ...env, APP_VERSION: packagejson.version },
   },
   compatibilityDate: "2024-11-01",
   devtools: { enabled: true },

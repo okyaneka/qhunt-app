@@ -107,14 +107,14 @@ watch(
         <SwiperSlide
           class="slide-item bg-gray-100"
           :class="{
-            '!bg-contain': items && !items[item].image,
+            '!bg-contain': items && items[item] && !items[item].image,
           }"
           :style="{
             height: `${height}px`,
             backgroundImage:
               slotItems.length || !items?.length || !items[item]
                 ? 'unset'
-                : `url(${items[item].image || LOGO})`,
+                : `url(${(items && items[item] && items[item].image) || LOGO})`,
           }"
         >
           <slot v-if="slotItems.length" :name="`item-${item + 1}`" />
