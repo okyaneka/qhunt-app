@@ -1,7 +1,5 @@
 import type { ModuleOptions } from "@vite-pwa/nuxt";
 import { env } from "./env";
-import fs from "fs";
-import path from "path";
 import packageJson from "../../package.json";
 
 const pwa: ModuleOptions = {
