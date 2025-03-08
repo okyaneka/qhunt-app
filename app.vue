@@ -8,6 +8,11 @@ useHead({
   script: [
     {
       async: true,
+      src: "https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2286446734287391",
+      crossorigin: "anonymous",
+    },
+    {
+      async: true,
       src: "https://www.googletagmanager.com/gtag/js?id=G-FRC9WQZVTR",
     },
     {
