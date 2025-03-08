@@ -102,11 +102,13 @@ export default defineNuxtConfig({
     ["@vite-pwa/nuxt", pwa],
     "@nuxtjs/seo",
     "@nuxtjs/sitemap",
+    "@nuxtjs/robots",
   ],
   sitemap: {
     exclude: ["/__admin/**"],
   },
   site: {
+    indexable: true,
     url: env.APP_URL,
     name: env.APP_NAME,
   },
