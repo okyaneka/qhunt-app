@@ -1,7 +1,7 @@
 {
   "name": "qhunt-app",
   "private": true,
-  "description": "QHunt: Compete, Conquer, and Rise to the Top",
+  "description": "Utaraa adalah platform petualangan real-world interactive yang menantang para pencari tantangan untuk menjelajah, menyelesaikan misi, dan membuktikan kehebatan mereka. Setiap Quest yang hadapi bukan sekadar tugas, tetapi sebuah perjalanan menuju kejayaan.",
   "type": "module",
   "scripts": {
     "build": "nuxt build",

@@ -6,9 +6,14 @@ import { useEnv } from "~/_src/configs/env";
 
 const config = useRuntimeConfig();
 const env = useEnv();
+const { $pwa } = useNuxtApp();
 
 definePageMeta({ layout: "blank" });
 setTitle("About");
+
+const handleUpdate = () => {
+  window.location.reload();
+};
 </script>
 
 <template>
@@ -22,7 +27,9 @@ setTitle("About");
         <p class="text-center font-sans text-sm">
           Version {{ config.public.APP_VERSION }}
         </p>
-        <p class="text-center"></p>
+        <p v-if="$pwa?.needRefresh" class="text-center">
+          <CButton @click="handleUpdate">Update</CButton>
+        </p>
       </div>
 
       <div class="absolute w-full left-0 bottom-2 text-center animate-bounce">
