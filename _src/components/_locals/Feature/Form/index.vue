@@ -30,7 +30,9 @@ type Emits = {
 };
 
 defineOptions({ name: "FeatureForm" });
+
 const emit = defineEmits<Emits>();
+
 const { id, isLoading } = defineProps<Partial<Props>>();
 
 const { values, resetForm, defineField, setFieldValue, handleSubmit, errors } =
@@ -43,14 +45,21 @@ defineField("questId");
 defineField("content");
 defineField("attachments");
 defineField("featuredImage");
+defineField("featured");
 
+const router = useRouter();
 const inputRef = ref<HTMLInputElement>();
 const showModal = ref(false);
 const search = ref();
 const params = ref<Partial<StageListParams>>({});
 const selectedQuest = ref<StageForeign>();
 
-const { data: featureData, refetch: fetchDetail } = useFeatureDetail(id || "", {
+const {
+  isError,
+  data: featureData,
+  isLoading: isDetailLoading,
+  refetch: fetchDetail,
+} = useFeatureDetail(id || "", {
   enabled: false,
 });
 
@@ -99,6 +108,7 @@ const setFormValues = () => {
           slug: data.slug,
           status: data.status,
           type: data.type,
+          featured: data.featured,
           questId: data.quest?.id,
           content: data.content,
           attachments: data.attachments,
@@ -115,9 +125,13 @@ const onSubmit = handleSubmit((value) => {
 watch(
   () => isLoading,
   () => {
-    if (!isLoading) setFormValues();
+    if (!isLoading && id) setFormValues();
   }
 );
+
+watchEffect(() => {
+  if (isError.value) router.replace(routes.admin.feature.list);
+});
 
 onMounted(() => {
   if (id) setFormValues();
@@ -125,7 +139,8 @@ onMounted(() => {
 </script>
 
 <template>
-  <form class="flex flex-col gap-2" @submit.prevent="onSubmit">
+  <CSkeleton v-if="isDetailLoading" class="h-96" />
+  <form v-else class="flex flex-col gap-2" @submit.prevent="onSubmit">
     <div>{{ values.featuredImage }}</div>
     <div>
       <label class="font-bold mb-1">Gambar fitur</label>
@@ -160,7 +175,10 @@ onMounted(() => {
               <Icon name="ri:close-line" />
             </CButton>
           </div>
-          <img :src="featureImageSrc" class="object-cover rounded" />
+          <img
+            :src="featureImageSrc"
+            class="object-cover rounded w-full h-full aspect-[3/1]"
+          />
         </CCardAlt>
 
         <div v-else>
@@ -194,6 +212,15 @@ onMounted(() => {
         </div>
       </template>
     </CInput>
+
+    <CInputGroup
+      :value="values.featured"
+      label="Featured"
+      type="checkbox"
+      message="error"
+      :options="[{ label: '', value: true }]"
+      @update:value="setFieldValue('featured', $event as boolean)"
+    />
 
     <CSelect
       :items="Object.values(FEATURE_STATUS)"
