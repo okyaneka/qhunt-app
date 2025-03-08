@@ -99,7 +99,7 @@ export default defineNuxtConfig({
     ["@nuxtjs/tailwindcss", tailwindcss],
     ["@nuxtjs/google-fonts", font],
     ["@nuxt/icon", icon],
-    ["@vite-pwa/nuxt", pwa],
+    // ["@vite-pwa/nuxt", pwa],
     "@nuxtjs/seo",
     "@nuxtjs/sitemap",
     "@nuxtjs/robots",
