@@ -33,7 +33,9 @@ export default defineNuxtConfig({
     pageTransition: { name: "fade-quick", mode: "out-in" },
   },
   ssr: true,
-  // routeRules: Object.fromEntries(ssr.map((route) => [route, { ssr: false }])),
+  routeRules: {
+    "/__admin/**": { robots: false },
+  },
   devServer: { port: env.PORT, host: "0.0.0.0" },
   alias: {
     "~src": "/_src",
@@ -49,6 +51,15 @@ export default defineNuxtConfig({
     ["@nuxtjs/tailwindcss", tailwindcss],
     ["@nuxtjs/google-fonts", font],
     ["@nuxt/icon", icon],
-    ["@vite-pwa/nuxt", pwa],
+    // ["@vite-pwa/nuxt", pwa],
+    "@nuxtjs/seo",
+    "@nuxtjs/sitemap",
   ],
+  sitemap: {
+    exclude: ["/__admin/**"],
+  },
+  site: {
+    url: env.APP_URL,
+    name: env.APP_NAME,
+  },
 });

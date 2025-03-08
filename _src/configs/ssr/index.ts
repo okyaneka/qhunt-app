@@ -1,6 +1,6 @@
 const ssr = [
   "/",
-  "/events",
+  "/features",
   "/about",
   "/terms-conditions",
   "/privacy-policy",
