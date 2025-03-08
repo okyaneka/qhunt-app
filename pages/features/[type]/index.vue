@@ -9,11 +9,13 @@ import { useFeatureListFetch } from "~/_src/services/admin/feature";
 definePageMeta({ layout: "public" });
 
 const route = useRoute();
+const router = useRouter();
 
+const { page = 1, limit = 10 } = route.query as Partial<FeatureListParams>;
 const type = computed(() => route.params.type as FeatureType);
 const params = ref<Partial<FeatureListParams>>({
-  page: 1,
-  limit: 1,
+  page,
+  limit,
   type: type.value,
   status: "publish",
 });
@@ -28,6 +30,15 @@ const breadcrumb: Breadcrumb[] = [
 ];
 
 setTitle(capitalize(type.value));
+
+watch(
+  params,
+  () => {
+    const { questId, status, type, ...query } = params.value;
+    router.push({ query });
+  },
+  { deep: true, immediate: true }
+);
 </script>
 
 <template>

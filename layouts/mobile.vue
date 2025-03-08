@@ -37,7 +37,7 @@ onMounted(() => {
 
     <Transition name="fade-up" mode="out-in">
       <div
-        v-if="showNav"
+        v-show="showNav"
         class="w-lg-center fixed h-16 bottom-0 left-1/2 -translate-x-1/2 z-[999]"
       >
         <div

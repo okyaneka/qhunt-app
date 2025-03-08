@@ -8,6 +8,8 @@ const packagejson: any = JSON.parse(
   fs.readFileSync(path.resolve(__dirname, "package.json"), "utf-8")
 );
 
+const { GOOGLE_ADSENSE, ...config } = env;
+
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
   watch: ["./_src/configs/**/*"],
@@ -22,6 +24,7 @@ export default defineNuxtConfig({
       title: env.APP_NAME,
       meta: [
         { charset: "utf-8" },
+        { name: "google-adsense-account", content: GOOGLE_ADSENSE },
         { name: "version", content: packagejson.version },
         { name: "description", content: packagejson.description },
         { name: "author", content: "noone" },
@@ -33,13 +36,15 @@ export default defineNuxtConfig({
     pageTransition: { name: "fade-quick", mode: "out-in" },
   },
   ssr: true,
-  // routeRules: Object.fromEntries(ssr.map((route) => [route, { ssr: false }])),
+  routeRules: {
+    "/__admin/**": { robots: false },
+  },
   devServer: { port: env.PORT, host: "0.0.0.0" },
   alias: {
     "~src": "/_src",
   },
   runtimeConfig: {
-    public: { ...env, APP_VERSION: packagejson.version },
+    public: { ...config, APP_VERSION: packagejson.version },
   },
   compatibilityDate: "2024-11-01",
   devtools: { enabled: true },
@@ -49,6 +54,15 @@ export default defineNuxtConfig({
     ["@nuxtjs/tailwindcss", tailwindcss],
     ["@nuxtjs/google-fonts", font],
     ["@nuxt/icon", icon],
-    ["@vite-pwa/nuxt", pwa],
+    // ["@vite-pwa/nuxt", pwa],
+    "@nuxtjs/seo",
+    "@nuxtjs/sitemap",
   ],
+  sitemap: {
+    exclude: ["/__admin/**"],
+  },
+  site: {
+    url: env.APP_URL,
+    name: env.APP_NAME,
+  },
 });
