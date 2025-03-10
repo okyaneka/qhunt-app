@@ -1,7 +1,7 @@
 {
   "name": "qhunt-app",
   "private": true,
-  "description": "Utaraa adalah platform petualangan real-world interactive yang menantang para pencari tantangan untuk menjelajah, menyelesaikan misi, dan membuktikan kehebatan mereka. Setiap Quest yang hadapi bukan sekadar tugas, tetapi sebuah perjalanan menuju kejayaan.",
+  "description": "Utaraa merupakan sebuah platform game petualangan berbasis real-world interactive yang mengajak pemain untuk menjelajah, menyelesaikan quest seru, dan menaklukkan berbagai tantangan di dunia nyata!",
   "type": "module",
   "scripts": {
     "build": "nuxt build",
