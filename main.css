@@ -83,6 +83,27 @@
   input[type="radio"] {
     @apply rounded-full;
   }
+
+  @media print {
+    main {
+      background: unset;
+    }
+
+    main::before {
+      @apply fixed top-0 left-0 w-screen h-screen -z-10;
+      content: "";
+      background: radial-gradient(
+          circle at 0 100%,
+          rgba(var(--base-color), 0.3) 0%,
+          rgba(var(--base-color), 0) 30%
+        ),
+        radial-gradient(
+          circle at 100% 0,
+          rgba(var(--base-color), 0.3) 0%,
+          rgba(var(--base-color), 0) 15%
+        );
+    }
+  }
 }
 
 @layer utilities {

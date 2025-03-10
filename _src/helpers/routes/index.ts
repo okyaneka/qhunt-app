@@ -40,6 +40,11 @@ const routes = {
   FEATURE: "/features",
   FEATURE_TYPE: (type: string) => `/features/${type}`,
   FEATURE_CONTENT: (type: string, slug: string) => `/features/${type}/${slug}`,
+  ADMIN: {
+    STAGE_LIST: "/__admin/stage",
+    STAGE_DETAIL: (id: string) => `/__admin/stage/${id}/detail`,
+    STAGE_DETAIL_QR: (id: string) => `/__admin/stage/${id}/detail-qr`,
+  },
 } as const;
 
 export default routes;

@@ -75,32 +75,26 @@ onUnmounted(() => {
         content-class="flex flex-col gap-1"
       >
         <div class="absolute top-2 right-2">
-          <CButton
-            class="shadow-card-sm"
-            variant="light"
-            color="light"
-            size="sm"
-            >Bantuan</CButton
-          >
+          <CButton variant="light" color="light" size="sm">Bantuan</CButton>
         </div>
-        <h1 class="text-4xl">{{ detail?.stage.name }}</h1>
+        <h2>{{ detail?.stage.name }}</h2>
 
         <div v-if="detail?.stage.settings.periode">
-          <div class="font-sans text-gray-500 text-sm font-semibold">
+          <div class="font-sans text-gray-500 text-xs font-semibold">
             Periode:
           </div>
-          <h3 class="">
+          <h4 class="">
             {{ formatDate(detail.stage.settings.periode.startDate) }} -
             {{ formatDate(detail.stage.settings.periode.endDate) }}
-          </h3>
+          </h4>
           <!-- {{ leaderboard }} -->
         </div>
 
         <div>
-          <div class="font-sans text-gray-500 text-sm font-semibold">
+          <div class="font-sans text-gray-500 text-xs font-semibold">
             Total Tantangan:
           </div>
-          <h3 class="">{{ detail?.contents.length }}</h3>
+          <h4 class="">{{ detail?.contents.length }}</h4>
         </div>
       </CCardAlt>
       <CCard

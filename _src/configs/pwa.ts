@@ -5,7 +5,7 @@ import packageJson from "../../package.json";
 const pwa: ModuleOptions = {
   registerType: "prompt",
   manifest: {
-    name: env.APP_NAME,
+    name: env.APP_NAME + "aaa",
     short_name: env.APP_NAME,
     description: packageJson.description,
     orientation: "portrait",

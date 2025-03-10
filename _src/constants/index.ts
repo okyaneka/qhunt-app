@@ -15,6 +15,7 @@ export const API = {
   MEDIA_DELETE: `/admin/media/delete`,
 
   ADMIN_STAGE_LIST: "/admin/stage/list",
+  ADMIN_STAGE_DETAIL_QR: (id: string) => `/admin/stage/${id}/detail-qr`,
 
   ADMIN_FEATURE_LIST: "/admin/feature/list",
   ADMIN_FEATURE_CREATE: "/admin/feature/create",

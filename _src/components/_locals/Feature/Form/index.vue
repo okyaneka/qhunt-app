@@ -141,7 +141,6 @@ onMounted(() => {
 <template>
   <CSkeleton v-if="isDetailLoading" class="h-96" />
   <form v-else class="flex flex-col gap-2" @submit.prevent="onSubmit">
-    <div>{{ values.featuredImage }}</div>
     <div>
       <label class="font-bold mb-1">Gambar fitur</label>
       <input
