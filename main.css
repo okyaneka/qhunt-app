@@ -29,7 +29,7 @@
   }
 
   a:not(.button, :has(*)) {
-    @apply text-light-600 hover:underline;
+    @apply text-light-400 hover:underline;
   }
 
   b {

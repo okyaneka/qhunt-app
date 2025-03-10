@@ -37,7 +37,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="flex flex-col min-h-[calc(100vh-72px)]">
+  <div class="flex flex-col min-h-screen">
     <CBarTitle
       :back="
         detail?.userStage?.id
