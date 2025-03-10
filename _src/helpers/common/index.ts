@@ -119,12 +119,8 @@ export const formatDate = (
 ) => dayjs(rawDate).format(format);
 
 export const setTitle = (title?: MaybeRef<string>) => {
-  const env = useEnv();
-
   return useSeoMeta({
-    title: `${toValue(title) ? toValue(title) + " - " : ""} ${
-      env.public.APP_NAME
-    }`.trim(),
+    title: `${toValue(title) ? toValue(title) : ""}`.trim(),
   });
 };
 
