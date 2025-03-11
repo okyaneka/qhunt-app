@@ -5,7 +5,7 @@ import packageJson from "../../package.json";
 const pwa: ModuleOptions = {
   registerType: "prompt",
   manifest: {
-    name: env.APP_NAME + "aaa",
+    name: env.APP_NAME,
     short_name: env.APP_NAME,
     description: packageJson.description,
     orientation: "portrait",
@@ -112,8 +112,10 @@ const pwa: ModuleOptions = {
   },
 
   workbox: {
+    // navigateFallback: "/home",
+    // clientsClaim: true,
     maximumFileSizeToCacheInBytes: 5e6,
-    globPatterns: ["**/*.{js,css,html,png,svg,ico}"],
+    // globPatterns: ["**/*.{js,css,html,png,svg,ico}"],
   },
   devOptions: {
     enabled: true,
