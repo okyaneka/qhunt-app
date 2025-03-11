@@ -89,75 +89,79 @@ watch(
 </script>
 
 <template>
-  <div
-    class="slider"
-    @mouseenter="pauseOnHover ? onPause($event) : ''"
-    @mouseleave="pauseOnHover ? onPlay($event) : ''"
-    @touchstart.stop="onPause"
-    @touchend="onPlay"
-  >
-    <Swiper
-      ref="swiperRef"
-      class="slide-container"
-      :modules="[Autoplay, Scrollbar]"
-      :autoplay="{ delay: interval }"
-      @swiper="onSwiper"
-    >
-      <template v-for="item in visibleItems" :key="item">
-        <SwiperSlide
-          class="slide-item bg-gray-100"
-          :class="{
-            '!bg-contain': items && items[item] && !items[item].image,
-          }"
-          :style="{
-            height: `${height}px`,
-            backgroundImage:
-              slotItems.length || !items?.length || !items[item]
-                ? 'unset'
-                : `url(${(items && items[item] && items[item].image) || LOGO})`,
-          }"
-        >
-          <slot v-if="slotItems.length" :name="`item-${item + 1}`" />
-          <component
-            v-else-if="items && items[item]"
-            :is="items[item].to ? RouterLink : 'div'"
-            class="slide-content"
-            :to="items[item].to"
-          >
-            <h2>{{ items[item].title }}</h2>
-            <p>{{ items[item].subtitle }}</p>
-          </component>
-        </SwiperSlide>
-      </template>
-    </Swiper>
-
-    <div v-if="navigation" class="slide-nav">
-      <div
-        v-for="item in visibleItems"
-        :key="item"
-        class="slide-nav-item"
-        :class="{ active: item === swiper?.activeIndex }"
-        @click="onSetPos(item)"
-      ></div>
-    </div>
-
+  <ClientOnly>
     <div
-      v-if="arrow && slideContentHeight"
-      class="slide-nav-arrow"
-      :style="{ bottom: `${slideContentHeight}px` }"
+      class="slider"
+      @mouseenter="pauseOnHover ? onPause($event) : ''"
+      @mouseleave="pauseOnHover ? onPlay($event) : ''"
+      @touchstart.stop="onPause"
+      @touchend="onPlay"
     >
-      <div class="slide-nav-prev">
-        <CButton size="sm" variant="light" color="white" icon @click="onPrev">
-          <Icon name="ri:arrow-left-line" />
-        </CButton>
+      <Swiper
+        ref="swiperRef"
+        class="slide-container"
+        :modules="[Autoplay, Scrollbar]"
+        :autoplay="{ delay: interval }"
+        @swiper="onSwiper"
+      >
+        <template v-for="item in visibleItems" :key="item">
+          <SwiperSlide
+            class="slide-item bg-gray-100"
+            :class="{
+              '!bg-contain': items && items[item] && !items[item].image,
+            }"
+            :style="{
+              height: `${height}px`,
+              backgroundImage:
+                slotItems.length || !items?.length || !items[item]
+                  ? 'unset'
+                  : `url(${
+                      (items && items[item] && items[item].image) || LOGO
+                    })`,
+            }"
+          >
+            <slot v-if="slotItems.length" :name="`item-${item + 1}`" />
+            <component
+              v-else-if="items && items[item]"
+              :is="items[item].to ? RouterLink : 'div'"
+              class="slide-content"
+              :to="items[item].to"
+            >
+              <h2>{{ items[item].title }}</h2>
+              <p>{{ items[item].subtitle }}</p>
+            </component>
+          </SwiperSlide>
+        </template>
+      </Swiper>
+
+      <div v-if="navigation" class="slide-nav">
+        <div
+          v-for="item in visibleItems"
+          :key="item"
+          class="slide-nav-item"
+          :class="{ active: item === swiper?.activeIndex }"
+          @click="onSetPos(item)"
+        ></div>
       </div>
-      <div class="slide-nav-next">
-        <CButton size="sm" variant="light" color="white" icon @click="onNext">
-          <Icon name="ri:arrow-right-line" />
-        </CButton>
+
+      <div
+        v-if="arrow && slideContentHeight"
+        class="slide-nav-arrow"
+        :style="{ bottom: `${slideContentHeight}px` }"
+      >
+        <div class="slide-nav-prev">
+          <CButton size="sm" variant="light" color="white" icon @click="onPrev">
+            <Icon name="ri:arrow-left-line" />
+          </CButton>
+        </div>
+        <div class="slide-nav-next">
+          <CButton size="sm" variant="light" color="white" icon @click="onNext">
+            <Icon name="ri:arrow-right-line" />
+          </CButton>
+        </div>
       </div>
     </div>
-  </div>
+  </ClientOnly>
 </template>
 
 <style>

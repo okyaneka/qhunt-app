@@ -15,11 +15,16 @@ const items = [
 ];
 
 const route = useRoute();
-const showNav = ref(false);
+const { $pwa } = useNuxtApp();
 const { auth } = storeToRefs(useAuthStore());
+const showNav = ref(false);
 
 const isActive = (path: string) => {
   return route.path.indexOf(path) == 0;
+};
+
+const handleUpdate = () => {
+  $pwa?.updateServiceWorker(true);
 };
 
 onMounted(() => {
@@ -76,6 +81,15 @@ onMounted(() => {
         </div>
       </div>
     </Transition>
+
+    <CLModalConfirm
+      :show="$pwa?.needRefresh"
+      title="Update"
+      hide-negative
+      message="Update dulu yuk aplikasinya!"
+      positive-text="Update"
+      @confirm="handleUpdate"
+    />
   </main>
 </template>
 

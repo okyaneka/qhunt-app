@@ -4,6 +4,7 @@ type Props = {
   message: string;
   positiveText: string;
   negativeText: string;
+  hideNegative: boolean;
   isLoading: boolean;
   show: boolean;
 };
@@ -18,6 +19,7 @@ const emit = defineEmits<Emits>();
 const {
   isLoading,
   show,
+  hideNegative,
   title = "Konfirmasi",
   message = "Apakah anda yakin?",
   positiveText = "Ya",
@@ -36,6 +38,7 @@ const modelShow = computed({
 
     <div class="flex gap-2 justify-center">
       <CButton
+        v-if="!hideNegative"
         :disabled="isLoading"
         @click="
           emit('update:show', false);

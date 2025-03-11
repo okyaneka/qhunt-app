@@ -4,9 +4,15 @@ import WINNERS from "~/_src/assets/images/winners.svg";
 import { useEnv } from "~/_src/configs/env";
 import { routes } from "~/_src/helpers";
 
-definePageMeta({ redirect: routes.HOME });
+// definePageMeta({ redirect: routes.HOME });
+const { $pwa } = useNuxtApp();
+const router = useRouter();
 
 const env = useEnv();
+
+onMounted(() => {
+  if ($pwa?.isPWAInstalled) router.push(routes.HOME);
+});
 </script>
 
 <template>
